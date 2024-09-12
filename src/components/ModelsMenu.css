@@ -1,0 +1,12 @@
+.sider-model-menu {
+    height: calc(100vh - 259px);
+    overflow-y: scroll;
+    min-width: 250px;
+    margin-bottom: 10px;
+}
+
+.sider-model-menu-wrapper {
+    padding: 10px;
+    padding-top: 0px;
+    min-width: 270px;
+}

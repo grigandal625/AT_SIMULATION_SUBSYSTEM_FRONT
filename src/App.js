@@ -1,25 +1,65 @@
-import logo from './logo.svg';
-import './App.css';
+import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements } from "react-router-dom";
+import { Empty } from "antd";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+import Layout from "./components/Layout";
+import NotFound from "./components/NotFound";
+import Model from "./components/models/Model";
 
-export default App;
+export const router = createBrowserRouter(
+    createRoutesFromElements(
+        <Route path="" element={<Layout />} errorElement={<NotFound />}>
+            <Route
+                path=""
+                element={
+                    <Empty
+                        style={{ position: "relative", top: "50%", transform: "translate(0%, -50%)" }}
+                        description="Выберите файл имитационной модели для редактирования"
+                    />
+                }
+            />
+            <Route path="/models/:modelId" element={<Model />}>
+                <Route path="" element={<>Предполагается граф</>} />
+                <Route path="resource-types">
+                    <Route path="" element={<>Предполагается граф с выделенными узлами-типами ресурсов</>} />
+                    <Route path="new" element={<>Предполагается модальное окно с созданием типа ресурса</>} />
+                    <Route path=":resourceTypeId">
+                        <Route path="" element={<>Предполагается граф с выделенным узлом-типом ресурса</>} />
+                        <Route
+                            path="edit"
+                            element={<>Предполагается модальное окно с редактированием типа ресурса</>}
+                        />
+                    </Route>
+                </Route>
+                <Route path="resources">
+                    <Route path="" element={<>Предполагается граф с выделенными узлами-ресурсами</>} />
+                    <Route path="new" element={<>Предполагается модальное окно с созданием ресурса</>} />
+                    <Route path=":resourceId">
+                        <Route path="" element={<>Предполагается граф с выделенным узлом-ресурсом</>} />
+                        <Route path="edit" element={<>Предполагается модальное окно с редактированием ресурса</>} />
+                    </Route>
+                </Route>
+                <Route path="templates">
+                    <Route path="" element={<>Предполагается граф с выделенными узлами-образцами операций</>} />
+                    <Route path="new" element={<>Предполагается модальное окно с созданием образца операции</>} />
+                    <Route path=":templateId">
+                        <Route path="" element={<>Предполагается граф с выделенным узлом-образцом операции</>} />
+                        <Route
+                            path="edit"
+                            element={<>Предполагается модальное окно с редактированием образца операции</>}
+                        />
+                    </Route>
+                </Route>
+                <Route path="template-usages">
+                    <Route path="" element={<>Предполагается граф с выделенными узлами-операциями</>} />
+                    <Route path="new" element={<>Предполагается модальное окно с созданием операции</>} />
+                    <Route path=":templateUsageId">
+                        <Route path="" element={<>Предполагается граф с выделенным узлом-операцией</>} />
+                        <Route path="edit" element={<>Предполагается модальное окно с редактированием операции</>} />
+                    </Route>
+                </Route>
+            </Route>
+        </Route>
+    )
+);
+
+export default () => <RouterProvider router={router} />;
