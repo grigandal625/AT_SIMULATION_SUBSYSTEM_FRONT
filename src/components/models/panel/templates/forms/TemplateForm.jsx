@@ -1,6 +1,6 @@
-import { Card, Col, Form, Input, InputNumber, Row, Select } from "antd";
+import { Card, Col, Form, Input, InputNumber, Row, Select, Typography } from "antd";
 import { useEffect, useState } from "react";
-import CodeEditor from "@uiw/react-textarea-code-editor"
+import CodeEditor from "@uiw/react-textarea-code-editor";
 
 const IrregularEventBody = ({ form }) => {
     const options = [
@@ -13,10 +13,10 @@ const IrregularEventBody = ({ form }) => {
         { value: "poisson", label: "Распределение Пуассона" },
     ];
 
-    const [selectedGeneratorType, setSelectedGeneratorType] = useState()
+    const [selectedGeneratorType, setSelectedGeneratorType] = useState();
 
     useEffect(() => {
-        if (selectedGeneratorType === 'precise') {
+        if (selectedGeneratorType === "precise") {
             form.setFieldValue(["body", "dispersion"], 0);
         }
     }, [selectedGeneratorType]);
@@ -25,19 +25,21 @@ const IrregularEventBody = ({ form }) => {
             <Col>
                 <Card title="Параметры генератора">
                     <Form.Item label="Тип генератора" name={["body", "type"]}>
-                        <Select options={options} onSelect={(value) => setSelectedGeneratorType(value)}/>
+                        <Select options={options} onSelect={(value) => setSelectedGeneratorType(value)} />
                     </Form.Item>
                     <Form.Item label="Мат. ожидание" name={["body", "value"]}>
                         <InputNumber placeholder="Укажите мат. ожидание" />
                     </Form.Item>
                     <Form.Item label="Дисперсия" name={["body", "dispersion"]}>
-                        <InputNumber disabled={selectedGeneratorType === 'precise'} placeholder="Диперсию" />
+                        <InputNumber disabled={selectedGeneratorType === "precise"} placeholder="Диперсию" />
                     </Form.Item>
                 </Card>
             </Col>
             <Col flex="auto">
                 <Card title="Тело образца">
-                    <Form.Item name={['body']}><CodeEditor language="go" /></Form.Item>
+                    <Form.Item name={["body"]}>
+                        <CodeEditor language="go" />
+                    </Form.Item>
                 </Card>
             </Col>
         </Row>
@@ -47,14 +49,16 @@ const IrregularEventBody = ({ form }) => {
 export default ({ form, resourceTypes, ...formProps }) => {
     const [actualForm] = form ? [form] : Form.useForm();
     const [selectedType, setSelectedType] = useState();
-    
+
     const bodyItems = {
         1: IrregularEventBody,
         2: () => <p>Тело операции</p>,
         3: () => <p>Тело правила</p>,
-    }
+    };
 
-    const SelectedBodyItem = selectedType ? bodyItems[selectedType] : () => <
+    const SelectedBodyItem = selectedType
+        ? bodyItems[selectedType]
+        : () => <Typography.Text type="secondary">Укажите вид образца</Typography.Text>;
 
     return (
         <Form form={actualForm}>
