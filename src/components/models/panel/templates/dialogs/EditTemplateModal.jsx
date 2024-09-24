@@ -1,11 +1,11 @@
 import { Button, Form, Modal, Space } from "antd";
-import ResourceForm from "../forms/ResourceForm";
+import TemplateForm from "../forms/TemplateForm";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { SaveOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { updateResource } from "../../../../../redux/stores/resourcesStore";
-import { loadResourceTypes } from "../../../../../redux/stores/resourceTypesStore";
+import { updateTemplate } from "../../../../../redux/stores/templatesStore";
 import { useEffect } from "react";
+import { loadResourceTypes } from "../../../../../redux/stores/resourceTypesStore";
 
 export default ({ open, ...modalProps }) => {
     const params = useParams();
@@ -13,9 +13,9 @@ export default ({ open, ...modalProps }) => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
 
-    const resources = useSelector((store) => store.resources);
-    const resource = resources.data.find((resource) => resource.id.toString() === params.resourceId);
-    form.setFieldsValue(resource);
+    const templates = useSelector((store) => store.templates);
+    const template = templates.data.find((template) => template.id.toString() === params.templateId);
+    form.setFieldsValue(template);
 
     const resourceTypes = useSelector((store) => store.resourceTypes);
     useEffect(() => {
@@ -26,8 +26,8 @@ export default ({ open, ...modalProps }) => {
         <Modal
             width={1300}
             open={open}
-            title="Редактирование ресурса"
-            onCancel={() => navigate(`/models/${params.modelId}/resources/${params.resourceId}`)}
+            title="Редактирование образца операции"
+            onCancel={() => navigate(`/models/${params.modelId}/templates/${params.templateId}`)}
             footer={
                 <Space>
                     <Button
@@ -38,10 +38,10 @@ export default ({ open, ...modalProps }) => {
                                 const data = await form.validateFields();
                                 console.log(data);
                                 const action = await dispatch(
-                                    updateResource({ modelId: params.modelId, resource: data })
+                                    updateTemplate({ modelId: params.modelId, template: data })
                                 );
-                                const updatedResource = action.payload;
-                                navigate(`/models/${params.modelId}/resources/${updatedResource.id}`);
+                                const updatedTemplate = action.payload;
+                                navigate(`/models/${params.modelId}/templates/${updatedTemplate.id}`);
                             } catch (err) {
                                 console.error("Form validation failed:", err);
                             }
@@ -49,14 +49,14 @@ export default ({ open, ...modalProps }) => {
                     >
                         Сохранить
                     </Button>
-                    <Link to={`/models/${params.modelId}/resources/${params.resourceId}`}>
+                    <Link to={`/models/${params.modelId}/templates/${params.templateId}`}>
                         <Button>Отмена</Button>
                     </Link>
                 </Space>
             }
             {...modalProps}
         >
-            <ResourceForm resourceTypes={resourceTypes.data} form={form} layout="vertical" />
+            <TemplateForm resourceTypes={resourceTypes.data} form={form} layout="vertical" />
         </Modal>
     );
 };
