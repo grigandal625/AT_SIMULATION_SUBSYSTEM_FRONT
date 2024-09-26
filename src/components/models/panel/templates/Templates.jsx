@@ -88,7 +88,7 @@ export default () => {
                         return {
                             key: template.id.toString(),
                             label: (
-                                <Row>
+                                <Row gutter={10}>
                                     <Col flex="auto">
                                         <Link to={`/models/${params.modelId}/templates/${template.id}`}>
                                             {template.name}
@@ -113,7 +113,7 @@ export default () => {
             </div>
             <Link to={`/models/${params.modelId}/templates/new`}>
                 <Button type="primary" style={{ width: "100%" }} icon={<PlusOutlined />}>
-                    Создать ресурс
+                    Создать образец операции
                 </Button>
             </Link>
             <CreateTemplateModal open={createOpen} />

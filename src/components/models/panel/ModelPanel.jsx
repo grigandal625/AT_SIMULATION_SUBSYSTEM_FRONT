@@ -3,6 +3,7 @@ import { Link, useMatches, useNavigate, useParams } from "react-router-dom";
 import "./ModelPanel.css";
 import ResourceTypes from "./resourceTypes/ResourceTypes";
 import Resources from "./resources/Resources";
+import Templates from "./templates/Templates"
 
 export default () => {
     const navigate = useNavigate();
@@ -36,7 +37,7 @@ export default () => {
                     {
                         key: "templates",
                         label: <div style={{ writingMode: "vertical-lr" }}>Образцы операций</div>,
-                        children: "Образцы операций",
+                        children: <Templates />,
                     },
                     {
                         key: "template-usages",

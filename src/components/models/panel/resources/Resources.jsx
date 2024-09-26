@@ -88,7 +88,7 @@ export default () => {
                         return {
                             key: resource.id.toString(),
                             label: (
-                                <Row>
+                                <Row gutter={10}>
                                     <Col flex="auto">
                                         <Link to={`/models/${params.modelId}/resources/${resource.id}`}>
                                             {resource.name}

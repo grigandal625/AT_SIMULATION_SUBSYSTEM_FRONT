@@ -53,7 +53,7 @@ export default ({ open, ...modalProps }) => {
             }
             {...modalProps}
         >
-            <TemplateForm form={form} resources={resources.data} layout="vertical" />
+            <TemplateForm form={form} resourceTypes={resourceTypes.data} layout="vertical" />
         </Modal>
     );
 };

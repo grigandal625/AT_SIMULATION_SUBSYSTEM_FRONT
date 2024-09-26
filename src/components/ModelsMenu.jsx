@@ -39,7 +39,7 @@ export default () => {
     const items = models?.data?.map((model) => ({
         key: model.id.toString(),
         label: (
-            <Row>
+            <Row gutter={10}>
                 <Col flex="auto">
                     <Link to={`/models/${model.id}`}>{model.name}</Link>
                 </Col>
