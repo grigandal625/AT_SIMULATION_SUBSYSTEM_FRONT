@@ -31,7 +31,6 @@ export default ({ open, ...modalProps }) => {
                         onClick={async () => {
                             try {
                                 const data = await form.validateFields();
-                                console.log(data);
                                 const action = await dispatch(
                                     updateResourceType({ modelId: params.modelId, resourceType: data })
                                 );

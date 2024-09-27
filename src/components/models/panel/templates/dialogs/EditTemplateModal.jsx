@@ -36,7 +36,6 @@ export default ({ open, ...modalProps }) => {
                         onClick={async () => {
                             try {
                                 const data = await form.validateFields();
-                                console.log(data);
                                 const action = await dispatch(
                                     updateTemplate({ modelId: params.modelId, template: data })
                                 );

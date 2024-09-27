@@ -9,8 +9,6 @@ const Main = () => {
 
     useEffect(() => {
         window.addEventListener("resize", () => {
-            // console.log(sizes);
-            // console.log([sizes[0], window.innerWidth - sizes[0]]);
             setSizes([sizes[0], window.innerWidth - sizes[0]]);
         });
     }, [sizes[0]]);

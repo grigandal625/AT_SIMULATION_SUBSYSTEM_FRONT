@@ -44,8 +44,7 @@ export default () => {
         },
     ];
 
-    const handleEditTemplate = (template) =>
-        navigate(`/models/${params.modelId}/templates/${template.id}/edit`);
+    const handleEditTemplate = (template) => navigate(`/models/${params.modelId}/templates/${template.id}/edit`);
 
     const handleDuplicateTemplate = async (template) => {
         // duplicate template
@@ -90,9 +89,7 @@ export default () => {
                             label: (
                                 <Row gutter={10}>
                                     <Col flex="auto">
-                                        <Link to={`/models/${params.modelId}/templates/${template.id}`}>
-                                            {template.name}
-                                        </Link>
+                                        <Link to={`/models/${params.modelId}/templates/${template.id}`}>{template.name}</Link>
                                     </Col>
                                     <Col>
                                         <Dropdown

@@ -1,11 +1,35 @@
-import { Button, Card, Col, Form, Input, InputNumber, Row, Select, Space, Typography } from "antd";
+import { Button, Card, Col, Form, Input, InputNumber, Row, Select, Space, Typography, theme } from "antd";
 import { useEffect, useState } from "react";
-import CodeEditor from "@uiw/react-textarea-code-editor";
-import rehypePrism from "rehype-prism-plus";
+import MonacoEditor from "@uiw/react-monacoeditor";
+import {languages} from "monaco-editor"
 import TinyFormItem from "../../../../../utils/TinyFormItem";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 
-const IrregularEventBody = ({ form }) => {
+
+const isValidGoIdentifier = (name) => {
+    return /^[a-zA-Z_]\w*$/.test(name);
+};
+
+const CodeEditorField = ({ value, onChange, onCodeChanged, relevantResources, ...props }) => {
+    const [code, setCode] = useState(value);
+    useEffect(() => {
+        setCode(value);
+    }, []);
+
+    useEffect(() => {
+        try {
+            onChange(code);
+            onCodeChanged(code);
+        } catch (e) {}
+    }, [code]);
+
+    return <MonacoEditor onChange={setCode} {...props} />;
+};
+
+const IrregularEventBody = ({ form, relevantResources }) => {
+    const {
+        token: { colorInfoBg },
+    } = theme.useToken();
     const options = [
         { value: "normal", label: "Нормальное распределение" },
         { value: "precise", label: "Точное число" },
@@ -16,6 +40,8 @@ const IrregularEventBody = ({ form }) => {
         { value: "poisson", label: "Распределение Пуассона" },
     ];
 
+    const [code, setCode] = useState();
+
     const [selectedGeneratorType, setSelectedGeneratorType] = useState();
 
     useEffect(() => {
@@ -23,10 +49,34 @@ const IrregularEventBody = ({ form }) => {
             form.setFieldValue(["body", "dispersion"], 0);
         }
     }, [selectedGeneratorType]);
+
+    const codeEditorOptions = {
+        selectOnLineNumbers: true,
+        roundedSelection: false,
+        readOnly: false,
+        cursorStyle: "line",
+        automaticLayout: false,
+        theme: "atsym",
+        scrollbar: {
+            useShadows: true,
+            verticalHasArrows: true,
+            horizontalHasArrows: true,
+            vertical: "visible",
+            horizontal: "visible",
+            verticalScrollbarSize: 17,
+            horizontalScrollbarSize: 17,
+            arrowSize: 30,
+        },
+        suggest: {
+            showFields: false,
+            showFunctions: false,
+        },
+    };
+
     return (
         <Row gutter={5}>
             <Col>
-                <Card title="Параметры генератора">
+                <Card title="Параметры генератора события">
                     <Form.Item label="Тип генератора" name={["body", "type"]}>
                         <Select options={options} onSelect={(value) => setSelectedGeneratorType(value)} />
                     </Form.Item>
@@ -39,13 +89,30 @@ const IrregularEventBody = ({ form }) => {
                 </Card>
             </Col>
             <Col flex="auto">
-                <Card title="Тело образца">
-                    <Form.Item name={["body"]}>
-                        <CodeEditor
-                            rehypePlugins={[[rehypePrism, { ignoreMissing: true, showLineNumbers: true }]]}
-                            style={{ fontSize: 18, fontFamily: "monospace" }}
+                <Card title="Тело нерегулярного события">
+                    <Form.Item name={["body", "text"]}>
+                        <CodeEditorField
                             language="go"
-                            placeholder="Введите код тела образца"
+                            relevantResources={relevantResources}
+                            options={codeEditorOptions}
+                            style={{ backgroundColor: colorInfoBg }}
+                            height="250px"
+           
+                            onCodeChanged={setCode}
+                            autoComplete={(model, position) => {
+                                let originalSuggestions = languages.ge
+
+                                const filteredResources = relevantResources.filter((resource) => resource?.name && isValidGoIdentifier(resource.name));
+
+                                const suggestions = filteredResources.map((resource) => ({
+                                    label: resource.name,
+                                    kind: languages.CompletionItemKind.Class,
+                                    insertText: resource.name,
+                                    detail: "Релевантный ресурс",
+                                }));
+
+                                return [...originalSuggestions, ...suggestions];
+                            }}
                         />
                     </Form.Item>
                 </Card>
@@ -54,21 +121,63 @@ const IrregularEventBody = ({ form }) => {
     );
 };
 
-const RelevantResourcesList = ({ fields, add, remove, resourceTypes }) => {
+const RelevantResourcesList = ({ fields, add, remove, resourceTypes, relevantResources, setRelevantResources }) => {
+    const {
+        token: { borderRadius, colorInfoBg },
+    } = theme.useToken();
+
     return (
-        <Space>
+        <Space wrap={true}>
             {fields.map((field, i) => (
-                <Space wrap={false}>
-                    <TinyFormItem {...field} layout="inline" name={[i, "name"]}>
-                        <Input size="small" placeholder="Имя ресурса" />
-                    </TinyFormItem>
-                    <TinyFormItem {...field} layout="inline" name={[i, "type"]}>
-                        <Select size="small" items={resourceTypes.map((resourceType) => ({ value: resourceType.id, label: resourceType.name }))} placeholder="Тип ресурса" />
-                    </TinyFormItem>
-                    <Button danger size="small" icon={<CloseOutlined />} onClick={() => remove(i)} />
-                </Space>
+                <div style={{ paddingLeft: 5, paddingRight: 5, borderRadius, background: colorInfoBg }}>
+                    <Row wrap align="middle" gutter={5}>
+                        <Col>
+                            <TinyFormItem {...field} name={[i, "name"]}>
+                                <Input
+                                    size="small"
+                                    placeholder="Имя ресурса"
+                                    onChange={(e) =>
+                                        setRelevantResources(
+                                            relevantResources.map((relevantResource, index) => (i === index ? { ...relevantResource, name: e.target.value } : relevantResource))
+                                        )
+                                    }
+                                />
+                            </TinyFormItem>
+                        </Col>
+                        <Col>
+                            <TinyFormItem {...field} name={[i, "type"]}>
+                                <Select
+                                    size="small"
+                                    options={resourceTypes.map((resourceType) => ({ value: resourceType.id, label: resourceType.name }))}
+                                    placeholder="Тип ресурса"
+                                    onSelect={(type) =>
+                                        setRelevantResources(relevantResources.map((relevantResource, index) => (i === index ? { ...relevantResource, type } : relevantResource)))
+                                    }
+                                />
+                            </TinyFormItem>
+                        </Col>
+                        <Col>
+                            <Button
+                                danger
+                                size="small"
+                                icon={<CloseOutlined />}
+                                onClick={() => {
+                                    remove(i);
+                                    setRelevantResources((relevantResources || []).filter((_, index) => index !== i));
+                                }}
+                            />
+                        </Col>
+                    </Row>
+                </div>
             ))}
-            <Button icon={<PlusOutlined />} size="small" onClick={() => add()} />
+            <Button
+                icon={<PlusOutlined />}
+                size="small"
+                onClick={() => {
+                    add();
+                    setRelevantResources([...relevantResources, {}]);
+                }}
+            />
         </Space>
     );
 };
@@ -76,6 +185,7 @@ const RelevantResourcesList = ({ fields, add, remove, resourceTypes }) => {
 export default ({ form, resourceTypes, ...formProps }) => {
     const [actualForm] = form ? [form] : Form.useForm();
     const [selectedType, setSelectedType] = useState();
+    const [relevantResources, setRelevantResources] = useState([]);
 
     const bodyItems = {
         1: IrregularEventBody,
@@ -109,11 +219,21 @@ export default ({ form, resourceTypes, ...formProps }) => {
             </Row>
             <Form.Item label="Релевантные ресурсы">
                 <Form.List name="relevant_resources">
-                    {(fields, { add, remove }) => <RelevantResourcesList fields={fields} add={add} remove={remove} resourceTypes={resourceTypes} />}
+                    {(fields, { add, remove }) => (
+                        <RelevantResourcesList
+                            setRelevantResources={setRelevantResources}
+                            relevantResources={relevantResources}
+                            fields={fields}
+                            add={add}
+                            remove={remove}
+                            resourceTypes={resourceTypes}
+                        />
+                    )}
                 </Form.List>
             </Form.Item>
-
-            <SelectedBodyItem />
+            <Form.Item label="Тело образца">
+                <SelectedBodyItem relevantResources={relevantResources} form={form} />
+            </Form.Item>
         </Form>
     );
 };
