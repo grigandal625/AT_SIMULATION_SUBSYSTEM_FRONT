@@ -5,23 +5,23 @@ export const loadResourceTypes = createAsyncThunk("resourceTypes/load", async (m
     const mockResourceTypes = [
         {
             id: 1,
-            name: "Type 1",
+            name: "Type_1",
             type: true,
             model_id: 1,
             attributes: [
-                { id: 1, name: "Attribute 1", type: 1, default_value: 0, resource_type_id: 1 },
-                { id: 2, name: "Attribute 2", type: 2, default_value: "Attribute Value 2", resource_type_id: 1 },
+                { id: 1, name: "Attribute_1", type: 1, default_value: 0, resource_type_id: 1 },
+                { id: 2, name: "Attribute_2", type: 2, default_value: "Attribute Value 2", resource_type_id: 1 },
                 // Add more attributes here
             ],
         },
         {
             id: 2,
-            name: "Type 2",
+            name: "Type_2",
             type: true,
             model_id: 1,
             attributes: [
-                { id: 3, name: "Attribute 3", type: 1, default_value: 5, resource_type_id: 2 },
-                { id: 4, name: "Attribute 4", type: 2, default_value: "Attribute Value 4", resource_type_id: 2 },
+                { id: 3, name: "Attribute_3", type: 1, default_value: 5, resource_type_id: 2 },
+                { id: 4, name: "Attribute_4", type: 2, default_value: "Attribute Value 4", resource_type_id: 2 },
                 // Add more attributes here
             ],
         },

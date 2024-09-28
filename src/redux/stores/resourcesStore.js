@@ -5,25 +5,25 @@ export const loadResources = createAsyncThunk("resources/load", async (modelId) 
     const mockResources = [
         {
             id: 1,
-            name: "Resource 1",
+            name: "Resource_1",
             to_be_traced: true,
             model_id: 1,
             resource_type_id: 1,
             attributes: [
-                { id: 1, name: "Attribute 1", value: "Attribute Value 1", resource_id: 1, rta_id: 1 },
-                { id: 2, name: "Attribute 2", value: "Attribute Value 2", resource_id: 1, rta_id: 2 },
+                { id: 1, name: "Attribute_1", value: "Attribute Value 1", resource_id: 1, rta_id: 1 },
+                { id: 2, name: "Attribute_2", value: "Attribute Value 2", resource_id: 1, rta_id: 2 },
                 // Add more attributes here
             ],
         },
         {
             id: 2,
-            name: "Resource 2",
+            name: "Resource_2",
             to_be_traced: true,
             model_id: 1,
             resource_type_id: 2,
             attributes: [
-                { id: 3, name: "Attribute 3", value: "Attribute Value 3", resource_id: 2, rta_id: 3 },
-                { id: 4, name: "Attribute 4", value: "Attribute Value 4", resource_id: 2, rta_id: 4 },
+                { id: 3, name: "Attribute_3", value: "Attribute Value 3", resource_id: 2, rta_id: 3 },
+                { id: 4, name: "Attribute_4", value: "Attribute Value 4", resource_id: 2, rta_id: 4 },
                 // Add more attributes here
             ],
         },

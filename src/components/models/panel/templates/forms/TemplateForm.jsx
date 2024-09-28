@@ -1,125 +1,8 @@
-import { Button, Card, Col, Form, Input, InputNumber, Row, Select, Space, Typography, theme } from "antd";
-import { useEffect, useState } from "react";
-import MonacoEditor from "@uiw/react-monacoeditor";
-import {languages} from "monaco-editor"
+import { Button, Col, Form, Input, Row, Select, Space, Typography, theme } from "antd";
 import TinyFormItem from "../../../../../utils/TinyFormItem";
 import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
-
-
-const isValidGoIdentifier = (name) => {
-    return /^[a-zA-Z_]\w*$/.test(name);
-};
-
-const CodeEditorField = ({ value, onChange, onCodeChanged, relevantResources, ...props }) => {
-    const [code, setCode] = useState(value);
-    useEffect(() => {
-        setCode(value);
-    }, []);
-
-    useEffect(() => {
-        try {
-            onChange(code);
-            onCodeChanged(code);
-        } catch (e) {}
-    }, [code]);
-
-    return <MonacoEditor onChange={setCode} {...props} />;
-};
-
-const IrregularEventBody = ({ form, relevantResources }) => {
-    const {
-        token: { colorInfoBg },
-    } = theme.useToken();
-    const options = [
-        { value: "normal", label: "Нормальное распределение" },
-        { value: "precise", label: "Точное число" },
-        { value: "random", label: "Случайное число" },
-        { value: "uniform", label: "Равномерное распределение" },
-        { value: "exponential", label: "Экспоненциальное распределение" },
-        { value: "gaussian", label: "Распределение Гаусса" },
-        { value: "poisson", label: "Распределение Пуассона" },
-    ];
-
-    const [code, setCode] = useState();
-
-    const [selectedGeneratorType, setSelectedGeneratorType] = useState();
-
-    useEffect(() => {
-        if (selectedGeneratorType === "precise") {
-            form.setFieldValue(["body", "dispersion"], 0);
-        }
-    }, [selectedGeneratorType]);
-
-    const codeEditorOptions = {
-        selectOnLineNumbers: true,
-        roundedSelection: false,
-        readOnly: false,
-        cursorStyle: "line",
-        automaticLayout: false,
-        theme: "atsym",
-        scrollbar: {
-            useShadows: true,
-            verticalHasArrows: true,
-            horizontalHasArrows: true,
-            vertical: "visible",
-            horizontal: "visible",
-            verticalScrollbarSize: 17,
-            horizontalScrollbarSize: 17,
-            arrowSize: 30,
-        },
-        suggest: {
-            showFields: false,
-            showFunctions: false,
-        },
-    };
-
-    return (
-        <Row gutter={5}>
-            <Col>
-                <Card title="Параметры генератора события">
-                    <Form.Item label="Тип генератора" name={["body", "type"]}>
-                        <Select options={options} onSelect={(value) => setSelectedGeneratorType(value)} />
-                    </Form.Item>
-                    <Form.Item label="Мат. ожидание" name={["body", "value"]}>
-                        <InputNumber style={{ width: "100%" }} placeholder="Укажите мат. ожидание" />
-                    </Form.Item>
-                    <Form.Item label="Дисперсия" name={["body", "dispersion"]}>
-                        <InputNumber style={{ width: "100%" }} disabled={selectedGeneratorType === "precise"} placeholder="Диперсию" />
-                    </Form.Item>
-                </Card>
-            </Col>
-            <Col flex="auto">
-                <Card title="Тело нерегулярного события">
-                    <Form.Item name={["body", "text"]}>
-                        <CodeEditorField
-                            language="go"
-                            relevantResources={relevantResources}
-                            options={codeEditorOptions}
-                            style={{ backgroundColor: colorInfoBg }}
-                            height="250px"
-           
-                            onCodeChanged={setCode}
-                            autoComplete={(model, position) => {
-                                let originalSuggestions = languages.ge
-
-                                const filteredResources = relevantResources.filter((resource) => resource?.name && isValidGoIdentifier(resource.name));
-
-                                const suggestions = filteredResources.map((resource) => ({
-                                    label: resource.name,
-                                    kind: languages.CompletionItemKind.Class,
-                                    insertText: resource.name,
-                                    detail: "Релевантный ресурс",
-                                }));
-
-                                return [...originalSuggestions, ...suggestions];
-                            }}
-                        />
-                    </Form.Item>
-                </Card>
-            </Col>
-        </Row>
-    );
-};
+import IrregularEventBody from "./body/IrregularEventBody";
+import { useState } from "react";
 
 const RelevantResourcesList = ({ fields, add, remove, resourceTypes, relevantResources, setRelevantResources }) => {
     const {
@@ -232,7 +115,7 @@ export default ({ form, resourceTypes, ...formProps }) => {
                 </Form.List>
             </Form.Item>
             <Form.Item label="Тело образца">
-                <SelectedBodyItem relevantResources={relevantResources} form={form} />
+                <SelectedBodyItem relevantResources={relevantResources} form={form} resourceTypes={resourceTypes} />
             </Form.Item>
         </Form>
     );
