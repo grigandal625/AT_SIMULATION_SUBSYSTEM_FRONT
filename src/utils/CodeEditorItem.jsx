@@ -1,15 +1,17 @@
 import MonacoEditor from "@uiw/react-monacoeditor";
 import { useState, useEffect } from "react";
 
-
-export const defaultEditorBackground = "#e9e9ff"
+export const defaultEditorBackground = "#e9e9ff";
+export const defaultEditorSidersBackground = "#d8d8ed";
 export const defaultEditorDidMount = (_, monaco) => {
-    monaco.editor.defineTheme("atsym", {
+    monaco.editor.defineTheme("at-sym", {
         base: "vs",
         inherit: true,
         rules: [],
         colors: {
             "editor.background": defaultEditorBackground,
+            "scrollbarSlider.background": defaultEditorSidersBackground,
+            "editorGutter.background": defaultEditorSidersBackground,
         },
     });
 };
@@ -20,7 +22,7 @@ export const defaultEditorOptions = {
     readOnly: false,
     cursorStyle: "line",
     automaticLayout: false,
-    theme: "atsym",
+    theme: "at-sym",
     scrollbar: {
         useShadows: true,
         verticalHasArrows: true,
@@ -46,6 +48,8 @@ const CodeEditorItem = ({ value, onChange, onCodeChanged, relevantResources, ...
     useEffect(() => {
         try {
             onChange(code);
+        } catch (e) {}
+        try {
             onCodeChanged(code);
         } catch (e) {}
     }, [code]);
