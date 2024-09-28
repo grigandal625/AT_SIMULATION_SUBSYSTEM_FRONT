@@ -11,6 +11,20 @@ const RelevantResourcesList = ({ fields, add, remove, resourceTypes, relevantRes
         token: { borderRadius, colorInfoBg },
     } = theme.useToken();
 
+    const onResourceNameChanged = (i) => (e) =>
+        setRelevantResources(
+            relevantResources.map((relevantResource, index) =>
+                i === index ? { ...relevantResource, name: e.target.value } : relevantResource
+            )
+        );
+
+    const onResourceTypeChanged = (i) => (type) =>
+        setRelevantResources(
+            relevantResources.map((relevantResource, index) =>
+                i === index ? { ...relevantResource, type } : relevantResource
+            )
+        );
+
     return (
         <Space wrap={true}>
             {fields.map((field, i) => (
@@ -18,19 +32,7 @@ const RelevantResourcesList = ({ fields, add, remove, resourceTypes, relevantRes
                     <Row wrap align="middle" gutter={5}>
                         <Col>
                             <TinyFormItem {...field} name={[i, "name"]}>
-                                <Input
-                                    size="small"
-                                    placeholder="Имя ресурса"
-                                    onChange={(e) =>
-                                        setRelevantResources(
-                                            relevantResources.map((relevantResource, index) =>
-                                                i === index
-                                                    ? { ...relevantResource, name: e.target.value }
-                                                    : relevantResource
-                                            )
-                                        )
-                                    }
-                                />
+                                <Input size="small" placeholder="Имя ресурса" onChange={onResourceNameChanged(i)} />
                             </TinyFormItem>
                         </Col>
                         <Col>
@@ -42,13 +44,7 @@ const RelevantResourcesList = ({ fields, add, remove, resourceTypes, relevantRes
                                         label: resourceType.name,
                                     }))}
                                     placeholder="Тип ресурса"
-                                    onSelect={(type) =>
-                                        setRelevantResources(
-                                            relevantResources.map((relevantResource, index) =>
-                                                i === index ? { ...relevantResource, type } : relevantResource
-                                            )
-                                        )
-                                    }
+                                    onSelect={onResourceTypeChanged(i)}
                                 />
                             </TinyFormItem>
                         </Col>
@@ -134,7 +130,12 @@ export default ({ form, resourceTypes, ...formProps }) => {
                 </Form.List>
             </Form.Item>
             <Typography.Title level={5}>Тело образца</Typography.Title>
-            <SelectedBodyItem relevantResources={relevantResources} form={form} resourceTypes={resourceTypes} selectedType={selectedType}/>
+            <SelectedBodyItem
+                relevantResources={relevantResources}
+                form={form}
+                resourceTypes={resourceTypes}
+                selectedType={selectedType}
+            />
         </Form>
     );
 };
