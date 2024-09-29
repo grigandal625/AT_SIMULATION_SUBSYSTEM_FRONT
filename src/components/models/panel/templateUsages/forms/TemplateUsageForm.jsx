@@ -1,0 +1,78 @@
+import { EditOutlined } from "@ant-design/icons";
+import { Col, Form, Input, Row, Select, Button, Empty } from "antd";
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import ResourcesFormList from "./resources/ResourcesList";
+
+const TemplateSelect = ({ value, onChange, templates, onSelect, modelId }) => {
+    const template = templates ? templates.find((t) => t.meta.id === value) : undefined;
+    return (
+        <Row>
+            <Col flex="auto">
+                <Select
+                    value={value}
+                    onChange={onChange}
+                    placeholder="Выберите образец"
+                    options={templates.map((template) => ({
+                        key: template.meta.id.toString(),
+                        label: template.meta.name,
+                        value: template.meta.id,
+                    }))}
+                    onSelect={onSelect}
+                />
+            </Col>
+            <Col>
+                <Link to={`/models/${modelId}/templates/${value}/edit`}>
+                    <Button disabled={!template} icon={<EditOutlined />} type="link">
+                        Редактировать
+                    </Button>
+                </Link>
+            </Col>
+        </Row>
+    );
+};
+
+export default ({ form, resources, templates, modelId, ...formProps }) => {
+    const [actualForm] = form ? [form] : Form.useForm();
+    const [selectedTemplate, setSelectedTemplate] = useState(actualForm.getFieldValue("template_id"));
+
+    const template = templates.find((tpl) => tpl.meta.id === selectedTemplate);
+
+    useEffect(() => {
+        if (template && template.meta.rel_resources) {
+            actualForm.setFieldValue(
+                "arguments",
+                template.meta.rel_resources.map((rel_resource) => ({ relevant_resource_id: rel_resource.id }))
+            );
+        }
+    }, [templates, template]);
+
+    return (
+        <Form form={actualForm} {...formProps}>
+            <Form.Item name="id" hidden />
+            <Form.Item name="model_id" hidden />
+            <Form.Item name="name" label="Имя операции" rules={[{ required: true, message: "Укажите имя операции" }]}>
+                <Input placeholder="Укажите имя операции" />
+            </Form.Item>
+            <Form.Item name="template_id" label="Образец" rules={[{ required: true, message: "Выберите образец" }]}>
+                <TemplateSelect templates={templates} modelId={modelId} onSelect={setSelectedTemplate} />
+            </Form.Item>
+            <Form.Item label="Релевантные ресурсы">
+                {selectedTemplate ? (
+                    <Form.List name="arguments">
+                        {(fields) => (
+                            <ResourcesFormList
+                                modelId={modelId}
+                                fields={fields}
+                                template={template}
+                                resources={resources}
+                            />
+                        )}
+                    </Form.List>
+                ) : (
+                    <Empty description="Выберите образец операции" />
+                )}
+            </Form.Item>
+        </Form>
+    );
+};

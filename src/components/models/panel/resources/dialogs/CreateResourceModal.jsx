@@ -21,6 +21,19 @@ export default ({ open, ...modalProps }) => {
     form.setFieldValue("model_id", params.modelId);
     form.setFieldValue("to_be_traced", true);
 
+    const handleCreate = async () => {
+        try {
+            const data = await form.validateFields();
+            const action = await dispatch(
+                createResource({ modelId: params.modelId, resource: data })
+            );
+            const resource = action.payload;
+            navigate(`/models/${params.modelId}/resources/${resource.id}`);
+        } catch (e) {
+            console.error("Form validation failed:", e);
+        }
+    }
+
     return (
         <Modal
             width={1300}
@@ -32,18 +45,7 @@ export default ({ open, ...modalProps }) => {
                     <Button
                         type="primary"
                         icon={<PlusOutlined />}
-                        onClick={async () => {
-                            try {
-                                const data = await form.validateFields();
-                                const action = await dispatch(
-                                    createResource({ modelId: params.modelId, resource: data })
-                                );
-                                const resource = action.payload;
-                                navigate(`/models/${params.modelId}/resources/${resource.id}`);
-                            } catch (e) {
-                                console.error("Form validation failed:", e);
-                            }
-                        }}
+                        onClick={handleCreate}
                     >
                         Создать
                     </Button>
@@ -54,7 +56,7 @@ export default ({ open, ...modalProps }) => {
             }
             {...modalProps}
         >
-            <ResourceForm form={form} resourceTypes={resourceTypes.data} layout="vertical" />
+            <ResourceForm form={form} resourceTypes={resourceTypes.data} modelId={params.modelId} layout="vertical" />
         </Modal>
     );
 };

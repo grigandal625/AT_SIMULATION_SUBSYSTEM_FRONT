@@ -1,59 +1,131 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { LOAD_STATUSES } from "../../GLOBAL";
+import { API_HOST, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
 
 export const loadResourceTypes = createAsyncThunk("resourceTypes/load", async (modelId) => {
-    const mockResourceTypes = [
-        {
-            id: 1,
-            name: "Type_1",
-            type: true,
-            model_id: 1,
-            attributes: [
-                { id: 1, name: "Attribute_1", type: 1, default_value: 0, resource_type_id: 1 },
-                { id: 2, name: "Attribute_2", type: 2, default_value: "Attribute Value 2", resource_type_id: 1 },
-                // Add more attributes here
-            ],
-        },
-        {
-            id: 2,
-            name: "Type_2",
-            type: true,
-            model_id: 1,
-            attributes: [
-                { id: 3, name: "Attribute_3", type: 1, default_value: 5, resource_type_id: 2 },
-                { id: 4, name: "Attribute_4", type: 2, default_value: "Attribute Value 4", resource_type_id: 2 },
-                // Add more attributes here
-            ],
-        },
-        // Add more resource types here
-    ];
+    const url = `${API_HOST}/api/editor/resources/types/`;
+    const headers = getHeaders({ "model-id": modelId });
+    // const response = await fetch(url, {
+    //     headers
+    // })
+    // const json = await response.json()
 
-    return mockResourceTypes;
+    const json = {
+        resource_types: [
+            {
+                name: "type1",
+                type: "constant",
+                attributes: [
+                    {
+                        id: 1,
+                        name: "attr1",
+                        type: "int",
+                        default_value: 5,
+                    },
+                    {
+                        id: 2,
+                        name: "attr2",
+                        type: "float",
+                        default_value: 5.0,
+                    },
+                    {
+                        id: 3,
+                        name: "attr3",
+                        type: "bool",
+                        default_value: true,
+                    },
+                    {
+                        id: 4,
+                        name: "attr4",
+                        type: "enum",
+                        enum_values_set: ["hello", "world"],
+                        default_value: "hello",
+                    },
+                ],
+                id: 1,
+            },
+            {
+                name: "type2",
+                type: "temporal",
+                attributes: [
+                    {
+                        id: 5,
+                        name: "attr1",
+                        type: "int",
+                        default_value: 5,
+                    },
+                    {
+                        id: 6,
+                        name: "attr2",
+                        type: "float",
+                        default_value: 5.0,
+                    },
+                    {
+                        id: 7,
+                        name: "attr3",
+                        type: "bool",
+                        default_value: true,
+                    },
+                    {
+                        id: 8,
+                        name: "attr4",
+                        type: "enum",
+                        enum_values_set: ["hello", "world"],
+                        default_value: "hello",
+                    },
+                ],
+                id: 2,
+            },
+        ],
+        total: 0,
+    };
+
+    return json.resource_types;
 });
 
-export const createResourceType = createAsyncThunk("resourceTypes/create", async ({modelId, resourceType}) => {
-    // Simulate creating a resource type
-    
-    // mocking
-    if (!resourceType.id) {
-        resourceType.id = Math.floor(Math.random() * 10000) + 1; // Generate random ID for new resource types
+export const createResourceType = createAsyncThunk("resourceTypes/create", async ({ modelId, resourceType }) => {
+    const url = `${API_HOST}/api/editor/resources/types/`;
+    const headers = getHeaders({ "model-id": modelId });
+    // const response = await fetch(url, {
+    //     method: "POST",
+    //     headers,
+    //     body: JSON.stringify(resourceType),
+    // });
+    // const json = await response.json();
+    const json = resourceType;
+
+    if (!json.id) {
+        json.id = Math.floor(Math.random() * 10000) + 1;
     }
-    resourceType.attributes = resourceType.attributes.map(attr => ({...attr, id: attr.id || Math.floor(Math.random() * 10000) + 1}))
-    return resourceType;
+    json.attributes = json.attributes.map((attr) => ({
+        id: attr.id || Math.floor(Math.random() * 10000) + 1,
+    }));
+    return json;
 });
 
-export const updateResourceType = createAsyncThunk("resourceTypes/update", async ({modelId, resourceType}) => {
-    // Simulate updating a resource type
+export const updateResourceType = createAsyncThunk("resourceTypes/update", async ({ modelId, resourceType }) => {
+    const url = `${API_HOST}/api/editor/resources/types/${resourceType.id}/`;
+    const headers = getHeaders({ "model-id": modelId });
+    // const response = await fetch(url, {
+    //     method: "PUT",
+    //     headers,
+    //     body: JSON.stringify(resourceType),
+    // });
+    // const json = await response.json();
+    const json = resourceType;
 
-    //mocking
-    resourceType.attributes = resourceType.attributes.map(attr => ({...attr, id: attr.id || Math.floor(Math.random() * 10000) + 1}))
-    return resourceType;
+    return json;
 });
 
-export const deleteResourceType = createAsyncThunk("resourceTypes/delete", async ({modelId, resourceTypeId}) => {
-    // Simulate deleting a resource type
-
-    return resourceTypeId;
+export const deleteResourceType = createAsyncThunk("resourceTypes/delete", async ({ modelId, resourceTypeId }) => {
+    const url = `${API_HOST}/api/editor/resources/types/${resourceTypeId}/`;
+    const headers = getHeaders({ "model-id": modelId });
+    // const response = await fetch(url, {
+    //     method: "DELETE",
+    //     headers,
+    // });
+    // const json = await response.json();
+    const json = { id: resourceTypeId };
+    return json.id;
 });
 
 const resourceTypesSlice = createSlice({
@@ -87,7 +159,7 @@ const resourceTypesSlice = createSlice({
             })
             .addCase(updateResourceType.fulfilled, (state, action) => {
                 state.status = LOAD_STATUSES.SUCCESS;
-                const index = state.data.findIndex((rt) => rt.id === action.payload.id);
+                const index = state.data.findIndex((item) => item.id === action.payload.id);
                 if (index > -1) {
                     state.data[index] = action.payload;
                 }
@@ -97,7 +169,7 @@ const resourceTypesSlice = createSlice({
             })
             .addCase(deleteResourceType.fulfilled, (state, action) => {
                 state.status = LOAD_STATUSES.SUCCESS;
-                const index = state.data.findIndex((rt) => rt.id === action.payload);
+                const index = state.data.findIndex((item) => item.id === action.payload);
                 if (index > -1) {
                     state.data.splice(index, 1);
                 }

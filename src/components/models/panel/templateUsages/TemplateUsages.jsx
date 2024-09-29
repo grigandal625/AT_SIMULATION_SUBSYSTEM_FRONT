@@ -1,31 +1,31 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useMatches, useNavigate, useParams } from "react-router-dom";
-import { deleteTemplate, loadTemplates } from "../../../../redux/stores/templatesStore";
+import { deleteTemplateUsage, loadTemplateUsages } from "../../../../redux/stores/templateUsagesStore";
 import { LOAD_STATUSES } from "../../../../GLOBAL";
 import { Button, Col, Dropdown, Menu, Modal, Row, Skeleton } from "antd";
 import { EditOutlined, PlusOutlined, CopyOutlined, DeleteOutlined, DashOutlined } from "@ant-design/icons";
 
 import "../PanelMenu.css";
-import CreateTemplateModal from "./dialogs/CreateTemplateModal";
-import EditTemplateModal from "./dialogs/EditTemplateModal";
+import CreateTemplateUsageModal from "./dialogs/CreateTemplateUsageModal";
+import EditTemplateUsageModal from "./dialogs/EditTemplateUsageModal";
 
 export default () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [modal, contextHandler] = Modal.useModal();
 
-    const templates = useSelector((state) => state.templates);
+    const templateUsages = useSelector((state) => state.templateUsages);
     const params = useParams();
     const matches = useMatches();
-    const createOpen = Boolean(matches.find((match) => /models\/\d+\/templates\/new/g.test(match.pathname)));
-    const editOpen = Boolean(matches.find((match) => /models\/\d+\/templates\/\d+\/edit/g.test(match.pathname)));
+    const createOpen = Boolean(matches.find((match) => /models\/\d+\/template-usages\/new/g.test(match.pathname)));
+    const editOpen = Boolean(matches.find((match) => /models\/\d+\/template-usages\/\d+\/edit/g.test(match.pathname)));
 
     useEffect(() => {
-        dispatch(loadTemplates(params.modelId));
+        dispatch(loadTemplateUsages(params.modelId));
     }, []);
 
-    const dropDownItems = (template) => [
+    const dropDownItems = (templateUsage) => [
         {
             key: "edit",
             label: "Редактировать",
@@ -44,59 +44,62 @@ export default () => {
         },
     ];
 
-    const handleEditTemplate = (template) => navigate(`/models/${params.modelId}/templates/${template.meta.id}/edit`);
+    const handleEditTemplateUsage = (templateUsage) =>
+        navigate(`/models/${params.modelId}/template-usages/${templateUsage.id}/edit`);
 
-    const handleDuplicateTemplate = async (template) => {
-        // duplicate template
-        // dispatch(duplicateTemplate({modelId: params.modelId, templateId: template.meta.id}));
+    const handleDuplicateTemplateUsage = async (templateUsage) => {
+        // duplicate templateUsage
+        // dispatch(duplicateTemplateUsage({modelId: params.modelId, templateUsageId: templateUsage.id}));
     };
 
-    const handleDeleteTemplate = async (template) => {
-        // delete template
-        await dispatch(deleteTemplate({ modelId: params.modelId, templateId: template.meta.id }));
-        navigate(`/models/${params.modelId}/templates`);
+    const handleDeleteTemplateUsage = async (templateUsage) => {
+        // delete templateUsage
+        await dispatch(deleteTemplateUsage({ modelId: params.modelId, templateUsageId: templateUsage.id }));
+        navigate(`/models/${params.modelId}/template-usages`);
     };
 
-    const confirmDeleteTemplate = (template) => {
+    const confirmDeleteTemplateUsage = (templateUsage) => {
         modal.confirm({
-            title: "Удаление образца операции",
+            title: "Удаление операции",
             content: (
                 <>
-                    Вы уверены, что хотите удалить образец операции <b>{template.meta.name}?</b>
+                    Вы уверены, что хотите удалить операцию <b>{templateUsage.name}?</b>
                 </>
             ),
             okText: "Удалить",
             cancelText: "Отмена",
             icon: <DeleteOutlined />,
-            onOk: () => handleDeleteTemplate(template),
+            onOk: () => handleDeleteTemplateUsage(templateUsage),
         });
     };
 
     const options = {
-        edit: handleEditTemplate,
-        duplicate: handleDuplicateTemplate,
-        delete: confirmDeleteTemplate,
+        edit: handleEditTemplateUsage,
+        duplicate: handleDuplicateTemplateUsage,
+        delete: confirmDeleteTemplateUsage,
     };
 
-    return templates.status === LOAD_STATUSES.SUCCESS ? (
+    return templateUsages.status === LOAD_STATUSES.SUCCESS ? (
         <div>
             <div className="model-item-menu">
                 <Menu
-                    selectedKeys={[params.templateId]}
-                    items={templates.data.map((template) => {
+                    selectedKeys={[params.templateUsageId]}
+                    items={templateUsages.data.map((templateUsage) => {
                         return {
-                            key: template.meta.id.toString(),
+                            key: templateUsage.id.toString(),
                             label: (
                                 <Row style={{ width: "100%" }} gutter={10}>
                                     <Col flex="auto">
-                                        <Link to={`/models/${params.modelId}/templates/${template.meta.id}`}>{template.meta.name}</Link>
+                                        <Link to={`/models/${params.modelId}/template-usages/${templateUsage.id}`}>
+                                            {templateUsage.name}
+                                        </Link>
                                     </Col>
                                     <Col>
                                         <Dropdown
                                             trigger={["click"]}
                                             menu={{
-                                                items: dropDownItems(template),
-                                                onClick: ({ key }) => options[key](template),
+                                                items: dropDownItems(templateUsage),
+                                                onClick: ({ key }) => options[key](templateUsage),
                                             }}
                                         >
                                             <Button size="small" icon={<DashOutlined />} />
@@ -108,13 +111,13 @@ export default () => {
                     })}
                 />
             </div>
-            <Link to={`/models/${params.modelId}/templates/new`}>
+            <Link to={`/models/${params.modelId}/template-usages/new`}>
                 <Button type="primary" style={{ width: "100%" }} icon={<PlusOutlined />}>
                     Создать образец операции
                 </Button>
             </Link>
-            {createOpen ? <CreateTemplateModal open={createOpen} /> : <></>}
-            {editOpen ? <EditTemplateModal open={editOpen} /> : <></>}
+            {createOpen ? <CreateTemplateUsageModal open={createOpen} /> : <></>}
+            {editOpen ? <EditTemplateUsageModal open={editOpen} /> : <></>}
             {contextHandler}
         </div>
     ) : (

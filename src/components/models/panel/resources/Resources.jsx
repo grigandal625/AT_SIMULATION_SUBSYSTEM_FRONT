@@ -88,7 +88,7 @@ export default () => {
                         return {
                             key: resource.id.toString(),
                             label: (
-                                <Row gutter={10}>
+                                <Row style={{ width: "100%" }} gutter={10}>
                                     <Col flex="auto">
                                         <Link to={`/models/${params.modelId}/resources/${resource.id}`}>
                                             {resource.name}
@@ -116,8 +116,8 @@ export default () => {
                     Создать ресурс
                 </Button>
             </Link>
-            <CreateResourceModal open={createOpen} />
-            <EditResourceModal open={editOpen} />
+            {createOpen ? <CreateResourceModal open={createOpen} /> : <></>}
+            {editOpen ? <EditResourceModal open={editOpen} /> : <></>}
             {contextHandler}
         </div>
     ) : (

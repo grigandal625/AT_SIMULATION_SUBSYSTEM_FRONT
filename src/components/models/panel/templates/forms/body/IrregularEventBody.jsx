@@ -61,21 +61,20 @@ export default ({ form, relevantResources, resourceTypes, selectedType }) => {
         ],
     };
 
-    const textItem = {
-        key: "text",
+    const bodyItem = {
+        key: "body",
         label: "Действия (тело события)",
-        children: [
-            <TinyFormItem name={["body", "text"]}>
+        children: (
+            <TinyFormItem name={["body", "body"]}>
                 <CodeEditorItem
                     language="go"
-                    relevantResources={relevantResources}
                     options={codeEditorOptions}
                     height="258px"
                     autoComplete={autoComplete}
                     editorDidMount={editorDidMount}
                 />
-            </TinyFormItem>,
-        ],
+            </TinyFormItem>
+        ),
     };
 
     return (
@@ -84,7 +83,7 @@ export default ({ form, relevantResources, resourceTypes, selectedType }) => {
                 <Collapse size="small" defaultActiveKey="generator" items={[generatorItem]} />
             </Col>
             <Col flex="auto">
-                <Collapse size="small" defaultActiveKey="text" items={[textItem]} />
+                <Collapse size="small" defaultActiveKey="body" items={[bodyItem]} />
             </Col>
         </Row>
     );

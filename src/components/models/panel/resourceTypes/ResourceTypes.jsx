@@ -88,7 +88,7 @@ export default () => {
                         return {
                             key: resourceType.id.toString(),
                             label: (
-                                <Row gutter={10}>
+                                <Row style={{ width: "100%" }} gutter={10}>
                                     <Col flex="auto">
                                         <Link to={`/models/${params.modelId}/resource-types/${resourceType.id}`}>
                                             {resourceType.name}
@@ -116,8 +116,8 @@ export default () => {
                     Создать тип ресурса
                 </Button>
             </Link>
-            <CreateResourceTypeModal open={createOpen} />
-            <EditResourceTypeModal open={editOpen} />
+            {createOpen ? <CreateResourceTypeModal open={createOpen} /> : <></>}
+            {editOpen ? <EditResourceTypeModal open={editOpen} /> : <></>}
             {contextHandler}
         </div>
     ) : (

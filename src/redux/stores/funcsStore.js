@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { API_HOST, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
 
-export const loadTemplateUsages = createAsyncThunk("templateUsages/load", async (modelId) => {
-    const url = `${API_HOST}/api/editor/templates/usages/`;
+export const loadFuncs = createAsyncThunk("funcs/load", async (modelId) => {
+    const url = `${API_HOST}/api/editor/functions/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     headers
@@ -10,35 +10,34 @@ export const loadTemplateUsages = createAsyncThunk("templateUsages/load", async 
     // const json = await response.json()
 
     const json = {
-        usages: [
+        functions: [
             {
-                id: 1,
-                name: "usage1",
-                template_id: 1,
-                arguments: [
+                name: "square",
+                ret_type: "float",
+                body: "return x*x",
+                params: [
                     {
-                        id: 1,
-                        relevant_resource_id: 1,
-                        resource_id: 1,
+                        name: "x",
+                        type: "float",
                     },
                 ],
             },
         ],
         total: 0,
     };
-    return json.usages;
+    return json.functions;
 });
 
-export const createTemplateUsage = createAsyncThunk("templateUsages/create", async ({ modelId, templateUsage }) => {
-    const url = `${API_HOST}/api/editor/templates/usages/`;
+export const createFunc = createAsyncThunk("funcs/create", async ({ modelId, func }) => {
+    const url = `${API_HOST}/api/editor/functions/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "POST",
     //     headers,
-    //     body: JSON.stringify(templateUsage),
+    //     body: JSON.stringify(func),
     // });
     // const json = await response.json();
-    const json = templateUsage;
+    const json = func;
 
     if (!json.id) {
         json.id = Math.floor(Math.random() * 10000) + 1;
@@ -46,35 +45,33 @@ export const createTemplateUsage = createAsyncThunk("templateUsages/create", asy
     return json;
 });
 
-export const updateTemplateUsage = createAsyncThunk("templateUsages/update", async ({ modelId, templateUsage }) => {
-    const url = `${API_HOST}/api/editor/templates/usages/${templateUsage.id}/`;
+export const updateFunc = createAsyncThunk("funcs/update", async ({ modelId, func }) => {
+    const url = `${API_HOST}/api/editor/functions/${func.id}/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "PUT",
     //     headers,
-    //     body: JSON.stringify(templateUsage),
+    //     body: JSON.stringify(func),
     // });
     // const json = await response.json();
-    const json = templateUsage;
-
+    const json = func;
     return json;
 });
 
-export const deleteTemplateUsage = createAsyncThunk("templateUsages/delete", async ({ modelId, templateUsageId }) => {
-    const url = `${API_HOST}/api/editor/templates/usages/${templateUsageId}/`;
+export const deleteFunc = createAsyncThunk("funcs/delete", async ({ modelId, funcId }) => {
+    const url = `${API_HOST}/api/editor/functions/${funcId}/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "DELETE",
     //     headers,
     // });
     // const json = await response.json();
-    const json = { id: templateUsageId };
-
+    const json = { id: funcId };
     return json.id;
 });
 
-const templateUsagesSlice = createSlice({
-    name: "templateUsages",
+const funcsSlice = createSlice({
+    name: "funcs", // functions
     initialState: {
         data: [],
         status: LOAD_STATUSES.IDLE,
@@ -85,34 +82,34 @@ const templateUsagesSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(loadTemplateUsages.pending, (state) => {
+            .addCase(loadFuncs.pending, (state) => {
                 state.status = LOAD_STATUSES.LOADING;
             })
-            .addCase(loadTemplateUsages.fulfilled, (state, action) => {
+            .addCase(loadFuncs.fulfilled, (state, action) => {
                 state.status = LOAD_STATUSES.SUCCESS;
                 state.data = action.payload;
             })
-            .addCase(createTemplateUsage.pending, (state) => {
+            .addCase(createFunc.pending, (state) => {
                 state.status = LOAD_STATUSES.LOADING;
             })
-            .addCase(createTemplateUsage.fulfilled, (state, action) => {
+            .addCase(createFunc.fulfilled, (state, action) => {
                 state.status = LOAD_STATUSES.SUCCESS;
                 state.data.push(action.payload);
             })
-            .addCase(updateTemplateUsage.pending, (state) => {
+            .addCase(updateFunc.pending, (state) => {
                 state.status = LOAD_STATUSES.LOADING;
             })
-            .addCase(updateTemplateUsage.fulfilled, (state, action) => {
+            .addCase(updateFunc.fulfilled, (state, action) => {
                 state.status = LOAD_STATUSES.SUCCESS;
                 const index = state.data.findIndex((item) => item.id === action.payload.id);
                 if (index > -1) {
                     state.data[index] = action.payload;
                 }
             })
-            .addCase(deleteTemplateUsage.pending, (state) => {
+            .addCase(deleteFunc.pending, (state) => {
                 state.status = LOAD_STATUSES.LOADING;
             })
-            .addCase(deleteTemplateUsage.fulfilled, (state, action) => {
+            .addCase(deleteFunc.fulfilled, (state, action) => {
                 state.status = LOAD_STATUSES.SUCCESS;
                 const index = state.data.findIndex((item) => item.id === action.payload);
                 if (index > -1) {
@@ -122,4 +119,4 @@ const templateUsagesSlice = createSlice({
     },
 });
 
-export default templateUsagesSlice.reducer;
+export default funcsSlice.reducer;

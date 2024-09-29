@@ -1,15 +1,26 @@
-import { Button, Col, Form, Input, Row, Select, Space, Typography, theme } from "antd";
+import { Button, Col, Form, Input, InputNumber, Row, Select, Space, Typography, theme } from "antd";
 import TinyFormItem from "../../../../../utils/TinyFormItem";
-import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
+import { CloseOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import IrregularEventBody from "./body/IrregularEventBody";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import OperationBody from "./body/OperationBody";
 import RuleBody from "./body/RuleBody";
+import { Link, useNavigate } from "react-router-dom";
 
-const RelevantResourcesList = ({ fields, add, remove, resourceTypes, relevantResources, setRelevantResources }) => {
+const RelevantResourcesList = ({
+    fields,
+    add,
+    remove,
+    resourceTypes,
+    relevantResources,
+    setRelevantResources,
+    modelId,
+}) => {
     const {
         token: { borderRadius, colorInfoBg },
     } = theme.useToken();
+
+    const navigate = useNavigate();
 
     const onResourceNameChanged = (i) => (e) =>
         setRelevantResources(
@@ -49,6 +60,16 @@ const RelevantResourcesList = ({ fields, add, remove, resourceTypes, relevantRes
                             </TinyFormItem>
                         </Col>
                         <Col>
+                            <Link to={`/models/${modelId}/resource-types/${relevantResources[i]?.type}/edit`}>
+                                <Button
+                                    disabled={!relevantResources[i]?.type}
+                                    icon={<EyeOutlined />}
+                                    type="link"
+                                    size="small"
+                                />
+                            </Link>
+                        </Col>
+                        <Col>
                             <Button
                                 danger
                                 size="small"
@@ -74,15 +95,23 @@ const RelevantResourcesList = ({ fields, add, remove, resourceTypes, relevantRes
     );
 };
 
-export default ({ form, resourceTypes, ...formProps }) => {
+export default ({ form, resourceTypes, modelId, ...formProps }) => {
     const [actualForm] = form ? [form] : Form.useForm();
     const [selectedType, setSelectedType] = useState();
-    const [relevantResources, setRelevantResources] = useState([]);
+
+    const relResources = actualForm.getFieldValue(["meta", "rel_resources"]) || [];
+    const [relevantResources, setRelevantResources] = useState(
+        relResources.map((r) => ({ name: r?.name, type: r?.resource_type_id }))
+    );
+
+    useEffect(() => {
+        setSelectedType(actualForm.getFieldValue(["meta", "type"]));
+    }, [actualForm]);
 
     const bodyItems = {
-        1: IrregularEventBody,
-        2: OperationBody,
-        3: RuleBody,
+        irregular_event: IrregularEventBody,
+        operation: OperationBody,
+        rule: RuleBody,
     };
 
     const SelectedBodyItem = selectedType
@@ -91,6 +120,9 @@ export default ({ form, resourceTypes, ...formProps }) => {
 
     return (
         <Form form={actualForm} {...formProps}>
+            <Form.Item hidden name={["meta", "id"]}>
+                <InputNumber />
+            </Form.Item>
             <Row gutter={10}>
                 <Col flex={12}>
                     <Form.Item
@@ -105,9 +137,9 @@ export default ({ form, resourceTypes, ...formProps }) => {
                     <Form.Item label="Вид" name={["meta", "type"]} rules={[{ required: true, message: "Укажите вид" }]}>
                         <Select
                             options={[
-                                { value: 1, label: "Нерегулярное событие" },
-                                { value: 2, label: "Операция" },
-                                { value: 3, label: "Правило" },
+                                { value: "irregular_event", label: "Нерегулярное событие" },
+                                { value: "operation", label: "Операция" },
+                                { value: "rule", label: "Правило" },
                             ]}
                             onSelect={(value) => setSelectedType(value)}
                             placeholder="Выберите вид операции"
@@ -125,6 +157,7 @@ export default ({ form, resourceTypes, ...formProps }) => {
                             add={add}
                             remove={remove}
                             resourceTypes={resourceTypes}
+                            modelId={modelId}
                         />
                     )}
                 </Form.List>
@@ -132,7 +165,7 @@ export default ({ form, resourceTypes, ...formProps }) => {
             <Typography.Title level={5}>Тело образца</Typography.Title>
             <SelectedBodyItem
                 relevantResources={relevantResources}
-                form={form}
+                form={actualForm}
                 resourceTypes={resourceTypes}
                 selectedType={selectedType}
             />

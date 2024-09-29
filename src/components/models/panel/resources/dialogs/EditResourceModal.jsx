@@ -22,6 +22,18 @@ export default ({ open, ...modalProps }) => {
         dispatch(loadResourceTypes(params.modelId));
     }, []);
 
+    const handleEdit = async () => {
+        try {
+            const data = await form.validateFields();
+            console.log(data);
+            const action = await dispatch(updateResource({ modelId: params.modelId, resource: data }));
+            const updatedResource = action.payload;
+            navigate(`/models/${params.modelId}/resources/${updatedResource.id}`);
+        } catch (err) {
+            console.error("Form validation failed:", err);
+        }
+    };
+
     return (
         <Modal
             width={1300}
@@ -30,23 +42,7 @@ export default ({ open, ...modalProps }) => {
             onCancel={() => navigate(`/models/${params.modelId}/resources/${params.resourceId}`)}
             footer={
                 <Space>
-                    <Button
-                        type="primary"
-                        icon={<SaveOutlined />}
-                        onClick={async () => {
-                            try {
-                                const data = await form.validateFields();
-                                console.log(data);
-                                const action = await dispatch(
-                                    updateResource({ modelId: params.modelId, resource: data })
-                                );
-                                const updatedResource = action.payload;
-                                navigate(`/models/${params.modelId}/resources/${updatedResource.id}`);
-                            } catch (err) {
-                                console.error("Form validation failed:", err);
-                            }
-                        }}
-                    >
+                    <Button type="primary" icon={<SaveOutlined />} onClick={handleEdit}>
                         Сохранить
                     </Button>
                     <Link to={`/models/${params.modelId}/resources/${params.resourceId}`}>
@@ -56,7 +52,7 @@ export default ({ open, ...modalProps }) => {
             }
             {...modalProps}
         >
-            <ResourceForm resourceTypes={resourceTypes.data} form={form} layout="vertical" />
+            <ResourceForm resourceTypes={resourceTypes.data} form={form} modelId={params.modelId} layout="vertical" />
         </Modal>
     );
 };

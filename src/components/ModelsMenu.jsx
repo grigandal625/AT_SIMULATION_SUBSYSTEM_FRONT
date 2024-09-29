@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Col, Dropdown, Menu, Row, Skeleton, Space } from "antd";
-import { useParams, Link } from "react-router-dom";
+import { Button, Col, Dropdown, Menu, Row, Skeleton } from "antd";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { LOAD_STATUSES } from "../GLOBAL";
 import { useEffect } from "react";
 import { loadModels } from "../redux/stores/modelsStore";
@@ -20,6 +20,7 @@ export default () => {
     const models = useSelector((state) => state.models);
     const params = useParams();
     const currentModelId = params.modelId;
+    const navigate = useNavigate();
     const dropDownItems = (model) => [
         {
             label: "Экспортировать",
@@ -39,13 +40,11 @@ export default () => {
     const items = models?.data?.map((model) => ({
         key: model.id.toString(),
         label: (
-            <Row gutter={10}>
-                <Col flex="auto">
-                    <Link to={`/models/${model.id}`}>{model.name}</Link>
-                </Col>
+            <Row style={{ width: "100%" }} gutter={10}>
+                <Col flex="auto">{model.name}</Col>
                 <Col>
                     <Dropdown trigger={["click"]} menu={{ items: dropDownItems(model) }}>
-                        <Button size="small" icon={<DashOutlined />} />
+                        <Button size="small" icon={<DashOutlined />} onClick={(e) => e.stopPropagation()} />
                     </Dropdown>
                 </Col>
             </Row>
@@ -59,7 +58,12 @@ export default () => {
     return models.status === LOAD_STATUSES.SUCCESS ? (
         <div className="sider-model-menu-wrapper">
             <div>
-                <Menu className="sider-model-menu" selectedKeys={[currentModelId]} items={items} />
+                <Menu
+                    onClick={({ key }) => navigate(`/models/${key}`)}
+                    className="sider-model-menu"
+                    selectedKeys={[currentModelId]}
+                    items={items}
+                />
             </div>
             <div style={{ marginBottom: 10 }}>
                 <Button icon={<PlusOutlined />} style={{ width: "100%" }}>

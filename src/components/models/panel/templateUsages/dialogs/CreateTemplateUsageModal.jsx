@@ -1,21 +1,24 @@
 import { Button, Form, Modal, Space } from "antd";
-import TemplateForm from "../forms/TemplateForm";
+import TemplateUsageForm from "../forms/TemplateUsageForm";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { createTemplate } from "../../../../../redux/stores/templatesStore";
+import { createTemplateUsage } from "../../../../../redux/stores/templateUsagesStore";
 import { useEffect } from "react";
-import { loadResourceTypes } from "../../../../../redux/stores/resourceTypesStore";
+import { loadResources } from "../../../../../redux/stores/resourcesStore";
+import { loadTemplates } from "../../../../../redux/stores/templatesStore";
 
 export default ({ open, ...modalProps }) => {
     const params = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [form] = Form.useForm();
-    const resourceTypes = useSelector((store) => store.resourceTypes);
+    const resources = useSelector((store) => store.resources);
+    const templates = useSelector((store) => store.templates);
 
     useEffect(() => {
-        dispatch(loadResourceTypes(params.modelId));
+        dispatch(loadResources(params.modelId));
+        dispatch(loadTemplates(params.modelId));
     }, []);
 
     form.setFieldValue("model_id", params.modelId);
@@ -24,8 +27,8 @@ export default ({ open, ...modalProps }) => {
         <Modal
             width={1300}
             open={open}
-            title="Добавление нового образца операции"
-            onCancel={() => navigate(`/models/${params.modelId}/templates`)}
+            title="Добавление новой операции"
+            onCancel={() => navigate(`/models/${params.modelId}/template-usages`)}
             footer={
                 <Space>
                     <Button
@@ -35,10 +38,10 @@ export default ({ open, ...modalProps }) => {
                             try {
                                 const data = await form.validateFields();
                                 const action = await dispatch(
-                                    createTemplate({ modelId: params.modelId, template: data })
+                                    createTemplateUsage({ modelId: params.modelId, templateUsage: data })
                                 );
-                                const template = action.payload;
-                                navigate(`/models/${params.modelId}/templates/${template.meta.id}`);
+                                const templateUsage = action.payload;
+                                navigate(`/models/${params.modelId}/template-usages/${templateUsage.id}`);
                             } catch (e) {
                                 console.error("Form validation failed:", e);
                             }
@@ -46,14 +49,20 @@ export default ({ open, ...modalProps }) => {
                     >
                         Создать
                     </Button>
-                    <Link to={`/models/${params.modelId}/templates`}>
+                    <Link to={`/models/${params.modelId}/template-usages`}>
                         <Button>Отмена</Button>
                     </Link>
                 </Space>
             }
             {...modalProps}
         >
-            <TemplateForm modelId={params.modelId} form={form} resourceTypes={resourceTypes.data} layout="vertical" />
+            <TemplateUsageForm
+                modelId={params.modelId}
+                form={form}
+                resources={resources.data}
+                templates={templates.data}
+                layout="vertical"
+            />
         </Modal>
     );
 };

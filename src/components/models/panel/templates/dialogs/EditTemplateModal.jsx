@@ -14,7 +14,7 @@ export default ({ open, ...modalProps }) => {
     const [form] = Form.useForm();
 
     const templates = useSelector((store) => store.templates);
-    const template = templates.data.find((template) => template.id.toString() === params.templateId);
+    const template = templates.data.find((template) => template.meta.id.toString() === params.templateId);
     form.setFieldsValue(template);
 
     const resourceTypes = useSelector((store) => store.resourceTypes);
@@ -55,7 +55,7 @@ export default ({ open, ...modalProps }) => {
             }
             {...modalProps}
         >
-            <TemplateForm resourceTypes={resourceTypes.data} form={form} layout="vertical" />
+            <TemplateForm modelId={params.modelId} resourceTypes={resourceTypes.data} form={form} layout="vertical" />
         </Modal>
     );
 };

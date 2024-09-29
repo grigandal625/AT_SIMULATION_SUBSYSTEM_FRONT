@@ -23,7 +23,6 @@ export default ({ form, relevantResources, resourceTypes }) => {
             <TinyFormItem name={["body", "condition"]}>
                 <CodeEditorItem
                     language="go"
-                    relevantResources={relevantResources}
                     options={codeEditorOptions}
                     height="250px"
                     autoComplete={autoComplete}
@@ -40,7 +39,6 @@ export default ({ form, relevantResources, resourceTypes }) => {
             <TinyFormItem name={["body", "body"]}>
                 <CodeEditorItem
                     language="go"
-                    relevantResources={relevantResources}
                     options={codeEditorOptions}
                     height="250px"
                     // autoComplete={autoComplete}

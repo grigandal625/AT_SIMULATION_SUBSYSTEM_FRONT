@@ -4,6 +4,7 @@ import "./ModelPanel.css";
 import ResourceTypes from "./resourceTypes/ResourceTypes";
 import Resources from "./resources/Resources";
 import Templates from "./templates/Templates"
+import TemplateUsages from "./templateUsages/TemplateUsages";
 
 export default () => {
     const navigate = useNavigate();
@@ -42,7 +43,7 @@ export default () => {
                     {
                         key: "template-usages",
                         label: <div style={{ writingMode: "vertical-lr" }}>Операции</div>,
-                        children: "Операции",
+                        children: <TemplateUsages />,
                     },
                 ]}
             />

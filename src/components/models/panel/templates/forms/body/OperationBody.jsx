@@ -10,7 +10,7 @@ export default ({ form, relevantResources, resourceTypes }) => {
     const {
         token: { colorInfoBg },
     } = theme.useToken();
-    
+
     const editorDidMount = defaultEditorDidMount;
     const codeEditorOptions = defaultEditorOptions;
 
@@ -23,7 +23,6 @@ export default ({ form, relevantResources, resourceTypes }) => {
             <TinyFormItem name={["body", "condition"]}>
                 <CodeEditorItem
                     language="go"
-                    relevantResources={relevantResources}
                     options={codeEditorOptions}
                     height="75px"
                     autoComplete={autoComplete}
@@ -40,7 +39,6 @@ export default ({ form, relevantResources, resourceTypes }) => {
             <TinyFormItem name={["body", "body_before"]}>
                 <CodeEditorItem
                     language="go"
-                    relevantResources={relevantResources}
                     options={codeEditorOptions}
                     height="200px"
                     // autoComplete={autoComplete}
@@ -57,7 +55,6 @@ export default ({ form, relevantResources, resourceTypes }) => {
             <TinyFormItem name={["body", "body_after"]}>
                 <CodeEditorItem
                     language="go"
-                    relevantResources={relevantResources}
                     options={codeEditorOptions}
                     height="200px"
                     // autoComplete={autoComplete}

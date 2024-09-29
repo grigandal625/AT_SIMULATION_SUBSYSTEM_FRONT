@@ -39,11 +39,17 @@ export const defaultEditorOptions = {
     },
 };
 
-const CodeEditorItem = ({ value, onChange, onCodeChanged, relevantResources, ...props }) => {
+const CodeEditorItem = ({
+    value,
+    onChange,
+    onCodeChanged,
+    language,
+    options,
+    height,
+    autoComplete,
+    editorDidMount,
+}) => {
     const [code, setCode] = useState(value);
-    useEffect(() => {
-        setCode(value);
-    }, []);
 
     useEffect(() => {
         try {
@@ -54,7 +60,27 @@ const CodeEditorItem = ({ value, onChange, onCodeChanged, relevantResources, ...
         } catch (e) {}
     }, [code]);
 
-    return <MonacoEditor onChange={setCode} {...props} />;
+    const handleEditorDidMount = (editor, monaco) => {
+        if (value) {
+            setTimeout(() => editor.setValue(value), 500);
+        }
+        try {
+            return editorDidMount(editor, monaco);
+        } catch (e) {}
+    };
+
+    return (
+        <MonacoEditor
+            onChange={setCode}
+            language={language}
+            options={options}
+            height={height}
+            defaultValue={value}
+            autoComplete={autoComplete}
+            editorDidMount={handleEditorDidMount}
+            style={{ width: "100%" }}
+        />
+    );
 };
 
 export default CodeEditorItem;

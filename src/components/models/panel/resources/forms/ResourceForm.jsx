@@ -1,111 +1,11 @@
-import { EditOutlined, InfoCircleOutlined, MinusCircleOutlined, PlusOutlined, WarningFilled } from "@ant-design/icons";
-import {
-    Button,
-    Descriptions,
-    Empty,
-    Form,
-    Input,
-    InputNumber,
-    Popover,
-    Select,
-    Space,
-    Table,
-    Tag,
-    Row,
-    Col,
-    Tooltip,
-    theme,
-    Typography,
-    Spin,
-} from "antd";
-import TinyFormItem from "../../../../../utils/TinyFormItem";
+import { EditOutlined, WarningFilled } from "@ant-design/icons";
+import { Button, Empty, Form, Input, Select, Row, Col, Tooltip, theme } from "antd";
 import { useEffect, useState } from "react";
 import CheckboxItem from "../../../../../utils/CheckboxItem";
 import { Link } from "react-router-dom";
+import AttributesFormList from "./attributes/AttributesList";
 
-const typeLabels = { 1: "Численный", 2: "Символьный", 3: "Перечислимый" };
-
-const AttributeControl = ({ attribute, value, onChange }) => {
-    const controlsTypesMapping = {
-        1: {
-            component: InputNumber,
-            props: {
-                value,
-                onChange,
-                placeholder: "Введите числовое значение",
-                style: { width: "100%" },
-            },
-        },
-        2: {
-            component: Input,
-            props: {
-                value,
-                onChange,
-                placeholder: "Введите символьное значение",
-            },
-        },
-        3: {
-            component: Select,
-            props: {
-                value,
-                onChange,
-                options: (attribute && (attribute.options instanceof Array) ? attribute.options : []).map((value) => ({ value })),
-                style: { width: "100%" },
-                placeholder: "Выберите значение",
-            },
-        },
-    };
-    if (!attribute) {
-        return <Spin />
-    }
-    const ControlComponent = controlsTypesMapping[attribute.type].component;
-    const props = controlsTypesMapping[attribute.type].props;
-
-    return <ControlComponent {...props} />;
-};
-
-const AttributesFormList = ({ fields, form, resourceType }) => {
-    debugger;
-    return !fields.length ? (
-        <Empty description="Параметров не добавлено" />
-    ) : (
-        <div style={{ marginTop: 5 }}>
-            <Table
-                size="small"
-                dataSource={fields}
-                pagination={false}
-                columns={[
-                    {
-                        key: 1,
-                        title: "Имя параметра",
-                        render: (field, _, i) => <Typography.Text>{resourceType.attributes[i]?.name}</Typography.Text>,
-                    },
-                    {
-                        key: 2,
-                        title: "Тип параметра",
-                        render: (field, _, i) => (
-                            <>
-                                <Form.Item hidden name={[i, "rta_id"]} />
-                                <Tag>{typeLabels[resourceType.attributes[i]?.type]}</Tag>
-                            </>
-                        ),
-                    },
-                    {
-                        key: 3,
-                        title: "Значения по умолчанию",
-                        render: (field, _, i) => (
-                            <TinyFormItem name={[i, "value"]}>
-                                <AttributeControl attribute={resourceType.attributes[i]} />
-                            </TinyFormItem>
-                        ),
-                    },
-                ]}
-            />
-        </div>
-    );
-};
-
-const ResourceTypeSelect = ({ value, onChange, resourceTypes, onSelect }) => {
+const ResourceTypeSelect = ({ value, onChange, resourceTypes, onSelect, modelId }) => {
     const {
         token: { colorWarningText },
     } = theme.useToken();
@@ -129,13 +29,7 @@ const ResourceTypeSelect = ({ value, onChange, resourceTypes, onSelect }) => {
                 />
             </Col>
             <Col>
-                <Link
-                    to={
-                        resourceType?.model_id
-                            ? `/models/${resourceType.model_id}/resource-types/${value}/edit`
-                            : undefined
-                    }
-                >
+                <Link to={`/models/${modelId}/resource-types/${value}/edit`}>
                     <Button disabled={!resourceType} icon={<EditOutlined />} type="link">
                         Редактировать
                     </Button>
@@ -145,7 +39,7 @@ const ResourceTypeSelect = ({ value, onChange, resourceTypes, onSelect }) => {
     );
 };
 
-export default ({ form, resourceTypes, ...formProps }) => {
+export default ({ form, resourceTypes, modelId, ...formProps }) => {
     const [actualForm] = form ? [form] : Form.useForm();
 
     const [resourceType, setResourceType] = useState(
@@ -156,7 +50,7 @@ export default ({ form, resourceTypes, ...formProps }) => {
         const newResourceType = resourceTypes.find((t) => t.id === actualForm.getFieldValue("resource_type_id"));
         if (newResourceType) {
             setResourceType(newResourceType);
-            form.setFieldsValue({
+            actualForm.setFieldsValue({
                 attributes: newResourceType.attributes.map((attr) => ({
                     rta_id: attr.id,
                     value: attr.default_value,
@@ -181,7 +75,7 @@ export default ({ form, resourceTypes, ...formProps }) => {
 
     return (
         <Form form={actualForm} {...formProps}>
-            <Form.Item name="id" hidden />
+            <Form.Item name="id" hidden/>
             <Form.Item name="model_id" hidden />
             <Form.Item name="resource_type_id" hidden />
             <Row align="bottom" gutter={5}>
@@ -206,12 +100,14 @@ export default ({ form, resourceTypes, ...formProps }) => {
                 </Col>
             </Row>
             <Form.Item name="resource_type_id" label="Тип ресурса">
-                <ResourceTypeSelect resourceTypes={resourceTypes} onSelect={onResourceTypeChange} />
+                <ResourceTypeSelect resourceTypes={resourceTypes} onSelect={onResourceTypeChange} modelId={modelId} />
             </Form.Item>
             <Form.Item label="Параметры">
                 {resourceType ? (
                     <Form.List name="attributes">
-                        {(fields) => <AttributesFormList fields={fields} form={form} resourceType={resourceType} />}
+                        {(fields) => (
+                            <AttributesFormList fields={fields} form={actualForm} resourceType={resourceType} />
+                        )}
                     </Form.List>
                 ) : (
                     <Empty description="Выберите тип ресурса" />
