@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { API_HOST, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
+import { API_URL, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
 
 export const loadModels = createAsyncThunk("models/load", async () => {
-    const url = `${API_HOST}/api/models/`;
+    const url = `${API_URL}/api/models/`;
     const headers = getHeaders();
     // const response = await fetch(url, {
     //     headers
@@ -22,7 +22,7 @@ export const loadModels = createAsyncThunk("models/load", async () => {
 });
 
 export const createModel = createAsyncThunk("models/create", async (model) => {
-    const url = `${API_HOST}/api/models/`;
+    const url = `${API_URL}/api/models/`;
     const headers = getHeaders();
     // const response = await fetch(url, {
     //     method: "POST",
@@ -38,7 +38,7 @@ export const createModel = createAsyncThunk("models/create", async (model) => {
 });
 
 export const deleteModel = createAsyncThunk("models/delete", async (modelId) => {
-    const url = `${API_HOST}/api/models/${modelId}/`;
+    const url = `${API_URL}/api/models/${modelId}/`;
     const headers = getHeaders();
     // const response = await fetch(url, {
     //     method: "DELETE",

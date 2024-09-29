@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { API_HOST, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
+import { API_URL, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
 
 export const loadTemplateUsages = createAsyncThunk("templateUsages/load", async (modelId) => {
-    const url = `${API_HOST}/api/editor/templates/usages/`;
+    const url = `${API_URL}/api/editor/templates/usages/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     headers
@@ -30,7 +30,7 @@ export const loadTemplateUsages = createAsyncThunk("templateUsages/load", async 
 });
 
 export const createTemplateUsage = createAsyncThunk("templateUsages/create", async ({ modelId, templateUsage }) => {
-    const url = `${API_HOST}/api/editor/templates/usages/`;
+    const url = `${API_URL}/api/editor/templates/usages/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "POST",
@@ -47,7 +47,7 @@ export const createTemplateUsage = createAsyncThunk("templateUsages/create", asy
 });
 
 export const updateTemplateUsage = createAsyncThunk("templateUsages/update", async ({ modelId, templateUsage }) => {
-    const url = `${API_HOST}/api/editor/templates/usages/${templateUsage.id}/`;
+    const url = `${API_URL}/api/editor/templates/usages/${templateUsage.id}/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "PUT",
@@ -61,7 +61,7 @@ export const updateTemplateUsage = createAsyncThunk("templateUsages/update", asy
 });
 
 export const deleteTemplateUsage = createAsyncThunk("templateUsages/delete", async ({ modelId, templateUsageId }) => {
-    const url = `${API_HOST}/api/editor/templates/usages/${templateUsageId}/`;
+    const url = `${API_URL}/api/editor/templates/usages/${templateUsageId}/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "DELETE",

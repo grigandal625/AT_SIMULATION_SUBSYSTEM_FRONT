@@ -1,10 +1,9 @@
 import { Button, Form, Modal, Space } from "antd";
-import ResourceTypeForm from "../forms/ResourceTypeForm";
+import FuncForm from "../forms/FuncForm";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import { useDispatch} from "react-redux";
-import { createResourceType} from "../../../../../redux/stores/resourceTypesStore";
-
+import { createFunc} from "../../../../../redux/stores/funcsStore";
 
 export default ({ open, ...modalProps }) => {
     const params = useParams();
@@ -18,8 +17,8 @@ export default ({ open, ...modalProps }) => {
         <Modal
             width={1300}
             open={open}
-            title="Добавление нового типа ресурса"
-            onCancel={() => navigate(`/models/${params.modelId}/resource-types`)}
+            title="Добавление новой функции"
+            onCancel={() => navigate(`/models/${params.modelId}/funcs`)}
             footer={
                 <Space>
                     <Button
@@ -29,10 +28,10 @@ export default ({ open, ...modalProps }) => {
                             try {
                                 const data = await form.validateFields();
                                 const action = await dispatch(
-                                    createResourceType({ modelId: params.modelId, resourceType: data })
+                                    createFunc({ modelId: params.modelId, func: data })
                                 );
-                                const resourceType = action.payload;
-                                navigate(`/models/${params.modelId}/resource-types/${resourceType.id}`);
+                                const func = action.payload;
+                                navigate(`/models/${params.modelId}/funcs/${func.id}`);
                             } catch (e) {
                                 console.error("Form validation failed:", e);
                             }
@@ -40,14 +39,14 @@ export default ({ open, ...modalProps }) => {
                     >
                         Создать
                     </Button>
-                    <Link to={`/models/${params.modelId}/resource-types`}>
+                    <Link to={`/models/${params.modelId}/funcs`}>
                         <Button>Отмена</Button>
                     </Link>
                 </Space>
             }
             {...modalProps}
         >
-            <ResourceTypeForm form={form} layout="vertical" />
+            <FuncForm form={form} layout="vertical" />
         </Modal>
     );
 };

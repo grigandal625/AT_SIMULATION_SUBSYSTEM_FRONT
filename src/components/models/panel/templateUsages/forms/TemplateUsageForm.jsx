@@ -39,10 +39,30 @@ export default ({ form, resources, templates, modelId, ...formProps }) => {
     const template = templates.find((tpl) => tpl.meta.id === selectedTemplate);
 
     useEffect(() => {
+        const getOrClearOldResource = (resource_id, rel_resource_index) => {
+            if (!resource_id) {
+                return;
+            }
+            const resource = resources.find((res) => res.id === resource_id);
+            const relResource = (template?.meta?.rel_resources || [])[rel_resource_index];
+
+            if (!relResource || !resource) {
+                return;
+            }
+
+            if (relResource.resource_type_id === resource.resource_type_id) {
+                return resource_id;
+            }
+        };
+
+        const oldRelevantResources = actualForm.getFieldValue("arguments") || [];
         if (template && template.meta.rel_resources) {
             actualForm.setFieldValue(
                 "arguments",
-                template.meta.rel_resources.map((rel_resource) => ({ relevant_resource_id: rel_resource.id }))
+                template.meta.rel_resources.map((rel_resource, i) => ({
+                    relevant_resource_id: rel_resource.id,
+                    resource_id: getOrClearOldResource(oldRelevantResources[i]?.resource_id, i),
+                }))
             );
         }
     }, [templates, template]);

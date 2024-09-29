@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { API_HOST, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
+import { API_URL, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
 
 export const loadTemplates = createAsyncThunk("templates/load", async (modelId) => {
-    const url = `${API_HOST}/api/editor/templates/`;
+    const url = `${API_URL}/api/editor/templates/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     headers
@@ -81,7 +81,7 @@ export const loadTemplates = createAsyncThunk("templates/load", async (modelId) 
 });
 
 export const createTemplate = createAsyncThunk("templates/create", async ({ modelId, template }) => {
-    const url = `${API_HOST}/api/editor/templates/${template.type}/`;
+    const url = `${API_URL}/api/editor/templates/${template.type}/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "POST",
@@ -91,14 +91,14 @@ export const createTemplate = createAsyncThunk("templates/create", async ({ mode
     // const json = await response.json();
     const json = template;
 
-    if (!json.id) {
-        json.id = Math.floor(Math.random() * 10000) + 1;
+    if (!json.meta.id) {
+        json.meta.id = Math.floor(Math.random() * 10000) + 1;
     }
     return json;
 });
 
 export const updateTemplate = createAsyncThunk("templates/update", async ({ modelId, template }) => {
-    const url = `${API_HOST}/api/editor/templates/${template.meta.id}/${template.type}/`;
+    const url = `${API_URL}/api/editor/templates/${template.meta.id}/${template.type}/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "PUT",
@@ -112,7 +112,7 @@ export const updateTemplate = createAsyncThunk("templates/update", async ({ mode
 });
 
 export const deleteTemplate = createAsyncThunk("templates/delete", async ({ modelId, templateId }) => {
-    const url = `${API_HOST}/api/editor/templates/${templateId}/`;
+    const url = `${API_URL}/api/editor/templates/${templateId}/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "DELETE",

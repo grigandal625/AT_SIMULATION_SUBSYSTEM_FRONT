@@ -23,7 +23,7 @@ export const getCollumns = ({ resourceType }) => {
         },
         {
             key: 3,
-            title: "Значения по умолчанию",
+            title: "Инициализируемое значение",
             render: (field, _, i) => (
                 <TinyFormItem name={[i, "value"]}>
                     <AttributeControl attribute={resourceType.attributes[i]} />

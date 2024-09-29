@@ -47,13 +47,14 @@ export default ({ form, resourceTypes, modelId, ...formProps }) => {
     );
 
     useEffect(() => {
+        const oldAttributes = form.getFieldValue("attributes") || [];
         const newResourceType = resourceTypes.find((t) => t.id === actualForm.getFieldValue("resource_type_id"));
         if (newResourceType) {
             setResourceType(newResourceType);
             actualForm.setFieldsValue({
-                attributes: newResourceType.attributes.map((attr) => ({
+                attributes: newResourceType.attributes.map((attr, i) => ({
                     rta_id: attr.id,
-                    value: attr.default_value,
+                    value: oldAttributes[i]?.value !== undefined ? oldAttributes[i]?.value : attr.default_value,
                     name: attr.name,
                 })),
             });
@@ -75,7 +76,7 @@ export default ({ form, resourceTypes, modelId, ...formProps }) => {
 
     return (
         <Form form={actualForm} {...formProps}>
-            <Form.Item name="id" hidden/>
+            <Form.Item name="id" hidden />
             <Form.Item name="model_id" hidden />
             <Form.Item name="resource_type_id" hidden />
             <Row align="bottom" gutter={5}>

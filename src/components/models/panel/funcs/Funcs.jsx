@@ -1,31 +1,31 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useMatches, useNavigate, useParams } from "react-router-dom";
-import { deleteTemplateUsage, loadTemplateUsages } from "../../../../redux/stores/templateUsagesStore";
+import { deleteFunc, loadFuncs } from "../../../../redux/stores/funcsStore";
 import { LOAD_STATUSES } from "../../../../GLOBAL";
 import { Button, Col, Dropdown, Menu, Modal, Row, Skeleton } from "antd";
 import { EditOutlined, PlusOutlined, CopyOutlined, DeleteOutlined, DashOutlined } from "@ant-design/icons";
 
 import "../PanelMenu.css";
-import CreateTemplateUsageModal from "./dialogs/CreateTemplateUsageModal";
-import EditTemplateUsageModal from "./dialogs/EditTemplateUsageModal";
+import CreateFuncModal from "./dialogs/CreateFuncModal";
+import EditFuncModal from "./dialogs/EditFuncModal";
 
 export default () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [modal, contextHandler] = Modal.useModal();
 
-    const templateUsages = useSelector((state) => state.templateUsages);
+    const funcs = useSelector((state) => state.funcs);
     const params = useParams();
     const matches = useMatches();
-    const createOpen = Boolean(matches.find((match) => /models\/\d+\/template-usages\/new/g.test(match.pathname)));
-    const editOpen = Boolean(matches.find((match) => /models\/\d+\/template-usages\/\d+\/edit/g.test(match.pathname)));
+    const createOpen = Boolean(matches.find((match) => /models\/\d+\/funcs\/new/g.test(match.pathname)));
+    const editOpen = Boolean(matches.find((match) => /models\/\d+\/funcs\/\d+\/edit/g.test(match.pathname)));
 
     useEffect(() => {
-        dispatch(loadTemplateUsages(params.modelId));
+        dispatch(loadFuncs(params.modelId));
     }, []);
 
-    const dropDownItems = (templateUsage) => [
+    const dropDownItems = (func) => [
         {
             key: "edit",
             label: "Редактировать",
@@ -44,62 +44,62 @@ export default () => {
         },
     ];
 
-    const handleEditTemplateUsage = (templateUsage) =>
-        navigate(`/models/${params.modelId}/template-usages/${templateUsage.id}/edit`);
+    const handleEditFunc = (func) =>
+        navigate(`/models/${params.modelId}/funcs/${func.id}/edit`);
 
-    const handleDuplicateTemplateUsage = async (templateUsage) => {
-        // duplicate templateUsage
-        // dispatch(duplicateTemplateUsage({modelId: params.modelId, templateUsageId: templateUsage.id}));
+    const handleDuplicateFunc = async (func) => {
+        // duplicate func
+        // dispatch(duplicateFunc({modelId: params.modelId, funcId: func.id}));
     };
 
-    const handleDeleteTemplateUsage = async (templateUsage) => {
-        // delete templateUsage
-        await dispatch(deleteTemplateUsage({ modelId: params.modelId, templateUsageId: templateUsage.id }));
-        navigate(`/models/${params.modelId}/template-usages`);
+    const handleDeleteFunc = async (func) => {
+        // delete func
+        await dispatch(deleteFunc({ modelId: params.modelId, funcId: func.id }));
+        navigate(`/models/${params.modelId}/funcs`);
     };
 
-    const confirmDeleteTemplateUsage = (templateUsage) => {
+    const confirmDeleteFunc = (func) => {
         modal.confirm({
-            title: "Удаление операции",
+            title: "Удаление функции",
             content: (
                 <>
-                    Вы уверены, что хотите удалить операцию <b>{templateUsage.name}?</b>
+                    Вы уверены, что хотите удалить функцию <b>{func.name}?</b>
                 </>
             ),
             okText: "Удалить",
             cancelText: "Отмена",
             icon: <DeleteOutlined />,
-            onOk: () => handleDeleteTemplateUsage(templateUsage),
+            onOk: () => handleDeleteFunc(func),
         });
     };
 
     const options = {
-        edit: handleEditTemplateUsage,
-        duplicate: handleDuplicateTemplateUsage,
-        delete: confirmDeleteTemplateUsage,
+        edit: handleEditFunc,
+        duplicate: handleDuplicateFunc,
+        delete: confirmDeleteFunc,
     };
 
-    return templateUsages.status === LOAD_STATUSES.SUCCESS ? (
+    return funcs.status === LOAD_STATUSES.SUCCESS ? (
         <div>
             <div className="model-item-menu">
                 <Menu
-                    selectedKeys={[params.templateUsageId]}
-                    items={templateUsages.data.map((templateUsage) => {
+                    selectedKeys={[params.funcId]}
+                    items={funcs.data.map((func) => {
                         return {
-                            key: templateUsage.id.toString(),
+                            key: func.id.toString(),
                             label: (
                                 <Row style={{ width: "100%" }} gutter={10}>
                                     <Col flex="auto">
-                                        <Link to={`/models/${params.modelId}/template-usages/${templateUsage.id}`}>
-                                            {templateUsage.name}
+                                        <Link to={`/models/${params.modelId}/funcs/${func.id}`}>
+                                            {func.name}
                                         </Link>
                                     </Col>
                                     <Col>
                                         <Dropdown
                                             trigger={["click"]}
                                             menu={{
-                                                items: dropDownItems(templateUsage),
-                                                onClick: ({ key }) => options[key](templateUsage),
+                                                items: dropDownItems(func),
+                                                onClick: ({ key }) => options[key](func),
                                             }}
                                         >
                                             <Button size="small" icon={<DashOutlined />} />
@@ -111,13 +111,13 @@ export default () => {
                     })}
                 />
             </div>
-            <Link to={`/models/${params.modelId}/template-usages/new`}>
+            <Link to={`/models/${params.modelId}/funcs/new`}>
                 <Button type="primary" style={{ width: "100%" }} icon={<PlusOutlined />}>
-                    Создать операцию
+                    Создать функцию
                 </Button>
             </Link>
-            {createOpen ? <CreateTemplateUsageModal open={createOpen} /> : <></>}
-            {editOpen ? <EditTemplateUsageModal open={editOpen} /> : <></>}
+            {createOpen ? <CreateFuncModal open={createOpen} /> : <></>}
+            {editOpen ? <EditFuncModal open={editOpen} /> : <></>}
             {contextHandler}
         </div>
     ) : (

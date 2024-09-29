@@ -3,15 +3,16 @@ import { Link, useMatches, useNavigate, useParams } from "react-router-dom";
 import "./ModelPanel.css";
 import ResourceTypes from "./resourceTypes/ResourceTypes";
 import Resources from "./resources/Resources";
-import Templates from "./templates/Templates"
+import Templates from "./templates/Templates";
 import TemplateUsages from "./templateUsages/TemplateUsages";
+import Funcs from "./funcs/Funcs";
 
 export default () => {
     const navigate = useNavigate();
     const params = useParams();
     const matches = useMatches();
     const keyPath = matches[2]?.pathname?.split("/")[3];
-    const defaultActiveKey = ["resource-types", "resources", "templates", "template-usages"].includes(keyPath)
+    const defaultActiveKey = ["resource-types", "resources", "templates", "template-usages", "funcs"].includes(keyPath)
         ? keyPath
         : null;
 
@@ -44,6 +45,11 @@ export default () => {
                         key: "template-usages",
                         label: <div style={{ writingMode: "vertical-lr" }}>Операции</div>,
                         children: <TemplateUsages />,
+                    },
+                    {
+                        key: "funcs",
+                        label: <div style={{ writingMode: "vertical-lr" }}>Функции</div>,
+                        children: <Funcs />,
                     },
                 ]}
             />

@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { API_HOST, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
+import { API_URL, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
 
 export const loadResourceTypes = createAsyncThunk("resourceTypes/load", async (modelId) => {
-    const url = `${API_HOST}/api/editor/resources/types/`;
+    const url = `${API_URL}/api/editor/resources/types/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     headers
@@ -83,7 +83,7 @@ export const loadResourceTypes = createAsyncThunk("resourceTypes/load", async (m
 });
 
 export const createResourceType = createAsyncThunk("resourceTypes/create", async ({ modelId, resourceType }) => {
-    const url = `${API_HOST}/api/editor/resources/types/`;
+    const url = `${API_URL}/api/editor/resources/types/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "POST",
@@ -97,13 +97,14 @@ export const createResourceType = createAsyncThunk("resourceTypes/create", async
         json.id = Math.floor(Math.random() * 10000) + 1;
     }
     json.attributes = json.attributes.map((attr) => ({
+        ...attr,
         id: attr.id || Math.floor(Math.random() * 10000) + 1,
     }));
     return json;
 });
 
 export const updateResourceType = createAsyncThunk("resourceTypes/update", async ({ modelId, resourceType }) => {
-    const url = `${API_HOST}/api/editor/resources/types/${resourceType.id}/`;
+    const url = `${API_URL}/api/editor/resources/types/${resourceType.id}/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "PUT",
@@ -117,7 +118,7 @@ export const updateResourceType = createAsyncThunk("resourceTypes/update", async
 });
 
 export const deleteResourceType = createAsyncThunk("resourceTypes/delete", async ({ modelId, resourceTypeId }) => {
-    const url = `${API_HOST}/api/editor/resources/types/${resourceTypeId}/`;
+    const url = `${API_URL}/api/editor/resources/types/${resourceTypeId}/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "DELETE",

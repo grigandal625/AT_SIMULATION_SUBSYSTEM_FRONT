@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { API_HOST, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
+import { API_URL, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
 
 export const loadResources = createAsyncThunk("resources/load", async (modelId) => {
-    const url = `${API_HOST}/api/editor/resources/`;
+    const url = `${API_URL}/api/editor/resources/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     headers
@@ -66,7 +66,7 @@ export const loadResources = createAsyncThunk("resources/load", async (modelId) 
 });
 
 export const createResource = createAsyncThunk("resources/create", async ({ modelId, resource }) => {
-    const url = `${API_HOST}/api/editor/resources/`
+    const url = `${API_URL}/api/editor/resources/`
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "POST",
@@ -84,7 +84,7 @@ export const createResource = createAsyncThunk("resources/create", async ({ mode
 });
 
 export const updateResource = createAsyncThunk("resources/update", async ({ modelId, resource }) => {
-    const url = `${API_HOST}/api/editor/resources/${resource.id}/`
+    const url = `${API_URL}/api/editor/resources/${resource.id}/`
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "PUT",
@@ -97,7 +97,7 @@ export const updateResource = createAsyncThunk("resources/update", async ({ mode
 });
 
 export const deleteResource = createAsyncThunk("resources/delete", async ({ modelId, resourceId }) => {
-    const url = `${API_HOST}/api/editor/resources/${resourceId}/`
+    const url = `${API_URL}/api/editor/resources/${resourceId}/`
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "DELETE",

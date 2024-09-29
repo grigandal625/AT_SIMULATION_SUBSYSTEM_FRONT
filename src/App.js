@@ -57,6 +57,14 @@ export const router = createBrowserRouter(
                         <Route path="edit" element={<>Предполагается модальное окно с редактированием операции</>} />
                     </Route>
                 </Route>
+                <Route path="funcs">
+                    <Route path="" element={<>Предполагается граф с выделенными узлами-функциями</>} />
+                    <Route path="new" element={<>Предполагается модальное окно с созданием функции</>} />
+                    <Route path=":funcId">
+                        <Route path="" element={<>Предполагается граф с выделенным узлом-функцией</>} />
+                        <Route path="edit" element={<>Предполагается модальное окно с редактированием функции</>} />
+                    </Route>
+                </Route>
             </Route>
         </Route>
     )

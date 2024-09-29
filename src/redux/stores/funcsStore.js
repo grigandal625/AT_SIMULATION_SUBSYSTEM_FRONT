@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { API_HOST, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
+import { API_URL, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
 
 export const loadFuncs = createAsyncThunk("funcs/load", async (modelId) => {
-    const url = `${API_HOST}/api/editor/functions/`;
+    const url = `${API_URL}/api/editor/functions/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     headers
@@ -12,6 +12,7 @@ export const loadFuncs = createAsyncThunk("funcs/load", async (modelId) => {
     const json = {
         functions: [
             {
+                id: 1,
                 name: "square",
                 ret_type: "float",
                 body: "return x*x",
@@ -29,7 +30,7 @@ export const loadFuncs = createAsyncThunk("funcs/load", async (modelId) => {
 });
 
 export const createFunc = createAsyncThunk("funcs/create", async ({ modelId, func }) => {
-    const url = `${API_HOST}/api/editor/functions/`;
+    const url = `${API_URL}/api/editor/functions/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "POST",
@@ -46,7 +47,7 @@ export const createFunc = createAsyncThunk("funcs/create", async ({ modelId, fun
 });
 
 export const updateFunc = createAsyncThunk("funcs/update", async ({ modelId, func }) => {
-    const url = `${API_HOST}/api/editor/functions/${func.id}/`;
+    const url = `${API_URL}/api/editor/functions/${func.id}/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "PUT",
@@ -59,7 +60,7 @@ export const updateFunc = createAsyncThunk("funcs/update", async ({ modelId, fun
 });
 
 export const deleteFunc = createAsyncThunk("funcs/delete", async ({ modelId, funcId }) => {
-    const url = `${API_HOST}/api/editor/functions/${funcId}/`;
+    const url = `${API_URL}/api/editor/functions/${funcId}/`;
     const headers = getHeaders({ "model-id": modelId });
     // const response = await fetch(url, {
     //     method: "DELETE",
