@@ -4,7 +4,7 @@ import { useState } from "react";
 import { getColumns } from "./columns";
 import "./AttributesList.css"
 
-const AttributesFormList = ({ fields, add, remove, form }) => {
+const AttributesFormList = ({ form, fields, add, remove }) => {
     const [selectedTypes, setSelectedTypes] = useState(
         Object.fromEntries(form.getFieldValue("attributes")?.map((attribute, i) => [i, attribute.type]) || [])
     );
@@ -17,7 +17,7 @@ const AttributesFormList = ({ fields, add, remove, form }) => {
         )
     );
 
-    const columns = getColumns({ enumOptions, setEnumOptions, selectedTypes, setSelectedTypes, remove });
+    const columns = getColumns({ form, enumOptions, setEnumOptions, selectedTypes, setSelectedTypes, remove });
 
     return !fields.length ? (
         <Empty description="Параметров не добавлено">

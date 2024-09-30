@@ -14,3 +14,22 @@ export const lengthMinRequiredRule = (min) => ({
 export const itemLengthRequiredRule = (form, name) => ({
     validator: () => (form.getFieldValue(name) && form.getFieldValue(name).length ? Promise.resolve() : Promise.reject(new Error("Укажите элементы"))),
 });
+
+export const itemUniqueRule = (form, index, listName, compare = (v, i) => v === i) => ({
+    validator: (_, value) => {
+        const items = form.getFieldValue(listName);
+        try {
+            Array.from(items);
+        } catch (e) {
+            return Promise.reject(new Error("Некорректный элемент формы"));
+        }
+        if (!value || !items) {
+            return Promise.resolve();
+        }
+        const duplicate = items.filter((item, idx) => compare(value, item) && idx !== index);
+        if (duplicate.length > 0) {
+            return Promise.reject(new Error("Укажите уникальное значение"));
+        }
+        return Promise.resolve();
+    },
+});

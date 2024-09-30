@@ -1,7 +1,7 @@
 import { MinusCircleOutlined } from "@ant-design/icons";
 import { Button, Input, Select, Typography } from "antd";
 import TinyFormItem from "../../../../../../utils/TinyFormItem";
-import { lengthMinRequiredRule, requiredRule } from "../../../../../../utils/validators/general";
+import { itemUniqueRule, lengthMinRequiredRule, requiredRule } from "../../../../../../utils/validators/general";
 import { goIdentifierRule } from "../../../../../../utils/validators/go";
 import { getControlsTypesMapping } from "./controls";
 
@@ -28,7 +28,7 @@ export const parameterTypeOptions = [
     },
 ];
 
-export const getColumns = ({ enumOptions, setEnumOptions, selectedTypes, setSelectedTypes, remove }) => {
+export const getColumns = ({ form, enumOptions, setEnumOptions, selectedTypes, setSelectedTypes, remove }) => {
     const handleParameterTypeSelect = (i) => (value) => {
         const newSelectedTypes = { ...selectedTypes };
         newSelectedTypes[i] = value;
@@ -75,6 +75,8 @@ export const getColumns = ({ enumOptions, setEnumOptions, selectedTypes, setSele
         );
     };
 
+    const uniqueNameRule = (i) => itemUniqueRule(form, i, 'attributes', (value, item) => value === item.name)
+
     return [
         {
             key: -1,
@@ -84,7 +86,7 @@ export const getColumns = ({ enumOptions, setEnumOptions, selectedTypes, setSele
             key: 1,
             title: "Имя параметра",
             render: (field, _, i) => (
-                <TinyFormItem {...field} name={[i, "name"]} rules={[requiredRule, goIdentifierRule]}>
+                <TinyFormItem {...field} name={[i, "name"]} rules={[requiredRule, goIdentifierRule, uniqueNameRule(i)]}>
                     <Input placeholder="Укажите имя параметра" />
                 </TinyFormItem>
             ),
