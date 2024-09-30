@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Col, Dropdown, Menu, Row, Skeleton } from "antd";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { LOAD_STATUSES } from "../GLOBAL";
 import { useEffect } from "react";
 import { loadModels } from "../redux/stores/modelsStore";

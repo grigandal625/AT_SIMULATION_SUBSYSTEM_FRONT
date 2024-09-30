@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import CheckboxItem from "../../../../../utils/CheckboxItem";
 import { Link } from "react-router-dom";
 import AttributesFormList from "./attributes/AttributesList";
+import { requiredRule } from "../../../../../utils/validators/general";
+import { goIdentifierRule } from "../../../../../utils/validators/go";
 
 const ResourceTypeSelect = ({ value, onChange, resourceTypes, onSelect, modelId }) => {
     const {
@@ -42,9 +44,7 @@ const ResourceTypeSelect = ({ value, onChange, resourceTypes, onSelect, modelId 
 export default ({ form, resourceTypes, modelId, ...formProps }) => {
     const [actualForm] = form ? [form] : Form.useForm();
 
-    const [resourceType, setResourceType] = useState(
-        resourceTypes ? resourceTypes.find((t) => t.id === actualForm.getFieldValue("resource_type_id")) : undefined
-    );
+    const [resourceType, setResourceType] = useState(resourceTypes ? resourceTypes.find((t) => t.id === actualForm.getFieldValue("resource_type_id")) : undefined);
 
     useEffect(() => {
         const oldAttributes = form.getFieldValue("attributes") || [];
@@ -81,35 +81,22 @@ export default ({ form, resourceTypes, modelId, ...formProps }) => {
             <Form.Item name="resource_type_id" hidden />
             <Row align="bottom" gutter={5}>
                 <Col flex="auto">
-                    <Form.Item
-                        name="name"
-                        label="Имя типа ресурса"
-                        rules={[{ required: true, message: "Укажите имя ресурса" }]}
-                    >
+                    <Form.Item name="name" label="Имя типа ресурса" rules={[requiredRule, goIdentifierRule]}>
                         <Input placeholder="Укажите имя ресурса" />
                     </Form.Item>
                 </Col>
                 <Col>
-                    <Form.Item
-                        name="to_be_traced"
-                        layout="horizontal"
-                        label="Трассировка"
-                        rules={[{ required: true, message: "Укажите тип" }]}
-                    >
+                    <Form.Item name="to_be_traced" layout="horizontal" label="Трассировка" rules={[requiredRule]}>
                         <CheckboxItem />
                     </Form.Item>
                 </Col>
             </Row>
-            <Form.Item name="resource_type_id" label="Тип ресурса">
+            <Form.Item name="resource_type_id" label="Тип ресурса" rules={[requiredRule]}>
                 <ResourceTypeSelect resourceTypes={resourceTypes} onSelect={onResourceTypeChange} modelId={modelId} />
             </Form.Item>
             <Form.Item label="Параметры">
                 {resourceType ? (
-                    <Form.List name="attributes">
-                        {(fields) => (
-                            <AttributesFormList fields={fields} form={actualForm} resourceType={resourceType} />
-                        )}
-                    </Form.List>
+                    <Form.List name="attributes">{(fields) => <AttributesFormList fields={fields} form={actualForm} resourceType={resourceType} />}</Form.List>
                 ) : (
                     <Empty description="Выберите тип ресурса" />
                 )}

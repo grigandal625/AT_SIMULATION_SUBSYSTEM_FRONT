@@ -5,10 +5,9 @@ import { useState } from "react";
 import CodeEditorItem, { defaultEditorDidMount, defaultEditorOptions } from "../../../../../../utils/CodeEditorItem";
 import { languages } from "monaco-editor";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-
-const isValidGoIdentifier = (name) => {
-    return /^[a-zA-Z_]\w*$/.test(name);
-};
+import { isValidGoIdentifier } from "../../../../../../utils/GoTypingInput";
+import { requiredRule } from "../../../../../../utils/validators/general";
+import { goIdentifierRule } from "../../../../../../utils/validators/go";
 
 const ParametersList = ({ fields, parameters, setParameters, add, remove }) => {
     const handleParameterNameChanged = (index) => (e) => {
@@ -44,8 +43,8 @@ const ParametersList = ({ fields, parameters, setParameters, add, remove }) => {
             key: "name",
             title: "Имя параметра",
             render: (field, _, index) => (
-                <TinyFormItem {...field} name={[index, "name"]}>
-                    <Input size="small" placeholder="Имя аргумента" onChange={handleParameterNameChanged(index)} />
+                <TinyFormItem {...field} name={[index, "name"]} rules={[requiredRule, goIdentifierRule]}>
+                    <Input placeholder="Имя аргумента" onChange={handleParameterNameChanged(index)} />
                 </TinyFormItem>
             ),
         },
@@ -53,12 +52,8 @@ const ParametersList = ({ fields, parameters, setParameters, add, remove }) => {
             key: "type",
             title: "Тип параметра",
             render: (field, _, index) => (
-                <TinyFormItem {...field} name={[index, "type"]}>
-                    <GoTypingInput
-                        size="small"
-                        placeholder="Тип аргумента"
-                        onChange={handleParameterTypeChanged(index)}
-                    />
+                <TinyFormItem {...field} name={[index, "type"]} rules={[requiredRule]}>
+                    <GoTypingInput placeholder="Тип аргумента" onChange={handleParameterTypeChanged(index)} />
                 </TinyFormItem>
             ),
         },
@@ -66,11 +61,7 @@ const ParametersList = ({ fields, parameters, setParameters, add, remove }) => {
 
     return (
         <>
-            {fields.length ? (
-                <Table size="small" columns={columns} dataSource={fields} pagination={false} />
-            ) : (
-                <Empty description="Параметров не добавлено" />
-            )}
+            {fields.length ? <Table size="small" columns={columns} dataSource={fields} pagination={false} /> : <Empty description="Параметров не добавлено" />}
             <div style={{ marginTop: 5 }}>
                 <Button
                     style={{ width: "100%" }}
@@ -96,15 +87,7 @@ export default ({ form }) => {
         children: (
             <TinyFormItem>
                 <Form.List name="params">
-                    {(fields, { add, remove }) => (
-                        <ParametersList
-                            fields={fields}
-                            parameters={parameters}
-                            setParameters={setParameters}
-                            add={add}
-                            remove={remove}
-                        />
-                    )}
+                    {(fields, { add, remove }) => <ParametersList fields={fields} parameters={parameters} setParameters={setParameters} add={add} remove={remove} />}
                 </Form.List>
             </TinyFormItem>
         ),
@@ -113,9 +96,7 @@ export default ({ form }) => {
     const autoComplete = (model, position) => {
         const word = model.getWordAtPosition(position);
 
-        const filteredParameters = (parameters || []).filter(
-            (param) => param?.name && isValidGoIdentifier(param.name) && param.name.includes(word?.word || word)
-        );
+        const filteredParameters = (parameters || []).filter((param) => param?.name && isValidGoIdentifier(param.name) && param.name.includes(word?.word || word));
 
         const suggestions = filteredParameters.map((param) => ({
             label: param.name,
@@ -133,14 +114,8 @@ export default ({ form }) => {
         key: "body",
         label: "Тело функции",
         children: (
-            <TinyFormItem name="body">
-                <CodeEditorItem
-                    language="go"
-                    options={codeEditorOptions}
-                    height="270px"
-                    autoComplete={autoComplete}
-                    editorDidMount={editorDidMount}
-                />
+            <TinyFormItem name="body" rules={[requiredRule]}>
+                <CodeEditorItem language="go" options={codeEditorOptions} height="270px" autoComplete={autoComplete} editorDidMount={editorDidMount} />
             </TinyFormItem>
         ),
     };

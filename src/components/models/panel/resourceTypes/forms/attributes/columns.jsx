@@ -1,6 +1,8 @@
 import { MinusCircleOutlined } from "@ant-design/icons";
 import { Button, Input, Select, Typography } from "antd";
 import TinyFormItem from "../../../../../../utils/TinyFormItem";
+import { lengthMinRequiredRule, requiredRule } from "../../../../../../utils/validators/general";
+import { goIdentifierRule } from "../../../../../../utils/validators/go";
 import { getControlsTypesMapping } from "./controls";
 
 export const parameterTypeOptions = [
@@ -56,22 +58,19 @@ export const getColumns = ({ enumOptions, setEnumOptions, selectedTypes, setSele
         );
     };
 
+    const onAdditionalChange = (i) => (value) => {
+        const newEnumOptions = { ...enumOptions };
+        newEnumOptions[i] = value || [];
+        setEnumOptions(newEnumOptions);
+    };
+
     const renderAdditional = (field, _, i) => {
         if (selectedTypes[i] !== "enum") {
             return <></>;
         }
         return (
-            <TinyFormItem {...field} name={[i, "enum_values_set"]}>
-                <Select
-                    
-                    placeholder="Укажите набор допустимых значений"
-                    mode="tags"
-                    onChange={(value) => {
-                        const newEnumOptions = { ...enumOptions };
-                        newEnumOptions[i] = value || [];
-                        setEnumOptions(newEnumOptions);
-                    }}
-                />
+            <TinyFormItem {...field} name={[i, "enum_values_set"]} rules={[requiredRule, lengthMinRequiredRule(2)]}>
+                <Select placeholder="Укажите набор допустимых значений" mode="tags" onChange={onAdditionalChange(i)} />
             </TinyFormItem>
         );
     };
@@ -85,11 +84,7 @@ export const getColumns = ({ enumOptions, setEnumOptions, selectedTypes, setSele
             key: 1,
             title: "Имя параметра",
             render: (field, _, i) => (
-                <TinyFormItem
-                    {...field}
-                    name={[i, "name"]}
-                    rules={[{ required: true, message: "Укажите имя параметра" }]}
-                >
+                <TinyFormItem {...field} name={[i, "name"]} rules={[requiredRule, goIdentifierRule]}>
                     <Input placeholder="Укажите имя параметра" />
                 </TinyFormItem>
             ),
@@ -98,16 +93,8 @@ export const getColumns = ({ enumOptions, setEnumOptions, selectedTypes, setSele
             key: 2,
             title: "Тип параметра",
             render: (field, _, i) => (
-                <TinyFormItem
-                    {...field}
-                    name={[i, "type"]}
-                    rules={[{ required: true, message: "Укажите тип параметра" }]}
-                >
-                    <Select
-                        onSelect={handleParameterTypeSelect(i)}
-                        placeholder="Выберите тип параметра"
-                        options={parameterTypeOptions}
-                    />
+                <TinyFormItem {...field} name={[i, "type"]} rules={[requiredRule]}>
+                    <Select onSelect={handleParameterTypeSelect(i)} placeholder="Выберите тип параметра" options={parameterTypeOptions} />
                 </TinyFormItem>
             ),
         },

@@ -2,7 +2,7 @@ import { Button, Col, Form, Input, InputNumber, Row, Select, Space, Typography, 
 import TinyFormItem from "../../../../../utils/TinyFormItem";
 import { CloseOutlined, EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import IrregularEventBody from "./body/IrregularEventBody";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import OperationBody from "./body/OperationBody";
 import RuleBody from "./body/RuleBody";
 import { Link, useNavigate } from "react-router-dom";
@@ -97,16 +97,16 @@ const RelevantResourcesList = ({
 
 export default ({ form, resourceTypes, modelId, ...formProps }) => {
     const [actualForm] = form ? [form] : Form.useForm();
-    const [selectedType, setSelectedType] = useState();
+    const [selectedType, setSelectedType] = useState(actualForm.getFieldValue(["meta", "type"]));
 
     const relResources = actualForm.getFieldValue(["meta", "rel_resources"]) || [];
     const [relevantResources, setRelevantResources] = useState(
         relResources.map((r) => ({ name: r?.name, type: r?.resource_type_id }))
     );
 
-    useEffect(() => {
-        setSelectedType(actualForm.getFieldValue(["meta", "type"]));
-    }, [actualForm]);
+    // useEffect(() => {
+    //     setSelectedType();
+    // }, [actualForm]);
 
     const bodyItems = {
         irregular_event: IrregularEventBody,

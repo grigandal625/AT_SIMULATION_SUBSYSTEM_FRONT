@@ -1,4 +1,5 @@
 import MonacoEditor from "@uiw/react-monacoeditor";
+import { Spin } from "antd";
 import { useState, useEffect } from "react";
 
 export const defaultEditorBackground = "#e9e9ff";
@@ -50,6 +51,11 @@ const CodeEditorItem = ({
     editorDidMount,
 }) => {
     const [code, setCode] = useState(value);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, [])
 
     useEffect(() => {
         try {
@@ -70,7 +76,7 @@ const CodeEditorItem = ({
     };
 
     return (
-        <MonacoEditor
+        mounted ? <MonacoEditor
             onChange={setCode}
             language={language}
             options={options}
@@ -79,7 +85,7 @@ const CodeEditorItem = ({
             autoComplete={autoComplete}
             editorDidMount={handleEditorDidMount}
             style={{ width: "100%" }}
-        />
+        /> : <Spin />
     );
 };
 

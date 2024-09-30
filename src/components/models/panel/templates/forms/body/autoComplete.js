@@ -1,8 +1,5 @@
 import { languages } from "monaco-editor";
-
-const isValidGoIdentifier = (name) => {
-    return /^[a-zA-Z_]\w*$/.test(name);
-};
+import { isValidGoIdentifier } from "../../../../../../utils/GoTypingInput";
 
 export const makeAutoComplete = (relevantResources, resourceTypes) => (model, position) => {
     const word = model.getWordAtPosition(position);
