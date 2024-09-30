@@ -5,8 +5,8 @@ import IrregularEventBody from "./body/IrregularEventBody";
 import { useState } from "react";
 import OperationBody from "./body/OperationBody";
 import RuleBody from "./body/RuleBody";
-import { Link, useNavigate } from "react-router-dom";
-import { itemLengthRequiredRule, lengthRequiredRule, requiredRule } from "../../../../../utils/validators/general";
+import { Link } from "react-router-dom";
+import { itemLengthRequiredRule, requiredRule } from "../../../../../utils/validators/general";
 import { goIdentifierRule } from "../../../../../utils/validators/go";
 
 const RelevantResourcesList = ({ fields, add, remove, resourceTypes, relevantResources, setRelevantResources, modelId }) => {
