@@ -1,15 +1,11 @@
-import { useEffect, useState } from "react";
-
-import { theme, Row, Col, Form, InputNumber, Collapse } from "antd";
+import { Row, Col, Form, InputNumber, Collapse } from "antd";
 import CodeEditorItem, { defaultEditorDidMount, defaultEditorOptions } from "../../../../../../utils/CodeEditorItem";
 import { makeAutoComplete } from "./autoComplete";
 import TinyFormItem from "../../../../../../utils/TinyFormItem";
+import { requiredRule } from "../../../../../../utils/validators/general";
 // import {} from "monaco-editor/esm/vs/editor/browser/services/editorWorkerService";
 
-export default ({ form, relevantResources, resourceTypes }) => {
-    const {
-        token: { colorInfoBg },
-    } = theme.useToken();
+export default ({ relevantResources, resourceTypes }) => {
 
     const editorDidMount = defaultEditorDidMount;
     const codeEditorOptions = defaultEditorOptions;
@@ -20,7 +16,7 @@ export default ({ form, relevantResources, resourceTypes }) => {
         key: "condition",
         label: "Предусловие",
         children: (
-            <TinyFormItem name={["body", "condition"]}>
+            <TinyFormItem name={["body", "condition"]} rules={[requiredRule]}>
                 <CodeEditorItem
                     language="go"
                     options={codeEditorOptions}
@@ -36,7 +32,7 @@ export default ({ form, relevantResources, resourceTypes }) => {
         key: "body_before",
         label: "Действия в начале",
         children: (
-            <TinyFormItem name={["body", "body_before"]}>
+            <TinyFormItem name={["body", "body_before"]} rules={[requiredRule]}>
                 <CodeEditorItem
                     language="go"
                     options={codeEditorOptions}
@@ -52,7 +48,7 @@ export default ({ form, relevantResources, resourceTypes }) => {
         key: "body_after",
         label: "Действия в конце",
         children: (
-            <TinyFormItem name={["body", "body_after"]}>
+            <TinyFormItem name={["body", "body_after"]} rules={[requiredRule]}>
                 <CodeEditorItem
                     language="go"
                     options={codeEditorOptions}
@@ -66,7 +62,7 @@ export default ({ form, relevantResources, resourceTypes }) => {
 
     return (
         <div>
-            <Form.Item labelCol={6} layout="horizontal" name={["body", "delay"]} label="Длительность">
+            <Form.Item labelCol={6} layout="horizontal" name={["body", "delay"]} label="Длительность" rules={[requiredRule]}>
                 <InputNumber style={{width: "100%"}} placeholder="Укажите длительность" />
             </Form.Item>
             <Row gutter={[5, 5]}>

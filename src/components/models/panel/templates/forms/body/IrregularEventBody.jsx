@@ -4,6 +4,7 @@ import { theme, Row, Col, Form, Select, InputNumber, Collapse } from "antd";
 import CodeEditorItem, { defaultEditorDidMount, defaultEditorOptions } from "../../../../../../utils/CodeEditorItem";
 import { makeAutoComplete } from "./autoComplete";
 import TinyFormItem from "../../../../../../utils/TinyFormItem";
+import { requiredRule } from "../../../../../../utils/validators/general";
 // import {} from "monaco-editor/esm/vs/editor/browser/services/editorWorkerService";
 
 export default ({ form, relevantResources, resourceTypes, selectedType }) => {
@@ -41,22 +42,14 @@ export default ({ form, relevantResources, resourceTypes, selectedType }) => {
         key: "generator",
         label: "Генератор события",
         children: [
-            <Form.Item label="Тип генератора" name={["generator", "type"]}>
-                <Select
-                    placeholder="Укажите тип генератора"
-                    options={options}
-                    onSelect={(value) => setSelectedGeneratorType(value)}
-                />
+            <Form.Item label="Тип генератора" name={["generator", "type"]} rules={[requiredRule]}>
+                <Select placeholder="Укажите тип генератора" options={options} onSelect={(value) => setSelectedGeneratorType(value)} />
             </Form.Item>,
-            <Form.Item label="Мат. ожидание" name={["generator", "value"]}>
+            <Form.Item label="Мат. ожидание" name={["generator", "value"]} rules={[requiredRule]}>
                 <InputNumber style={{ width: "100%" }} placeholder="Укажите мат. ожидание" />
             </Form.Item>,
-            <Form.Item label="Дисперсия" name={["generator", "dispersion"]}>
-                <InputNumber
-                    style={{ width: "100%" }}
-                    disabled={selectedGeneratorType === "precise"}
-                    placeholder="Укажите диперсию"
-                />
+            <Form.Item label="Дисперсия" name={["generator", "dispersion"]} rules={[requiredRule]}>
+                <InputNumber style={{ width: "100%" }} disabled={selectedGeneratorType === "precise"} placeholder="Укажите диперсию" />
             </Form.Item>,
         ],
     };
@@ -65,14 +58,8 @@ export default ({ form, relevantResources, resourceTypes, selectedType }) => {
         key: "body",
         label: "Действия (тело события)",
         children: (
-            <TinyFormItem name={["body", "body"]}>
-                <CodeEditorItem
-                    language="go"
-                    options={codeEditorOptions}
-                    height="258px"
-                    autoComplete={autoComplete}
-                    editorDidMount={editorDidMount}
-                />
+            <TinyFormItem name={["body", "body"]} rules={[requiredRule]}>
+                <CodeEditorItem language="go" options={codeEditorOptions} height="258px" autoComplete={autoComplete} editorDidMount={editorDidMount} />
             </TinyFormItem>
         ),
     };

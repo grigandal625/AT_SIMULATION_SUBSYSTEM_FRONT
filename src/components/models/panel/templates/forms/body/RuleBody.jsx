@@ -1,16 +1,11 @@
-import { useEffect, useState } from "react";
-
-import { theme, Row, Col, Form, InputNumber, Collapse } from "antd";
+import { theme, Row, Col, Collapse } from "antd";
 import CodeEditorItem, { defaultEditorDidMount, defaultEditorOptions } from "../../../../../../utils/CodeEditorItem";
 import { makeAutoComplete } from "./autoComplete";
 import TinyFormItem from "../../../../../../utils/TinyFormItem";
+import { requiredRule } from "../../../../../../utils/validators/general";
 // import {} from "monaco-editor/esm/vs/editor/browser/services/editorWorkerService";
 
-export default ({ form, relevantResources, resourceTypes }) => {
-    const {
-        token: { colorInfoBg },
-    } = theme.useToken();
-
+export default ({ relevantResources, resourceTypes }) => {
     const editorDidMount = defaultEditorDidMount;
     const codeEditorOptions = defaultEditorOptions;
 
@@ -20,14 +15,8 @@ export default ({ form, relevantResources, resourceTypes }) => {
         key: "condition",
         label: "Предусловие",
         children: (
-            <TinyFormItem name={["body", "condition"]}>
-                <CodeEditorItem
-                    language="go"
-                    options={codeEditorOptions}
-                    height="250px"
-                    autoComplete={autoComplete}
-                    editorDidMount={editorDidMount}
-                />
+            <TinyFormItem name={["body", "condition"]} rules={[requiredRule]}>
+                <CodeEditorItem language="go" options={codeEditorOptions} height="250px" autoComplete={autoComplete} editorDidMount={editorDidMount} />
             </TinyFormItem>
         ),
     };
@@ -36,7 +25,7 @@ export default ({ form, relevantResources, resourceTypes }) => {
         key: "body",
         label: "Действия",
         children: (
-            <TinyFormItem name={["body", "body"]}>
+            <TinyFormItem name={["body", "body"]} rules={[requiredRule]}>
                 <CodeEditorItem
                     language="go"
                     options={codeEditorOptions}

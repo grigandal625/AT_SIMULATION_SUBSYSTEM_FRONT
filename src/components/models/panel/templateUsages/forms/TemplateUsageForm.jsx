@@ -3,6 +3,8 @@ import { Col, Form, Input, Row, Select, Button, Empty } from "antd";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import ResourcesFormList from "./resources/ResourcesList";
+import { requiredRule } from "../../../../../utils/validators/general";
+import { goIdentifierRule } from "../../../../../utils/validators/go";
 
 const TemplateSelect = ({ value, onChange, templates, onSelect, modelId }) => {
     const template = templates ? templates.find((t) => t.meta.id === value) : undefined;
@@ -71,10 +73,10 @@ export default ({ form, resources, templates, modelId, ...formProps }) => {
         <Form form={actualForm} {...formProps}>
             <Form.Item name="id" hidden />
             <Form.Item name="model_id" hidden />
-            <Form.Item name="name" label="Имя операции" rules={[{ required: true, message: "Укажите имя операции" }]}>
+            <Form.Item name="name" label="Имя операции" rules={[requiredRule, goIdentifierRule]}>
                 <Input placeholder="Укажите имя операции" />
             </Form.Item>
-            <Form.Item name="template_id" label="Образец" rules={[{ required: true, message: "Выберите образец" }]}>
+            <Form.Item name="template_id" label="Образец" rules={[requiredRule]}>
                 <TemplateSelect templates={templates} modelId={modelId} onSelect={setSelectedTemplate} />
             </Form.Item>
             <Form.Item label="Релевантные ресурсы">
