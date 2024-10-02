@@ -77,7 +77,7 @@ export const loadTemplates = createAsyncThunk("templates/load", async (modelId) 
             },
         ],
     };
-    return json.irregular_events.concat(json.operations.concat(json.rules));
+    return {items: json.irregular_events.concat(json.operations.concat(json.rules)), modelId};
 });
 
 export const createTemplate = createAsyncThunk("templates/create", async ({ modelId, template }) => {
@@ -130,6 +130,7 @@ const templatesSlice = createSlice({
         data: [],
         status: LOAD_STATUSES.IDLE,
         error: null,
+        modelId: null,
     },
     reducers: {
         // Define reducers here
@@ -141,7 +142,8 @@ const templatesSlice = createSlice({
             })
             .addCase(loadTemplates.fulfilled, (state, action) => {
                 state.status = LOAD_STATUSES.SUCCESS;
-                state.data = action.payload;
+                state.data = action.payload.items;
+                state.modelId = action.payload.modelId;
             })
             .addCase(createTemplate.pending, (state) => {
                 state.status = LOAD_STATUSES.LOADING;

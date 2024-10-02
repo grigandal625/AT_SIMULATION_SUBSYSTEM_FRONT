@@ -2,9 +2,10 @@ import { Button, Form, Modal, Space } from "antd";
 import ResourceTypeForm from "../forms/ResourceTypeForm";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
-import { useDispatch} from "react-redux";
-import { createResourceType} from "../../../../../redux/stores/resourceTypesStore";
-
+import { useDispatch, useSelector } from "react-redux";
+import { createResourceType, loadResourceTypes } from "../../../../../redux/stores/resourceTypesStore";
+import { useEffect } from "react";
+import { LOAD_STATUSES } from "../../../../../GLOBAL";
 
 export default ({ open, ...modalProps }) => {
     const params = useParams();
@@ -13,6 +14,13 @@ export default ({ open, ...modalProps }) => {
     const [form] = Form.useForm();
 
     form.setFieldValue("model_id", params.modelId);
+    const resourceTypes = useSelector((store) => store.resourceTypes);
+
+    useEffect(() => {
+        if (resourceTypes.status !== LOAD_STATUSES.SUCCESS || resourceTypes.modelId !== params.modelId) {
+            dispatch(loadResourceTypes(params.modelId));
+        }
+    }, [])
 
     return (
         <Modal
@@ -28,9 +36,7 @@ export default ({ open, ...modalProps }) => {
                         onClick={async () => {
                             try {
                                 const data = await form.validateFields();
-                                const action = await dispatch(
-                                    createResourceType({ modelId: params.modelId, resourceType: data })
-                                );
+                                const action = await dispatch(createResourceType({ modelId: params.modelId, resourceType: data }));
                                 const resourceType = action.payload;
                                 navigate(`/models/${params.modelId}/resource-types/${resourceType.id}`);
                             } catch (e) {
@@ -47,7 +53,7 @@ export default ({ open, ...modalProps }) => {
             }
             {...modalProps}
         >
-            <ResourceTypeForm form={form} layout="vertical" />
+            <ResourceTypeForm form={form} layout="vertical" resourceTypes={resourceTypes.data}/>
         </Modal>
     );
 };

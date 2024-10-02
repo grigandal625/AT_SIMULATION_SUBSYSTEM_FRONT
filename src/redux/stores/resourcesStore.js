@@ -62,7 +62,7 @@ export const loadResources = createAsyncThunk("resources/load", async (modelId) 
         ],
         total: 0,
     };
-    return json.resources;
+    return { items: json.resources, modelId};
 });
 
 export const createResource = createAsyncThunk("resources/create", async ({ modelId, resource }) => {
@@ -114,6 +114,7 @@ const resourcesSlice = createSlice({
         data: [],
         status: LOAD_STATUSES.IDLE,
         error: null,
+        modelId: null,
     },
     reducers: {
         // Define reducers here
@@ -125,7 +126,8 @@ const resourcesSlice = createSlice({
             })
             .addCase(loadResources.fulfilled, (state, action) => {
                 state.status = LOAD_STATUSES.SUCCESS;
-                state.data = action.payload;
+                state.data = action.payload.items;
+                state.modelId = action.payload.modelId;
             })
             .addCase(createResource.pending, (state) => {
                 state.status = LOAD_STATUSES.LOADING;

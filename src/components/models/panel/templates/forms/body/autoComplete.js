@@ -1,21 +1,20 @@
 import { languages } from "monaco-editor";
-import { isValidGoIdentifier } from "../../../../../../utils/GoTypingInput";
+import { goIdentifierRegexp, isValidGoIdentifier } from "../../../../../../utils/GoTypingInput";
 
-export const makeAutoComplete = (relevantResources, resourceTypes) => (model, position) => {
+export const makeAutoComplete = (relevantResources, resourceTypes, funcs) => (model, position) => {
     const word = model.getWordAtPosition(position);
     const lineContent = model.getLineContent(position.lineNumber);
 
     const textUntilPosition = lineContent.slice(0, position.column - 1);
-    const splitByDot = textUntilPosition.split('.');
+    const splitByDot = textUntilPosition.split(".");
 
     if (splitByDot.length > 1) {
-
         const afterDot = splitByDot[splitByDot.length - 1].trim();
 
         const beforeDot = splitByDot[splitByDot.length - 2].trim();
 
         if (isValidGoIdentifier(afterDot) || afterDot === "") {
-            const beforeDotMatch = beforeDot.match(/(\w+)$/);
+            const beforeDotMatch = beforeDot.match(goIdentifierRegexp);
             const validIdentifier = beforeDotMatch ? beforeDotMatch[0] : null;
             const resource = relevantResources.find((res) => res.name === validIdentifier);
 
@@ -36,10 +35,7 @@ export const makeAutoComplete = (relevantResources, resourceTypes) => (model, po
         }
     }
 
-    const filteredResources = relevantResources.filter(
-        (resource) =>
-            resource?.name && isValidGoIdentifier(resource.name) && resource.name.includes(word?.word || word)
-    );
+    const filteredResources = relevantResources.filter((resource) => resource?.name && isValidGoIdentifier(resource.name) && resource.name.includes(word?.word || word));
 
     const suggestions = filteredResources.map((resource) => ({
         label: resource.name,
@@ -48,5 +44,14 @@ export const makeAutoComplete = (relevantResources, resourceTypes) => (model, po
         detail: "Релевантный ресурс",
     }));
 
-    return suggestions;
+    const filteredFuncs = (funcs || []).filter((func) => func?.name && isValidGoIdentifier(func.name) && func.name.includes(word?.word || word));
+
+    const funcSuggestions = filteredFuncs.map((func) => ({
+        label: func.name,
+        kind: languages.CompletionItemKind.Function,
+        insertText: func.name,
+        detail: "Функция",
+    }));
+
+    return suggestions.concat(funcSuggestions);
 };

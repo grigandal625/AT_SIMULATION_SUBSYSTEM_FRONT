@@ -3,9 +3,10 @@ import ResourceForm from "../forms/ResourceForm";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { SaveOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { updateResource } from "../../../../../redux/stores/resourcesStore";
+import { loadResources, updateResource } from "../../../../../redux/stores/resourcesStore";
 import { loadResourceTypes } from "../../../../../redux/stores/resourceTypesStore";
 import { useEffect } from "react";
+import { LOAD_STATUSES } from "../../../../../GLOBAL";
 
 export default ({ open, ...modalProps }) => {
     const params = useParams();
@@ -18,8 +19,14 @@ export default ({ open, ...modalProps }) => {
     form.setFieldsValue(resource);
 
     const resourceTypes = useSelector((store) => store.resourceTypes);
+
     useEffect(() => {
-        dispatch(loadResourceTypes(params.modelId));
+        if (resourceTypes.status !== LOAD_STATUSES.SUCCESS || resourceTypes.modelId !== params.modelId) {
+            dispatch(loadResourceTypes(params.modelId));
+        }
+        if (resources.status !== LOAD_STATUSES.SUCCESS || resources.modelId !== params.modelId) {
+            dispatch(loadResources(params.modelId));
+        }
     }, []);
 
     const handleEdit = async () => {
@@ -52,7 +59,7 @@ export default ({ open, ...modalProps }) => {
             }
             {...modalProps}
         >
-            <ResourceForm resourceTypes={resourceTypes.data} form={form} modelId={params.modelId} layout="vertical" />
+            <ResourceForm resourceTypes={resourceTypes.data} form={form} modelId={params.modelId} layout="vertical" resources={resources.data} />
         </Modal>
     );
 };

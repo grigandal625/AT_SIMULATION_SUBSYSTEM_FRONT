@@ -3,9 +3,10 @@ import ResourceForm from "../forms/ResourceForm";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { createResource } from "../../../../../redux/stores/resourcesStore";
+import { createResource, loadResources } from "../../../../../redux/stores/resourcesStore";
 import { useEffect } from "react";
 import { loadResourceTypes } from "../../../../../redux/stores/resourceTypesStore";
+import { LOAD_STATUSES } from "../../../../../GLOBAL";
 
 export default ({ open, ...modalProps }) => {
     const params = useParams();
@@ -13,9 +14,15 @@ export default ({ open, ...modalProps }) => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
     const resourceTypes = useSelector((store) => store.resourceTypes);
+    const resources = useSelector((store) => store.resources);
 
     useEffect(() => {
-        dispatch(loadResourceTypes(params.modelId));
+        if (resourceTypes.status !== LOAD_STATUSES.SUCCESS || resourceTypes.modelId !== params.modelId) {
+            dispatch(loadResourceTypes(params.modelId));
+        }
+        if (resources.status !== LOAD_STATUSES.SUCCESS || resources.modelId !== params.modelId) {
+            dispatch(loadResources(params.modelId));
+        }
     }, []);
 
     form.setFieldValue("model_id", params.modelId);
@@ -24,15 +31,13 @@ export default ({ open, ...modalProps }) => {
     const handleCreate = async () => {
         try {
             const data = await form.validateFields();
-            const action = await dispatch(
-                createResource({ modelId: params.modelId, resource: data })
-            );
+            const action = await dispatch(createResource({ modelId: params.modelId, resource: data }));
             const resource = action.payload;
             navigate(`/models/${params.modelId}/resources/${resource.id}`);
         } catch (e) {
             console.error("Form validation failed:", e);
         }
-    }
+    };
 
     return (
         <Modal
@@ -42,11 +47,7 @@ export default ({ open, ...modalProps }) => {
             onCancel={() => navigate(`/models/${params.modelId}/resources`)}
             footer={
                 <Space>
-                    <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={handleCreate}
-                    >
+                    <Button type="primary" icon={<PlusOutlined />} onClick={handleCreate}>
                         Создать
                     </Button>
                     <Link to={`/models/${params.modelId}/resources`}>
@@ -56,7 +57,7 @@ export default ({ open, ...modalProps }) => {
             }
             {...modalProps}
         >
-            <ResourceForm form={form} resourceTypes={resourceTypes.data} modelId={params.modelId} layout="vertical" />
+            <ResourceForm form={form} resourceTypes={resourceTypes.data} modelId={params.modelId} layout="vertical" resources={resources.data} />
         </Modal>
     );
 };

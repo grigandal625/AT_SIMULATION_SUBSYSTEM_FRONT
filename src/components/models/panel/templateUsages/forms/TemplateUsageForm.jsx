@@ -3,7 +3,7 @@ import { Col, Form, Input, Row, Select, Button, Empty } from "antd";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import ResourcesFormList from "./resources/ResourcesList";
-import { requiredRule } from "../../../../../utils/validators/general";
+import { requiredRule, itemUniqueBetweenRule } from "../../../../../utils/validators/general";
 import { goIdentifierRule } from "../../../../../utils/validators/go";
 
 const TemplateSelect = ({ value, onChange, templates, onSelect, modelId }) => {
@@ -34,7 +34,7 @@ const TemplateSelect = ({ value, onChange, templates, onSelect, modelId }) => {
     );
 };
 
-export default ({ form, resources, templates, modelId, ...formProps }) => {
+export default ({ form, resources, templates, modelId, templateUsages, ...formProps }) => {
     const [actualForm] = form ? [form] : Form.useForm();
     const [selectedTemplate, setSelectedTemplate] = useState(actualForm.getFieldValue("template_id"));
 
@@ -69,11 +69,17 @@ export default ({ form, resources, templates, modelId, ...formProps }) => {
         }
     }, [templates, template]);
 
+    const getItems = () => (templateUsages || []).filter(item => item.id !== actualForm.getFieldValue("id"))
+    const getValue = () => actualForm.getFieldsValue()
+    const compare = (v, i) => v.name === i.name;
+
+    const uniqueRule = itemUniqueBetweenRule(getValue, getItems, compare)
+
     return (
         <Form form={actualForm} {...formProps}>
             <Form.Item name="id" hidden />
             <Form.Item name="model_id" hidden />
-            <Form.Item name="name" label="Имя операции" rules={[requiredRule, goIdentifierRule]}>
+            <Form.Item name="name" label="Имя операции" rules={[requiredRule, goIdentifierRule, uniqueRule]}>
                 <Input placeholder="Укажите имя операции" />
             </Form.Item>
             <Form.Item name="template_id" label="Образец" rules={[requiredRule]}>

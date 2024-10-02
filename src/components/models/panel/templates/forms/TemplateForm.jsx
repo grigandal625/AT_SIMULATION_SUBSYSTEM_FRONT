@@ -6,10 +6,10 @@ import { useState } from "react";
 import OperationBody from "./body/OperationBody";
 import RuleBody from "./body/RuleBody";
 import { Link } from "react-router-dom";
-import { itemLengthRequiredRule, requiredRule } from "../../../../../utils/validators/general";
+import { itemLengthRequiredRule, requiredRule, itemUniqueBetweenRule } from "../../../../../utils/validators/general";
 import { goIdentifierRule } from "../../../../../utils/validators/go";
 
-const RelevantResourcesList = ({ fields, add, remove, resourceTypes, relevantResources, setRelevantResources, modelId }) => {
+const RelevantResourcesList = ({ form, fields, add, remove, resourceTypes, relevantResources, setRelevantResources, modelId }) => {
     const {
         token: { borderRadius, colorInfoBg },
     } = theme.useToken();
@@ -25,13 +25,19 @@ const RelevantResourcesList = ({ fields, add, remove, resourceTypes, relevantRes
         label: resourceType.name,
     }));
 
+    const getItems = (index) => () => (form.getFieldValue(["meta", "rel_resources"]) || []).filter((_, i) => i !== index);
+    const getValue = (index) => () => form.getFieldValue(["meta", "rel_resources"])[index];
+    const compare = (v, i) => v.name === i.name;
+
+    const uniqueRule = (index) => itemUniqueBetweenRule(getValue(index), getItems(index), compare);
+
     return (
         <Space wrap={true}>
             {fields.map((field, i) => (
                 <div style={{ paddingLeft: 5, paddingRight: 5, borderRadius, background: colorInfoBg }}>
                     <Row wrap align="middle" gutter={5}>
                         <Col>
-                            <TinyFormItem {...field} name={[i, "name"]} rules={[requiredRule, goIdentifierRule]}>
+                            <TinyFormItem {...field} name={[i, "name"]} rules={[requiredRule, goIdentifierRule, uniqueRule(i)]}>
                                 <Input size="small" placeholder="Имя ресурса" onChange={onResourceNameChanged(i)} />
                             </TinyFormItem>
                         </Col>
@@ -71,7 +77,7 @@ const RelevantResourcesList = ({ fields, add, remove, resourceTypes, relevantRes
     );
 };
 
-export default ({ form, resourceTypes, modelId, ...formProps }) => {
+export default ({ form, resourceTypes, modelId, templates, funcs, ...formProps }) => {
     const [actualForm] = form ? [form] : Form.useForm();
     const [selectedType, setSelectedType] = useState(actualForm.getFieldValue(["meta", "type"]));
 
@@ -96,6 +102,12 @@ export default ({ form, resourceTypes, modelId, ...formProps }) => {
         { value: "rule", label: "Правило" },
     ];
 
+    const getItems = () => (templates || []).filter((item) => item.id !== actualForm.getFieldValue("id"));
+    const getValue = () => actualForm.getFieldsValue();
+    const compare = (v, i) => v.meta.name === i.meta.name;
+
+    const uniqueRule = itemUniqueBetweenRule(getValue, getItems, compare);
+
     return (
         <Form form={actualForm} {...formProps}>
             <Form.Item hidden name={["meta", "id"]}>
@@ -103,7 +115,7 @@ export default ({ form, resourceTypes, modelId, ...formProps }) => {
             </Form.Item>
             <Row gutter={10}>
                 <Col flex={12}>
-                    <Form.Item label="Название образца операции" name={["meta", "name"]} rules={[requiredRule]}>
+                    <Form.Item label="Название образца операции" name={["meta", "name"]} rules={[requiredRule, uniqueRule]}>
                         <Input placeholder="Укажите имя образца операции" />
                     </Form.Item>
                 </Col>
@@ -124,12 +136,13 @@ export default ({ form, resourceTypes, modelId, ...formProps }) => {
                             remove={remove}
                             resourceTypes={resourceTypes}
                             modelId={modelId}
+                            form={actualForm}
                         />
                     )}
                 </Form.List>
             </Form.Item>
             <Typography.Title level={5}>Тело образца</Typography.Title>
-            <SelectedBodyItem relevantResources={relevantResources} form={actualForm} resourceTypes={resourceTypes} selectedType={selectedType} />
+            <SelectedBodyItem relevantResources={relevantResources} form={actualForm} resourceTypes={resourceTypes} selectedType={selectedType} funcs={funcs}/>
         </Form>
     );
 };

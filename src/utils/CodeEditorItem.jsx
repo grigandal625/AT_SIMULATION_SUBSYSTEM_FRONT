@@ -36,7 +36,6 @@ export const defaultEditorOptions = {
     },
     suggest: {
         showFields: false,
-        showFunctions: false,
     },
 };
 

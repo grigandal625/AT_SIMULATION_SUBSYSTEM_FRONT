@@ -11,10 +11,19 @@ export const router = createBrowserRouter(
             <Route
                 path=""
                 element={
-                    <Empty
-                        style={{ position: "relative", top: "50%", transform: "translate(0%, -50%)" }}
-                        description="Выберите файл имитационной модели для редактирования"
-                    />
+                    <Empty style={{ position: "relative", top: "50%", transform: "translate(0%, -50%)" }} description="Выберите файл имитационной модели для редактирования" />
+                }
+            />
+            <Route
+                path="/models"
+                element={
+                    <Empty style={{ position: "relative", top: "50%", transform: "translate(0%, -50%)" }} description="Выберите файл имитационной модели для редактирования" />
+                }
+            />
+            <Route
+                path="/models/new"
+                element={
+                    <Empty style={{ position: "relative", top: "50%", transform: "translate(0%, -50%)" }} description="Выберите файл имитационной модели для редактирования" />
                 }
             />
             <Route path="/models/:modelId" element={<Model />}>
@@ -24,10 +33,7 @@ export const router = createBrowserRouter(
                     <Route path="new" element={<>Предполагается модальное окно с созданием типа ресурса</>} />
                     <Route path=":resourceTypeId">
                         <Route path="" element={<>Предполагается граф с выделенным узлом-типом ресурса</>} />
-                        <Route
-                            path="edit"
-                            element={<>Предполагается модальное окно с редактированием типа ресурса</>}
-                        />
+                        <Route path="edit" element={<>Предполагается модальное окно с редактированием типа ресурса</>} />
                     </Route>
                 </Route>
                 <Route path="resources">
@@ -43,10 +49,7 @@ export const router = createBrowserRouter(
                     <Route path="new" element={<>Предполагается модальное окно с созданием образца операции</>} />
                     <Route path=":templateId">
                         <Route path="" element={<>Предполагается граф с выделенным узлом-образцом операции</>} />
-                        <Route
-                            path="edit"
-                            element={<>Предполагается модальное окно с редактированием образца операции</>}
-                        />
+                        <Route path="edit" element={<>Предполагается модальное окно с редактированием образца операции</>} />
                     </Route>
                 </Route>
                 <Route path="template-usages">

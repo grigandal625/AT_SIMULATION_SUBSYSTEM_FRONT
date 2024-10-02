@@ -3,7 +3,9 @@ import FuncForm from "../forms/FuncForm";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { SaveOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { updateFunc } from "../../../../../redux/stores/funcsStore";
+import { loadFuncs, updateFunc } from "../../../../../redux/stores/funcsStore";
+import { LOAD_STATUSES } from "../../../../../GLOBAL";
+import { useEffect } from "react";
 
 export default ({ open, ...modalProps }) => {
     const params = useParams();
@@ -12,10 +14,14 @@ export default ({ open, ...modalProps }) => {
     const [form] = Form.useForm();
 
     const funcs = useSelector((store) => store.funcs);
-    const func = funcs.data.find(
-        (func) => func.id.toString() === params.funcId
-    );
+    const func = funcs.data.find((func) => func.id.toString() === params.funcId);
     form.setFieldsValue(func);
+
+    useEffect(() => {
+        if (funcs.status !== LOAD_STATUSES.SUCCESS || funcs.modelId !== params.modelId) {
+            dispatch(loadFuncs(params.modelId));
+        }
+    }, []);
 
     return (
         <Modal
@@ -31,9 +37,7 @@ export default ({ open, ...modalProps }) => {
                         onClick={async () => {
                             try {
                                 const data = await form.validateFields();
-                                const action = await dispatch(
-                                    updateFunc({ modelId: params.modelId, func: data })
-                                );
+                                const action = await dispatch(updateFunc({ modelId: params.modelId, func: data }));
                                 const updatedFunc = action.payload;
                                 navigate(`/models/${params.modelId}/funcs/${updatedFunc.id}`);
                             } catch (err) {
@@ -50,7 +54,7 @@ export default ({ open, ...modalProps }) => {
             }
             {...modalProps}
         >
-            <FuncForm form={form} layout="vertical" />
+            <FuncForm form={form} funcs={funcs.data} layout="vertical" />
         </Modal>
     );
 };

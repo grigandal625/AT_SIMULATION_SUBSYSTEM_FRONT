@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Col, Dropdown, Menu, Row, Skeleton, Modal, Form, theme } from "antd";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useMatches } from "react-router-dom";
 import { LOAD_STATUSES } from "../GLOBAL";
 import { useEffect } from "react";
 import { createModel, deleteModel, loadModels } from "../redux/stores/modelsStore";
@@ -17,6 +17,8 @@ export default () => {
     const currentModelId = params.modelId;
     const navigate = useNavigate();
     const [createForm] = Form.useForm();
+    const matches = useMatches();
+    const createOpen = Boolean(matches.find((match) => /models\/new/g.test(match.pathname)));
 
     const {
         token: { colorInfoText },
@@ -80,7 +82,7 @@ export default () => {
         try {
             await modal.confirm({
                 title: "Создание имитационной модели",
-                content: <CreateModelForm form={createForm} layout="vertical" />,
+                content: <CreateModelForm form={createForm} layout="vertical" models={models.data} />,
                 onOk: () => handleCreate(createForm),
                 okText: "Создать",
                 cancelText: "Отмена",
@@ -116,6 +118,12 @@ export default () => {
     useEffect(() => {
         dispatch(loadModels());
     }, []);
+
+    useEffect(() => {
+        if (createOpen) {
+            setTimeout(confirmCreateModel, 500);
+        }
+    }, [createOpen]);
 
     return models.status === LOAD_STATUSES.SUCCESS ? (
         <div className="sider-model-menu-wrapper">

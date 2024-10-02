@@ -5,12 +5,12 @@ import TinyFormItem from "../../../../../../utils/TinyFormItem";
 import { requiredRule } from "../../../../../../utils/validators/general";
 // import {} from "monaco-editor/esm/vs/editor/browser/services/editorWorkerService";
 
-export default ({ relevantResources, resourceTypes }) => {
+export default ({ relevantResources, resourceTypes, funcs }) => {
 
     const editorDidMount = defaultEditorDidMount;
     const codeEditorOptions = defaultEditorOptions;
 
-    const autoComplete = makeAutoComplete(relevantResources, resourceTypes);
+    const autoComplete = makeAutoComplete(relevantResources, resourceTypes, funcs);
 
     const conditionItem = {
         key: "condition",

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import CheckboxItem from "../../../../../utils/CheckboxItem";
 import { Link } from "react-router-dom";
 import AttributesFormList from "./attributes/AttributesList";
-import { requiredRule } from "../../../../../utils/validators/general";
+import { requiredRule, itemUniqueBetweenRule } from "../../../../../utils/validators/general";
 import { goIdentifierRule } from "../../../../../utils/validators/go";
 
 const ResourceTypeSelect = ({ value, onChange, resourceTypes, onSelect, modelId }) => {
@@ -41,7 +41,7 @@ const ResourceTypeSelect = ({ value, onChange, resourceTypes, onSelect, modelId 
     );
 };
 
-export default ({ form, resourceTypes, modelId, ...formProps }) => {
+export default ({ form, resourceTypes, modelId, resources, ...formProps }) => {
     const [actualForm] = form ? [form] : Form.useForm();
 
     const [resourceType, setResourceType] = useState(resourceTypes ? resourceTypes.find((t) => t.id === actualForm.getFieldValue("resource_type_id")) : undefined);
@@ -74,6 +74,12 @@ export default ({ form, resourceTypes, modelId, ...formProps }) => {
         });
     };
 
+    const getItems = () => (resources || []).filter(item => item.id !== actualForm.getFieldValue("id"))
+    const getValue = () => actualForm.getFieldsValue()
+    const compare = (v, i) => v.name === i.name;
+
+    const uniqueRule = itemUniqueBetweenRule(getValue, getItems, compare)
+
     return (
         <Form form={actualForm} {...formProps}>
             <Form.Item name="id" hidden />
@@ -81,7 +87,7 @@ export default ({ form, resourceTypes, modelId, ...formProps }) => {
             <Form.Item name="resource_type_id" hidden />
             <Row align="bottom" gutter={5}>
                 <Col flex="auto">
-                    <Form.Item name="name" label="Имя типа ресурса" rules={[requiredRule, goIdentifierRule]}>
+                    <Form.Item name="name" label="Имя типа ресурса" rules={[requiredRule, goIdentifierRule, uniqueRule]}>
                         <Input placeholder="Укажите имя ресурса" />
                     </Form.Item>
                 </Col>

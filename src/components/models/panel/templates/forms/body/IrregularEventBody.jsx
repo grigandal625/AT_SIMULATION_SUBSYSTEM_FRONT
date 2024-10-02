@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 
-import { theme, Row, Col, Form, Select, InputNumber, Collapse } from "antd";
+import { Row, Col, Form, Select, InputNumber, Collapse } from "antd";
 import CodeEditorItem, { defaultEditorDidMount, defaultEditorOptions } from "../../../../../../utils/CodeEditorItem";
 import { makeAutoComplete } from "./autoComplete";
 import TinyFormItem from "../../../../../../utils/TinyFormItem";
 import { requiredRule } from "../../../../../../utils/validators/general";
 // import {} from "monaco-editor/esm/vs/editor/browser/services/editorWorkerService";
 
-export default ({ form, relevantResources, resourceTypes, selectedType }) => {
-    const {
-        token: { colorInfoBg },
-    } = theme.useToken();
+export default ({ form, relevantResources, resourceTypes, selectedType, funcs }) => {
+
     const options = [
         { value: "normal", label: "Нормальное распределение" },
         { value: "precise", label: "Точное число" },
@@ -35,8 +33,7 @@ export default ({ form, relevantResources, resourceTypes, selectedType }) => {
 
     const editorDidMount = defaultEditorDidMount;
     const codeEditorOptions = defaultEditorOptions;
-
-    const autoComplete = makeAutoComplete(relevantResources, resourceTypes);
+    const autoComplete = makeAutoComplete(relevantResources, resourceTypes, funcs);
 
     const generatorItem = {
         key: "generator",

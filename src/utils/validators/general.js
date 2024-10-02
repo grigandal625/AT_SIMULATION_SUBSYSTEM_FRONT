@@ -33,3 +33,11 @@ export const itemUniqueRule = (form, index, listName, compare = (v, i) => v === 
         return Promise.resolve();
     },
 });
+
+export const itemUniqueBetweenRule = (getValue, getListItems, compare = (v, i) => v === i) => ({
+    validator: () => {
+        const value = getValue();
+        const listItems = getListItems();
+        return listItems.filter((item) => compare(value, item)).length ? Promise.reject(new Error("Укажите уникальное значение")) : Promise.resolve();
+    },
+});

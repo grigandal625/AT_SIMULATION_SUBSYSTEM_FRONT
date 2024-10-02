@@ -7,6 +7,7 @@ import { updateTemplateUsage } from "../../../../../redux/stores/templateUsagesS
 import { loadTemplates } from "../../../../../redux/stores/templatesStore";
 import { useEffect } from "react";
 import { loadResources } from "../../../../../redux/stores/resourcesStore";
+import { LOAD_STATUSES } from "../../../../../GLOBAL";
 
 export default ({ open, ...modalProps }) => {
     const params = useParams();
@@ -16,14 +17,18 @@ export default ({ open, ...modalProps }) => {
 
     const templateUsages = useSelector((store) => store.templateUsages);
     const templateUsage = templateUsages.data.find((templateUsage) => templateUsage.id.toString() === params.templateUsageId);
-    console.log(templateUsage)
+    console.log(templateUsage);
     form.setFieldsValue(templateUsage);
 
     const templates = useSelector((store) => store.templates);
     const resources = useSelector((store) => store.resources);
     useEffect(() => {
-        dispatch(loadTemplates(params.modelId));
-        dispatch(loadResources(params.modelId));
+        if (resources.status !== LOAD_STATUSES.SUCCESS || resources.modelId !== params.modelId) {
+            dispatch(loadResources(params.modelId));
+        }
+        if (templates.status !== LOAD_STATUSES.SUCCESS || templates.modelId !== params.modelId) {
+            dispatch(loadTemplates(params.modelId));
+        }
     }, []);
 
     const handleEdit = async () => {
@@ -56,7 +61,7 @@ export default ({ open, ...modalProps }) => {
             }
             {...modalProps}
         >
-            <TemplateUsageForm resources={resources.data} templates={templates.data} form={form} modelId={params.modelId} layout="vertical" />
+            <TemplateUsageForm resources={resources.data} templates={templates.data} form={form} modelId={params.modelId} layout="vertical" templateUsages={templateUsages.data} />
         </Modal>
     );
 };

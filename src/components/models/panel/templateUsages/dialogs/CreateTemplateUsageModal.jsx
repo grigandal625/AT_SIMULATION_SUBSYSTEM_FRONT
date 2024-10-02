@@ -7,6 +7,7 @@ import { createTemplateUsage } from "../../../../../redux/stores/templateUsagesS
 import { useEffect } from "react";
 import { loadResources } from "../../../../../redux/stores/resourcesStore";
 import { loadTemplates } from "../../../../../redux/stores/templatesStore";
+import { LOAD_STATUSES } from "../../../../../GLOBAL";
 
 export default ({ open, ...modalProps }) => {
     const params = useParams();
@@ -15,10 +16,15 @@ export default ({ open, ...modalProps }) => {
     const [form] = Form.useForm();
     const resources = useSelector((store) => store.resources);
     const templates = useSelector((store) => store.templates);
+    const templateUsages = useSelector((store) => store.templateUsages);
 
     useEffect(() => {
-        dispatch(loadResources(params.modelId));
-        dispatch(loadTemplates(params.modelId));
+        if (resources.status !== LOAD_STATUSES.SUCCESS || resources.modelId !== params.modelId) {
+            dispatch(loadResources(params.modelId));
+        }
+        if (templates.status !== LOAD_STATUSES.SUCCESS || templates.modelId !== params.modelId) {
+            dispatch(loadTemplates(params.modelId));
+        }
     }, []);
 
     form.setFieldValue("model_id", params.modelId);
@@ -37,9 +43,7 @@ export default ({ open, ...modalProps }) => {
                         onClick={async () => {
                             try {
                                 const data = await form.validateFields();
-                                const action = await dispatch(
-                                    createTemplateUsage({ modelId: params.modelId, templateUsage: data })
-                                );
+                                const action = await dispatch(createTemplateUsage({ modelId: params.modelId, templateUsage: data }));
                                 const templateUsage = action.payload;
                                 navigate(`/models/${params.modelId}/template-usages/${templateUsage.id}`);
                             } catch (e) {
@@ -56,13 +60,7 @@ export default ({ open, ...modalProps }) => {
             }
             {...modalProps}
         >
-            <TemplateUsageForm
-                modelId={params.modelId}
-                form={form}
-                resources={resources.data}
-                templates={templates.data}
-                layout="vertical"
-            />
+            <TemplateUsageForm modelId={params.modelId} form={form} resources={resources.data} templates={templates.data} layout="vertical" templateUsages={templateUsages.data} />
         </Modal>
     );
 };

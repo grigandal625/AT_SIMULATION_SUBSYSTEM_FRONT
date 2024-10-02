@@ -1,7 +1,9 @@
 import { AutoComplete } from "antd";
 
+export const goIdentifierRegexp = /^([a-zA-Zа-яА-Я_](\w|[а-яА-Я])*)$/
+
 export const isValidGoIdentifier = (name) => {
-    return /^([a-zA-Zа-яА-Я_](\w|[а-яА-Я])*)$/.test(name);
+    return goIdentifierRegexp.test(name);
 };
 
 const options = [

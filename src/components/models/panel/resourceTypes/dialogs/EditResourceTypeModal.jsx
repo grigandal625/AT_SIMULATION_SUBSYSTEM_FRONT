@@ -3,7 +3,9 @@ import ResourceTypeForm from "../forms/ResourceTypeForm";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { SaveOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { updateResourceType } from "../../../../../redux/stores/resourceTypesStore";
+import { loadResourceTypes, updateResourceType } from "../../../../../redux/stores/resourceTypesStore";
+import { useEffect } from "react";
+import { LOAD_STATUSES } from "../../../../../GLOBAL";
 
 export default ({ open, ...modalProps }) => {
     const params = useParams();
@@ -16,6 +18,12 @@ export default ({ open, ...modalProps }) => {
         (resourceType) => resourceType.id.toString() === params.resourceTypeId
     );
     form.setFieldsValue(resourceType);
+
+    useEffect(() => {
+        if (resourceTypes.status !== LOAD_STATUSES.SUCCESS || resourceTypes.modelId !== params.modelId) {
+            dispatch(loadResourceTypes(params.modelId));
+        }
+    }, [])
 
     return (
         <Modal
@@ -50,7 +58,7 @@ export default ({ open, ...modalProps }) => {
             }
             {...modalProps}
         >
-            <ResourceTypeForm form={form} layout="vertical" />
+            <ResourceTypeForm form={form} layout="vertical" resourceTypes={resourceTypes.data}/>
         </Modal>
     );
 };

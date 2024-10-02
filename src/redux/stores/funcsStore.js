@@ -26,7 +26,7 @@ export const loadFuncs = createAsyncThunk("funcs/load", async (modelId) => {
         ],
         total: 0,
     };
-    return json.functions;
+    return {items: json.functions, modelId};
 });
 
 export const createFunc = createAsyncThunk("funcs/create", async ({ modelId, func }) => {
@@ -77,6 +77,7 @@ const funcsSlice = createSlice({
         data: [],
         status: LOAD_STATUSES.IDLE,
         error: null,
+        modelId: null,
     },
     reducers: {
         // Define reducers here
@@ -88,7 +89,8 @@ const funcsSlice = createSlice({
             })
             .addCase(loadFuncs.fulfilled, (state, action) => {
                 state.status = LOAD_STATUSES.SUCCESS;
-                state.data = action.payload;
+                state.data = action.payload.items;
+                state.modelId = action.payload.modelId;
             })
             .addCase(createFunc.pending, (state) => {
                 state.status = LOAD_STATUSES.LOADING;

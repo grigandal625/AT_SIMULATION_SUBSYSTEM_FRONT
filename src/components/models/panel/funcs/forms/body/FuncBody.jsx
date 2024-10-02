@@ -11,14 +11,12 @@ import { goIdentifierRule } from "../../../../../../utils/validators/go";
 
 const ParametersList = ({ fields, parameters, setParameters, add, remove }) => {
     const handleParameterNameChanged = (index) => (e) => {
-        debugger;
         const newParameters = [...parameters];
         newParameters[index] = { ...newParameters[index], name: e.target.value };
         setParameters(newParameters);
     };
 
     const handleParameterTypeChanged = (index) => (type) => {
-        debugger;
         const newParameters = [...parameters];
         newParameters[index] = { ...newParameters[index], type };
         setParameters(newParameters);
@@ -78,7 +76,7 @@ const ParametersList = ({ fields, parameters, setParameters, add, remove }) => {
     );
 };
 
-export default ({ form }) => {
+export default ({ form, funcs }) => {
     const [parameters, setParameters] = useState(form.getFieldValue("params") || []);
 
     const paramsItem = {
@@ -105,7 +103,16 @@ export default ({ form }) => {
             detail: "Параметр функции",
         }));
 
-        return suggestions;
+        const filteredFuncs = (funcs || []).filter((func) => func?.name && isValidGoIdentifier(func.name) && func.name.includes(word?.word || word));
+
+        const funcSuggestions = filteredFuncs.map((func) => ({
+            label: func.name,
+            kind: languages.CompletionItemKind.Function,
+            insertText: func.name,
+            detail: "Функция",
+        }));
+
+        return suggestions.concat(funcSuggestions);
     };
     const editorDidMount = defaultEditorDidMount;
     const codeEditorOptions = defaultEditorOptions;

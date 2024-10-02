@@ -26,7 +26,7 @@ export const loadTemplateUsages = createAsyncThunk("templateUsages/load", async 
         ],
         total: 0,
     };
-    return json.usages;
+    return { items: json.usages, modelId };
 });
 
 export const createTemplateUsage = createAsyncThunk("templateUsages/create", async ({ modelId, templateUsage }) => {
@@ -79,6 +79,7 @@ const templateUsagesSlice = createSlice({
         data: [],
         status: LOAD_STATUSES.IDLE,
         error: null,
+        modelId: null,
     },
     reducers: {
         // Define reducers here
@@ -90,7 +91,8 @@ const templateUsagesSlice = createSlice({
             })
             .addCase(loadTemplateUsages.fulfilled, (state, action) => {
                 state.status = LOAD_STATUSES.SUCCESS;
-                state.data = action.payload;
+                state.data = action.payload.items;
+                state.modelId = action.payload.modelId;
             })
             .addCase(createTemplateUsage.pending, (state) => {
                 state.status = LOAD_STATUSES.LOADING;

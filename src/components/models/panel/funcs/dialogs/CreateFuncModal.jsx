@@ -2,14 +2,24 @@ import { Button, Form, Modal, Space } from "antd";
 import FuncForm from "../forms/FuncForm";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { PlusOutlined } from "@ant-design/icons";
-import { useDispatch} from "react-redux";
-import { createFunc} from "../../../../../redux/stores/funcsStore";
+import { useDispatch, useSelector } from "react-redux";
+import { createFunc, loadFuncs } from "../../../../../redux/stores/funcsStore";
+import { useEffect } from "react";
+import { LOAD_STATUSES } from "../../../../../GLOBAL";
 
 export default ({ open, ...modalProps }) => {
     const params = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [form] = Form.useForm();
+
+    const funcs = useSelector((store) => store.funcs);
+
+    useEffect(() => {
+        if (funcs.status !== LOAD_STATUSES.SUCCESS || funcs.modelId !== params.modelId) {
+            dispatch(loadFuncs(params.modelId));
+        }
+    }, []);
 
     form.setFieldValue("model_id", params.modelId);
 
@@ -27,9 +37,7 @@ export default ({ open, ...modalProps }) => {
                         onClick={async () => {
                             try {
                                 const data = await form.validateFields();
-                                const action = await dispatch(
-                                    createFunc({ modelId: params.modelId, func: data })
-                                );
+                                const action = await dispatch(createFunc({ modelId: params.modelId, func: data }));
                                 const func = action.payload;
                                 navigate(`/models/${params.modelId}/funcs/${func.id}`);
                             } catch (e) {
@@ -46,7 +54,7 @@ export default ({ open, ...modalProps }) => {
             }
             {...modalProps}
         >
-            <FuncForm form={form} layout="vertical" />
+            <FuncForm form={form} layout="vertical" funcs={funcs.data}/>
         </Modal>
     );
 };
