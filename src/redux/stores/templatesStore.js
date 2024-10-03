@@ -88,7 +88,7 @@ export const loadTemplates = createAsyncThunk("templates/load", async (modelId) 
 });
 
 export const createTemplate = createAsyncThunk("templates/create", async ({ modelId, template }) => {
-    const url = `${API_URL}/api/editor/templates/${template.type}/`;
+    const url = `${API_URL}/api/editor/templates/${template.meta.type}/`;
     const headers = getHeaders({ "model-id": modelId });
     if (MOCKING) {
         console.log(url, {
@@ -114,7 +114,7 @@ export const createTemplate = createAsyncThunk("templates/create", async ({ mode
 });
 
 export const updateTemplate = createAsyncThunk("templates/update", async ({ modelId, template }) => {
-    const url = `${API_URL}/api/editor/templates/${template.meta.id}/${template.type}/`;
+    const url = `${API_URL}/api/editor/templates/${template.meta.id}/${template.meta.type}/`;
     const headers = getHeaders({ "model-id": modelId });
 
     if (MOCKING) {
