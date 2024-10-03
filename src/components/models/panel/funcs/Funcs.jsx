@@ -10,7 +10,7 @@ import "../PanelMenu.css";
 import CreateFuncModal from "./dialogs/CreateFuncModal";
 import EditFuncModal from "./dialogs/EditFuncModal";
 
-export default () => {
+export default ({ closed }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [modal, contextHandler] = Modal.useModal();
@@ -44,8 +44,7 @@ export default () => {
         },
     ];
 
-    const handleEditFunc = (func) =>
-        navigate(`/models/${params.modelId}/funcs/${func.id}/edit`);
+    const handleEditFunc = (func) => navigate(`/models/${params.modelId}/funcs/${func.id}/edit`);
 
     const handleDuplicateFunc = async (func) => {
         // duplicate func
@@ -79,9 +78,11 @@ export default () => {
         delete: confirmDeleteFunc,
     };
 
+    const className = closed ? ["model-item-menu", "closed"] : ["model-item-menu"];
+
     return funcs.status === LOAD_STATUSES.SUCCESS ? (
         <div>
-            <div className="model-item-menu">
+            <div className={className.join(' ')}>
                 <Menu
                     selectedKeys={[params.funcId]}
                     items={funcs.data.map((func) => {
@@ -90,9 +91,7 @@ export default () => {
                             label: (
                                 <Row style={{ width: "100%" }} gutter={10}>
                                     <Col flex="auto">
-                                        <Link to={`/models/${params.modelId}/funcs/${func.id}`}>
-                                            {func.name}
-                                        </Link>
+                                        <Link to={`/models/${params.modelId}/funcs/${func.id}`}>{func.name}</Link>
                                     </Col>
                                     <Col>
                                         <Dropdown

@@ -1,75 +1,108 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { API_URL, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
+import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 
 export const loadTemplateUsages = createAsyncThunk("templateUsages/load", async (modelId) => {
     const url = `${API_URL}/api/editor/templates/usages/`;
     const headers = getHeaders({ "model-id": modelId });
-    // const response = await fetch(url, {
-    //     headers
-    // })
-    // const json = await response.json()
 
-    const json = {
-        usages: [
-            {
-                id: 1,
-                name: "usage1",
-                template_id: 1,
-                arguments: [
-                    {
-                        id: 1,
-                        relevant_resource_id: 1,
-                        resource_id: 1,
-                    },
-                ],
-            },
-        ],
-        total: 0,
-    };
+    if (MOCKING) {
+        console.log(url, {
+            headers,
+        });
+        const json = {
+            usages: [
+                {
+                    id: 1,
+                    name: "usage1",
+                    template_id: 1,
+                    arguments: [
+                        {
+                            id: 1,
+                            relevant_resource_id: 1,
+                            resource_id: 1,
+                        },
+                    ],
+                },
+            ],
+            total: 0,
+        };
+        return { items: json.usages, modelId };
+    }
+
+    const response = await fetch(url, {
+        headers,
+    });
+    const json = await response.json();
     return { items: json.usages, modelId };
 });
 
 export const createTemplateUsage = createAsyncThunk("templateUsages/create", async ({ modelId, templateUsage }) => {
     const url = `${API_URL}/api/editor/templates/usages/`;
     const headers = getHeaders({ "model-id": modelId });
-    // const response = await fetch(url, {
-    //     method: "POST",
-    //     headers,
-    //     body: JSON.stringify(templateUsage),
-    // });
-    // const json = await response.json();
-    const json = templateUsage;
 
-    if (!json.id) {
-        json.id = Math.floor(Math.random() * 10000) + 1;
+    if (MOCKING) {
+        console.log(url, {
+            method: "POST",
+            headers,
+            body: JSON.stringify(templateUsage),
+        });
+        const json = templateUsage;
+
+        if (!json.id) {
+            json.id = Math.floor(Math.random() * 10000) + 1;
+        }
+        return json;
     }
+    const response = await fetch(url, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(templateUsage),
+    });
+    const json = await response.json();
     return json;
 });
 
 export const updateTemplateUsage = createAsyncThunk("templateUsages/update", async ({ modelId, templateUsage }) => {
     const url = `${API_URL}/api/editor/templates/usages/${templateUsage.id}/`;
     const headers = getHeaders({ "model-id": modelId });
-    // const response = await fetch(url, {
-    //     method: "PUT",
-    //     headers,
-    //     body: JSON.stringify(templateUsage),
-    // });
-    // const json = await response.json();
-    const json = templateUsage;
 
+    if (MOCKING) {
+        console.log(url, {
+            method: "PUT",
+            headers,
+            body: JSON.stringify(templateUsage),
+        });
+        const json = templateUsage;
+        return json;
+    }
+
+    const response = await fetch(url, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify(templateUsage),
+    });
+    const json = await response.json();
     return json;
 });
 
 export const deleteTemplateUsage = createAsyncThunk("templateUsages/delete", async ({ modelId, templateUsageId }) => {
     const url = `${API_URL}/api/editor/templates/usages/${templateUsageId}/`;
     const headers = getHeaders({ "model-id": modelId });
-    // const response = await fetch(url, {
-    //     method: "DELETE",
-    //     headers,
-    // });
-    // const json = await response.json();
-    const json = { id: templateUsageId };
 
+    if (MOCKING) {
+        console.log(url, {
+            method: "DELETE",
+            headers,
+        });
+        const json = { id: templateUsageId };
+        return json.id;
+    }
+
+    const response = await fetch(url, {
+        method: "DELETE",
+        headers,
+    });
+    const json = await response.json();
     return json.id;
 });
 

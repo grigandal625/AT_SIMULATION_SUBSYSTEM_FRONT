@@ -10,7 +10,7 @@ import "../PanelMenu.css";
 import CreateResourceTypeModal from "./dialogs/CreateResourceTypeModal";
 import EditResourceTypeModal from "./dialogs/EditResourceTypeModal";
 
-export default () => {
+export default ({ closed }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [modal, contextHandler] = Modal.useModal();
@@ -44,8 +44,7 @@ export default () => {
         },
     ];
 
-    const handleEditResourceType = (resourceType) =>
-        navigate(`/models/${params.modelId}/resource-types/${resourceType.id}/edit`);
+    const handleEditResourceType = (resourceType) => navigate(`/models/${params.modelId}/resource-types/${resourceType.id}/edit`);
 
     const handleDuplicateResourceType = async (resourceType) => {
         // duplicate resourceType
@@ -79,9 +78,11 @@ export default () => {
         delete: confirmDeleteResourceType,
     };
 
+    const className = closed ? ["model-item-menu", "closed"] : ["model-item-menu"];
+
     return resourceTypes.status === LOAD_STATUSES.SUCCESS ? (
         <div>
-            <div className="model-item-menu">
+            <div className={className.join(' ')}>
                 <Menu
                     selectedKeys={[params.resourceTypeId]}
                     items={resourceTypes.data.map((resourceType) => {
@@ -90,9 +91,7 @@ export default () => {
                             label: (
                                 <Row style={{ width: "100%" }} gutter={10}>
                                     <Col flex="auto">
-                                        <Link to={`/models/${params.modelId}/resource-types/${resourceType.id}`}>
-                                            {resourceType.name}
-                                        </Link>
+                                        <Link to={`/models/${params.modelId}/resource-types/${resourceType.id}`}>{resourceType.name}</Link>
                                     </Col>
                                     <Col>
                                         <Dropdown

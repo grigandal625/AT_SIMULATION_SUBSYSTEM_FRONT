@@ -1,131 +1,165 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { API_URL, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
+import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 
 export const loadResourceTypes = createAsyncThunk("resourceTypes/load", async (modelId) => {
     const url = `${API_URL}/api/editor/resources/types/`;
     const headers = getHeaders({ "model-id": modelId });
-    // const response = await fetch(url, {
-    //     headers
-    // })
-    // const json = await response.json()
 
-    const json = {
-        resource_types: [
-            {
-                name: "type1",
-                type: "constant",
-                attributes: [
-                    {
-                        id: 1,
-                        name: "attr1",
-                        type: "int",
-                        default_value: 5,
-                    },
-                    {
-                        id: 2,
-                        name: "attr2",
-                        type: "float",
-                        default_value: 5.0,
-                    },
-                    {
-                        id: 3,
-                        name: "attr3",
-                        type: "bool",
-                        default_value: true,
-                    },
-                    {
-                        id: 4,
-                        name: "attr4",
-                        type: "enum",
-                        enum_values_set: ["hello", "world"],
-                        default_value: "hello",
-                    },
-                ],
-                id: 1,
-            },
-            {
-                name: "type2",
-                type: "temporal",
-                attributes: [
-                    {
-                        id: 5,
-                        name: "attr1",
-                        type: "int",
-                        default_value: 5,
-                    },
-                    {
-                        id: 6,
-                        name: "attr2",
-                        type: "float",
-                        default_value: 5.0,
-                    },
-                    {
-                        id: 7,
-                        name: "attr3",
-                        type: "bool",
-                        default_value: true,
-                    },
-                    {
-                        id: 8,
-                        name: "attr4",
-                        type: "enum",
-                        enum_values_set: ["hello", "world"],
-                        default_value: "hello",
-                    },
-                ],
-                id: 2,
-            },
-        ],
-        total: 0,
-    };
+    if (MOCKING) {
+        console.log(url, {
+            headers,
+        });
+        const json = {
+            resource_types: [
+                {
+                    name: "type1",
+                    type: "constant",
+                    attributes: [
+                        {
+                            id: 1,
+                            name: "attr1",
+                            type: "int",
+                            default_value: 5,
+                        },
+                        {
+                            id: 2,
+                            name: "attr2",
+                            type: "float",
+                            default_value: 5.0,
+                        },
+                        {
+                            id: 3,
+                            name: "attr3",
+                            type: "bool",
+                            default_value: true,
+                        },
+                        {
+                            id: 4,
+                            name: "attr4",
+                            type: "enum",
+                            enum_values_set: ["hello", "world"],
+                            default_value: "hello",
+                        },
+                    ],
+                    id: 1,
+                },
+                {
+                    name: "type2",
+                    type: "temporal",
+                    attributes: [
+                        {
+                            id: 5,
+                            name: "attr1",
+                            type: "int",
+                            default_value: 5,
+                        },
+                        {
+                            id: 6,
+                            name: "attr2",
+                            type: "float",
+                            default_value: 5.0,
+                        },
+                        {
+                            id: 7,
+                            name: "attr3",
+                            type: "bool",
+                            default_value: true,
+                        },
+                        {
+                            id: 8,
+                            name: "attr4",
+                            type: "enum",
+                            enum_values_set: ["hello", "world"],
+                            default_value: "hello",
+                        },
+                    ],
+                    id: 2,
+                },
+            ],
+            total: 0,
+        };
+        return { items: json.resource_types, modelId };
+    }
 
-    return {items: json.resource_types, modelId};
+    const response = await fetch(url, {
+        headers,
+    });
+    const json = await response.json();
+
+    return { items: json.resource_types, modelId };
 });
 
 export const createResourceType = createAsyncThunk("resourceTypes/create", async ({ modelId, resourceType }) => {
     const url = `${API_URL}/api/editor/resources/types/`;
     const headers = getHeaders({ "model-id": modelId });
-    // const response = await fetch(url, {
-    //     method: "POST",
-    //     headers,
-    //     body: JSON.stringify(resourceType),
-    // });
-    // const json = await response.json();
-    const json = resourceType;
 
-    if (!json.id) {
-        json.id = Math.floor(Math.random() * 10000) + 1;
+    if (MOCKING) {
+        console.log(url, {
+            method: "POST",
+            headers,
+            body: JSON.stringify(resourceType),
+        });
+        const json = resourceType;
+
+        if (!json.id) {
+            json.id = Math.floor(Math.random() * 10000) + 1;
+        }
+        json.attributes = json.attributes.map((attr) => ({
+            ...attr,
+            id: attr.id || Math.floor(Math.random() * 10000) + 1,
+        }));
+        return json;
     }
-    json.attributes = json.attributes.map((attr) => ({
-        ...attr,
-        id: attr.id || Math.floor(Math.random() * 10000) + 1,
-    }));
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(resourceType),
+    });
+    const json = await response.json();
     return json;
 });
 
 export const updateResourceType = createAsyncThunk("resourceTypes/update", async ({ modelId, resourceType }) => {
     const url = `${API_URL}/api/editor/resources/types/${resourceType.id}/`;
     const headers = getHeaders({ "model-id": modelId });
-    // const response = await fetch(url, {
-    //     method: "PUT",
-    //     headers,
-    //     body: JSON.stringify(resourceType),
-    // });
-    // const json = await response.json();
-    const json = resourceType;
 
+    if (MOCKING) {
+        console.log(url, {
+            method: "PUT",
+            headers,
+            body: JSON.stringify(resourceType),
+        });
+        const json = resourceType;
+        return json;
+    }
+
+    const response = await fetch(url, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify(resourceType),
+    });
+    const json = await response.json();
     return json;
 });
 
 export const deleteResourceType = createAsyncThunk("resourceTypes/delete", async ({ modelId, resourceTypeId }) => {
     const url = `${API_URL}/api/editor/resources/types/${resourceTypeId}/`;
     const headers = getHeaders({ "model-id": modelId });
-    // const response = await fetch(url, {
-    //     method: "DELETE",
-    //     headers,
-    // });
-    // const json = await response.json();
-    const json = { id: resourceTypeId };
+    if (MOCKING) {
+        console.log(url, {
+            method: "DELETE",
+            headers,
+        });
+        const json = { id: resourceTypeId };
+        return json.id;
+    }
+
+    const response = await fetch(url, {
+        method: "DELETE",
+        headers,
+    });
+    const json = await response.json();
     return json.id;
 });
 

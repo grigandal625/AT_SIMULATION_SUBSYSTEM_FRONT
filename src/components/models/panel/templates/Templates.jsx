@@ -10,7 +10,7 @@ import "../PanelMenu.css";
 import CreateTemplateModal from "./dialogs/CreateTemplateModal";
 import EditTemplateModal from "./dialogs/EditTemplateModal";
 
-export default () => {
+export default ({ closed }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [modal, contextHandler] = Modal.useModal();
@@ -78,9 +78,11 @@ export default () => {
         delete: confirmDeleteTemplate,
     };
 
+    const className = closed ? ["model-item-menu", "closed"] : ["model-item-menu"];
+
     return templates.status === LOAD_STATUSES.SUCCESS ? (
         <div>
-            <div className="model-item-menu">
+            <div className={className.join(' ')}>
                 <Menu
                     selectedKeys={[params.templateId]}
                     items={templates.data.map((template) => {

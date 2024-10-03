@@ -1,13 +1,16 @@
 import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements } from "react-router-dom";
-import { Empty } from "antd";
+import { Empty, Result } from "antd";
 
 import Layout from "./components/Layout";
 import NotFound from "./components/NotFound";
 import Model from "./components/models/Model";
+import Token from "./components/Token";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="" element={<Layout />} errorElement={<NotFound />}>
+            <Route path="/token" element={<Token />} />
+            <Route path="/not-authorized" element={<Result status="error" title="Вы не авторизованы" />} />
             <Route
                 path=""
                 element={

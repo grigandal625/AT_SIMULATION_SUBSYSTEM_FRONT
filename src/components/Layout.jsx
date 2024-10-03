@@ -1,7 +1,7 @@
-import { Col, Flex, Layout, Row, Splitter, Typography } from "antd";
+import { Layout, Splitter, Typography } from "antd";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useMatches, useNavigate } from "react-router-dom";
 import ModelsMenu from "./ModelsMenu";
 
 const Main = () => {
@@ -12,7 +12,20 @@ const Main = () => {
             setSizes([sizes[0], window.innerWidth - sizes[0]]);
         });
     }, [sizes[0]]);
-    return (
+
+    const matches = useMatches();
+    const authenticationNow = Boolean(matches.find((match) => /^\/token/g.test(match.pathname)));
+    const token = window.sessionStorage.getItem("token");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!token && !authenticationNow) {
+            navigate("/not-authorized");
+        }
+    }, []);
+    return !token ? (
+        <Outlet />
+    ) : (
         <Splitter
             onResize={(v) => {
                 if (sizes[0] === 0 && v[0] - sizes[0] > 50) {
@@ -48,6 +61,10 @@ const Main = () => {
 };
 
 export default () => {
+    const token = window.localStorage.getItem("token");
+    if (token) {
+        window.sessionStorage.setItem("token", token);
+    }
     return (
         <Layout>
             <Layout.Header>

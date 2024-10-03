@@ -1,73 +1,108 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { API_URL, getHeaders, LOAD_STATUSES } from "../../GLOBAL";
+import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 
 export const loadFuncs = createAsyncThunk("funcs/load", async (modelId) => {
     const url = `${API_URL}/api/editor/functions/`;
     const headers = getHeaders({ "model-id": modelId });
-    // const response = await fetch(url, {
-    //     headers
-    // })
-    // const json = await response.json()
 
-    const json = {
-        functions: [
-            {
-                id: 1,
-                name: "square",
-                ret_type: "float",
-                body: "return x*x",
-                params: [
-                    {
-                        name: "x",
-                        type: "float",
-                    },
-                ],
-            },
-        ],
-        total: 0,
-    };
-    return {items: json.functions, modelId};
+    if (MOCKING) {
+        console.log(url, {
+            headers,
+        });
+        const json = {
+            functions: [
+                {
+                    id: 1,
+                    name: "square",
+                    ret_type: "float",
+                    body: "return x*x",
+                    params: [
+                        {
+                            name: "x",
+                            type: "float",
+                        },
+                    ],
+                },
+            ],
+            total: 0,
+        };
+        return { items: json.functions, modelId };
+    }
+    const response = await fetch(url, {
+        headers,
+    });
+    const json = await response.json();
+    return { items: json.functions, modelId };
 });
 
 export const createFunc = createAsyncThunk("funcs/create", async ({ modelId, func }) => {
     const url = `${API_URL}/api/editor/functions/`;
     const headers = getHeaders({ "model-id": modelId });
-    // const response = await fetch(url, {
-    //     method: "POST",
-    //     headers,
-    //     body: JSON.stringify(func),
-    // });
-    // const json = await response.json();
-    const json = func;
 
-    if (!json.id) {
-        json.id = Math.floor(Math.random() * 10000) + 1;
+    if (MOCKING) {
+        console.log(url, {
+            method: "POST",
+            headers,
+            body: JSON.stringify(func),
+        });
+        const json = func;
+
+        if (!json.id) {
+            json.id = Math.floor(Math.random() * 10000) + 1;
+        }
+        return json;
     }
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(func),
+    });
+    const json = await response.json();
     return json;
 });
 
 export const updateFunc = createAsyncThunk("funcs/update", async ({ modelId, func }) => {
     const url = `${API_URL}/api/editor/functions/${func.id}/`;
     const headers = getHeaders({ "model-id": modelId });
-    // const response = await fetch(url, {
-    //     method: "PUT",
-    //     headers,
-    //     body: JSON.stringify(func),
-    // });
-    // const json = await response.json();
-    const json = func;
+
+    if (MOCKING) {
+        console.log(url, {
+            method: "PUT",
+            headers,
+            body: JSON.stringify(func),
+        });
+        const json = func;
+        return json;
+    }
+
+    const response = await fetch(url, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify(func),
+    });
+    const json = await response.json();
     return json;
 });
 
 export const deleteFunc = createAsyncThunk("funcs/delete", async ({ modelId, funcId }) => {
     const url = `${API_URL}/api/editor/functions/${funcId}/`;
     const headers = getHeaders({ "model-id": modelId });
-    // const response = await fetch(url, {
-    //     method: "DELETE",
-    //     headers,
-    // });
-    // const json = await response.json();
-    const json = { id: funcId };
+
+    if (MOCKING) {
+        console.log(url, {
+            method: "DELETE",
+            headers,
+        });
+        const json = { id: funcId };
+        return json.id;
+    }
+
+    const response = await fetch(url, {
+        method: "DELETE",
+        headers,
+    });
+    const json = await response.json();
     return json.id;
 });
 

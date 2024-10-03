@@ -10,7 +10,7 @@ import "../PanelMenu.css";
 import CreateTemplateUsageModal from "./dialogs/CreateTemplateUsageModal";
 import EditTemplateUsageModal from "./dialogs/EditTemplateUsageModal";
 
-export default () => {
+export default ({closed}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [modal, contextHandler] = Modal.useModal();
@@ -25,7 +25,7 @@ export default () => {
         dispatch(loadTemplateUsages(params.modelId));
     }, []);
 
-    const dropDownItems = (templateUsage) => [
+    const dropDownItems = () => [
         {
             key: "edit",
             label: "Редактировать",
@@ -44,8 +44,7 @@ export default () => {
         },
     ];
 
-    const handleEditTemplateUsage = (templateUsage) =>
-        navigate(`/models/${params.modelId}/template-usages/${templateUsage.id}/edit`);
+    const handleEditTemplateUsage = (templateUsage) => navigate(`/models/${params.modelId}/template-usages/${templateUsage.id}/edit`);
 
     const handleDuplicateTemplateUsage = async (templateUsage) => {
         // duplicate templateUsage
@@ -79,20 +78,20 @@ export default () => {
         delete: confirmDeleteTemplateUsage,
     };
 
+    const className = closed ? ["model-item-menu", "closed"] : ["model-item-menu"];
+
     return templateUsages.status === LOAD_STATUSES.SUCCESS ? (
         <div>
-            <div className="model-item-menu">
+            <div className={className.join(' ')}>
                 <Menu
                     selectedKeys={[params.templateUsageId]}
                     items={templateUsages.data.map((templateUsage) => {
                         return {
                             key: templateUsage.id.toString(),
                             label: (
-                                <Row style={{ width: "100%" }} gutter={10}>
+                                <Row wrap={false} style={{ width: "100%" }} gutter={10}>
                                     <Col flex="auto">
-                                        <Link to={`/models/${params.modelId}/template-usages/${templateUsage.id}`}>
-                                            {templateUsage.name}
-                                        </Link>
+                                        <Link to={`/models/${params.modelId}/template-usages/${templateUsage.id}`}>{templateUsage.name}</Link>
                                     </Col>
                                     <Col>
                                         <Dropdown

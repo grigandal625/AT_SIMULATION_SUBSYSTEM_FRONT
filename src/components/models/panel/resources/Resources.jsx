@@ -10,7 +10,7 @@ import "../PanelMenu.css";
 import CreateResourceModal from "./dialogs/CreateResourceModal";
 import EditResourceModal from "./dialogs/EditResourceModal";
 
-export default () => {
+export default ({closed}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [modal, contextHandler] = Modal.useModal();
@@ -79,9 +79,11 @@ export default () => {
         delete: confirmDeleteResource,
     };
 
+    const className = closed ? ["model-item-menu", "closed"] : ["model-item-menu"];
+
     return resources.status === LOAD_STATUSES.SUCCESS ? (
         <div>
-            <div className="model-item-menu">
+            <div className={className.join(' ')}>
                 <Menu
                     selectedKeys={[params.resourceId]}
                     items={resources.data.map((resource) => {

@@ -32,31 +32,31 @@ export default ({ panelOpen }) => {
                     {
                         key: "resource-types",
                         label: <div style={tabStyle}>Типы ресурсов</div>,
-                        children: <ResourceTypes />,
+                        children: <ResourceTypes closed={!panelOpen} />,
                     },
                     {
                         key: "resources",
                         label: <div style={tabStyle}>Ресурсы</div>,
-                        children: <Resources />,
+                        children: <Resources closed={!panelOpen} />,
                     },
                     {
                         key: "templates",
                         label: <div style={tabStyle}>Образцы операций</div>,
-                        children: <Templates />,
+                        children: <Templates closed={!panelOpen} />,
                     },
                     {
                         key: "template-usages",
                         label: <div style={tabStyle}>Операции</div>,
-                        children: <TemplateUsages />,
+                        children: <TemplateUsages closed={!panelOpen} />,
                     },
                     {
                         key: "funcs",
                         label: <div style={tabStyle}>Функции</div>,
-                        children: <Funcs />,
+                        children: <Funcs closed={!panelOpen} />,
                     },
                 ]}
             />
-            {!defaultActiveKey && panelOpen ? <Empty description="Выберите сущность ИМ"/> :<></>}
+            {!defaultActiveKey && panelOpen ? <Empty description="Выберите сущность ИМ" /> : <></>}
         </div>
     );
 };
