@@ -3,4 +3,5 @@ build:
 start:
 	sudo docker run --name at-sim -d -p 5000:5000 ailab/at-sim-front:alpha 
 stop:
-	sudo docker kill at-sim
+	if sudo docker kill at-sim; then echo "killed"; fi
+	if sudo docker container rm at-sim; then echo "removed"; fi
