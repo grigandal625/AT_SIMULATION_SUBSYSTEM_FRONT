@@ -52,7 +52,7 @@ export default ({ open, ...modalProps }) => {
                                 const data = await form.validateFields();
                                 const action = await dispatch(updateTemplate({ modelId: params.modelId, template: data }));
                                 const updatedTemplate = action.payload;
-                                navigate(`/models/${params.modelId}/templates/${updatedTemplate.id}`);
+                                navigate(`/models/${params.modelId}/templates/${updatedTemplate.meta.id}`);
                             } catch (err) {
                                 console.error("Form validation failed:", err);
                             }
