@@ -1,7 +1,7 @@
 import { Layout, Splitter, Typography } from "antd";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Outlet, useMatches, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useMatches, useNavigate } from "react-router-dom";
 import ModelsMenu from "./ModelsMenu";
 
 const Main = () => {
@@ -65,6 +65,17 @@ export default () => {
     if (token) {
         window.sessionStorage.setItem("token", token);
     }
+
+    const location = useLocation();
+
+    useEffect(() => {
+        const frameId = window.sessionStorage.getItem("frameId");
+        if (frameId) {
+            const parentOrigin = window.sessionStorage.getItem("parentOrigin") || "*";
+            window.parent.postMessage({ frameId, url: window.location.href }, parentOrigin);
+        }
+    }, [location]);
+
     return (
         <Layout>
             <Layout.Header>

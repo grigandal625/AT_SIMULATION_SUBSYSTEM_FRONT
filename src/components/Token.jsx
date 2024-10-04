@@ -7,12 +7,21 @@ export default () => {
     const navigate = useNavigate();
     const token = search.get("token");
     const remember = search.get("remember");
+    const frameId = search.get("frame_id");
+    const parentOrigin = search.get("parent_origin");
 
     useEffect(() => {
         if (remember) {
             window.localStorage.setItem("token", token);
         }
         window.sessionStorage.setItem("token", token);
+
+        if (frameId) {
+            window.sessionStorage.setItem("frameId", frameId);
+        }
+        if (parentOrigin) {
+            window.sessionStorage.setItem("parentOrigin", parentOrigin);
+        }
         navigate("/");
     }, []);
 
