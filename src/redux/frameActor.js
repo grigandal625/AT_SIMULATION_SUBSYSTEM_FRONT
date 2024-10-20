@@ -9,6 +9,7 @@ export const createFrameActionAsyncThunk = (type, payloadCreator, options) => {
                     type: "action",
                     event: type,
                     data: {
+                        event: type,
                         args: JSON.parse(JSON.stringify(args[0])),
                         result: JSON.parse(JSON.stringify(result)),
                     },
