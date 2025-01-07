@@ -10,8 +10,8 @@ export const createFrameActionAsyncThunk = (type, payloadCreator, options) => {
                     event: type,
                     data: {
                         event: type,
-                        args: JSON.parse(JSON.stringify(args[0])),
-                        result: JSON.parse(JSON.stringify(result)),
+                        args: args[0] !== undefined ? JSON.parse(JSON.stringify(args[0])) : undefined,
+                        result: result !== undefined ? JSON.parse(JSON.stringify(result)) : undefined,
                     },
                     frameId: window.sessionStorage.getItem("frameId"),
                 },

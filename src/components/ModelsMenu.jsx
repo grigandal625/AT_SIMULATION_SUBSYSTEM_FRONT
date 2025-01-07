@@ -118,7 +118,9 @@ export default () => {
     }));
 
     useEffect(() => {
-        dispatch(loadModels());
+        if (models.status !== LOAD_STATUSES.SUCCESS) {
+            dispatch(loadModels());
+        }
     }, []);
 
     useEffect(() => {

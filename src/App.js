@@ -81,7 +81,10 @@ export const router = createBrowserRouter(
                     <Route path="" element={<Translation />} />
                     <Route path=":selectedModelId" element={<Translation />} />
                 </Route>
-                <Route path="runner" element={<Runner />}></Route>
+                <Route path="runner" element={<Outlet />}>
+                    <Route path="" element={<Runner />} />
+                    <Route path=":selectedTranslatedModelId" element={<Runner />} />
+                </Route>
             </Route>
         </Route>
     )
