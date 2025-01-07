@@ -82,7 +82,7 @@ export default ({closed}) => {
     const className = closed ? ["model-item-menu", "closed"] : ["model-item-menu"];
 
     return resources.status === LOAD_STATUSES.SUCCESS ? (
-        <div>
+        <div className="item-menu-wrapper">
             <div className={className.join(' ')}>
                 <Menu
                     selectedKeys={[params.resourceId]}
@@ -114,7 +114,7 @@ export default ({closed}) => {
                 />
             </div>
             <Link to={`/models/${params.modelId}/resources/new`}>
-                <Button type="primary" style={{ width: "100%" }} icon={<PlusOutlined />}>
+                <Button type="primary" className="add-item-btn" icon={<PlusOutlined />}>
                     Создать ресурс
                 </Button>
             </Link>

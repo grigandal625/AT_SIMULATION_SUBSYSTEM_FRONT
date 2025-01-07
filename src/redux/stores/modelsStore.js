@@ -1,8 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice} from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 
-export const loadModels = createAsyncThunk("models/load", async () => {
+export const loadModels = createFrameActionAsyncThunk("models/load", async () => {
     const url = `${API_URL}/api/models/`;
     const headers = getHeaders();
 

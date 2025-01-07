@@ -18,9 +18,10 @@ export default ({ panelOpen }) => {
     const tabPosition = panelOpen ? "top" : "left";
 
     const panelClassNames = panelOpen ? ["model-panel"] : ["model-panel", "closed"];
-
+    const modelContainerClassNames = panelOpen ? ["model-item-container"] : ["model-item-container", "closed"];
+    
     return (
-        <div style={{ background: "white", padding: 10, paddingTop: 0, paddingLeft: 0 }}>
+        <div className={modelContainerClassNames.join(" ")}>
             <Tabs
                 tabPosition={tabPosition}
                 className={panelClassNames}

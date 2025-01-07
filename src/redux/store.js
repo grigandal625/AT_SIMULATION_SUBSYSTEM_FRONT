@@ -6,6 +6,8 @@ import resourcesStore from "./stores/resourcesStore";
 import templatesStore from "./stores/templatesStore";
 import templateUsagesStore from "./stores/templateUsagesStore";
 import funcsStore from "./stores/funcsStore";
+import translatedModelsStore from "./stores/translatedModelsStore";
+import simulationProcessesStore from "./stores/simulationProcessesStore";
 
 export default configureStore({
     reducer: {
@@ -15,6 +17,8 @@ export default configureStore({
         templates: templatesStore,
         templateUsages: templateUsagesStore,
         funcs: funcsStore,
+        translatedModels: translatedModelsStore,
+        simulationProcesses: simulationProcessesStore,
         // Add other store reducers here
     },
     // Other store configuration goes here

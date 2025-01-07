@@ -7,14 +7,14 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import { ConfigProvider } from "antd";
 
-window.onload = function () {
-    window.addEventListener("beforeunload", function (e) {
-        var confirmationMessage = "Убедитесь, что все изменения сохранены.";
+// window.onload = function () {
+//     window.addEventListener("beforeunload", function (e) {
+//         var confirmationMessage = "Убедитесь, что все изменения сохранены.";
 
-        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-    });
-};
+//         (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+//         return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+//     });
+// };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

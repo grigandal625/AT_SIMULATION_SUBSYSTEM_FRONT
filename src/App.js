@@ -1,10 +1,13 @@
-import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Route, createRoutesFromElements, Outlet } from "react-router-dom";
 import { Empty, Result } from "antd";
 
 import Layout from "./components/Layout";
 import NotFound from "./components/NotFound";
 import Model from "./components/models/Model";
 import Token from "./components/Token";
+import EvaluateTabs from "./components/evaluate/EvaluateTabs";
+import Translation from "./components/evaluate/translation/Translation";
+import Runner from "./components/evaluate/runner/Runner";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -71,6 +74,14 @@ export const router = createBrowserRouter(
                         <Route path="edit" element={<>Предполагается модальное окно с редактированием функции</>} />
                     </Route>
                 </Route>
+            </Route>
+            <Route path="/evaluate" element={<EvaluateTabs />}>
+                <Route path="" element={<Translation />} />
+                <Route path="translation" element={<Outlet />}>
+                    <Route path="" element={<Translation />} />
+                    <Route path=":selectedModelId" element={<Translation />} />
+                </Route>
+                <Route path="runner" element={<Runner />}></Route>
             </Route>
         </Route>
     )

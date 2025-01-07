@@ -5,3 +5,23 @@
 .model-panel .ant-menu-title-content {
     width: 100%;
 }
+
+.model-item-container {
+    background: white;
+    padding: 0px 0px 0px 10px;
+    margin-left: 10px;
+    height: calc(100vh - 190px);
+}
+
+.model-item-container.closed {
+    padding-bottom: 10px;
+}
+
+.add-item-btn {
+    width: 100%;
+    margin: 10px 0px;
+}
+
+.item-menu-wrapper {
+    padding-right: 10px;
+}

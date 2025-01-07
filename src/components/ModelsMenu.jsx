@@ -27,7 +27,7 @@ export default () => {
     const dropDownItems = [
         {
             key: "export",
-            label: "Экспортировать",
+            label: "Трансляция",
             icon: <SaveOutlined />,
         },
         {
@@ -43,7 +43,9 @@ export default () => {
         },
     ];
 
-    const handleExport = (model) => {};
+    const handleExport = (model) => {
+        navigate(`/evaluate/translation/${model.id}`);
+    };
 
     const handleDelete = async (model) => {
         await dispatch(deleteModel(model.id));
@@ -67,7 +69,7 @@ export default () => {
         });
 
     const dropdownHandlers = {
-        export: (model) => console.log(model),
+        export: handleExport,
         duplicate: (model) => console.log(model),
         delete: confirmDelete,
     };

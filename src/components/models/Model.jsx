@@ -20,7 +20,7 @@ export default () => {
                 </div>
             </Col>
             <Col style={{ transition: "0.5s", marginLeft: panelOpen ? 0 : 10 }} flex={panelOpen ? "auto" : "none"}>
-                <Row style={{ background: "white", padding: 10 }}>
+                <Row style={{ background: "white", padding: 10, marginLeft: 10 }}>
                     <Col>
                         <Button onClick={() => setPanelOpen(!panelOpen)} icon={panelOpen ? <RightOutlined /> : <LeftOutlined />} />
                     </Col>
@@ -30,7 +30,7 @@ export default () => {
                         </Typography.Title>
                     </Col>
                 </Row>
-                <ModelPanel panelOpen={panelOpen}/>
+                <ModelPanel panelOpen={panelOpen} />
             </Col>
         </Row>
     );

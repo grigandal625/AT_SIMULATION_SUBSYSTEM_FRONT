@@ -37,7 +37,7 @@ export default ({ open, ...modalProps }) => {
             console.log(data);
             const action = await dispatch(updateTemplateUsage({ modelId: params.modelId, templateUsage: data }));
             const updatedTemplateUsage = action.payload;
-            navigate(`/models/${params.modelId}/templateUsages/${updatedTemplateUsage.id}`);
+            navigate(`/models/${params.modelId}/template-usages/${updatedTemplateUsage.id}`);
         } catch (err) {
             console.error("Form validation failed:", err);
         }

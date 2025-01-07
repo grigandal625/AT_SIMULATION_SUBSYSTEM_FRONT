@@ -81,7 +81,7 @@ export default ({ closed }) => {
     const className = closed ? ["model-item-menu", "closed"] : ["model-item-menu"];
 
     return funcs.status === LOAD_STATUSES.SUCCESS ? (
-        <div>
+        <div className="item-menu-wrapper">
             <div className={className.join(' ')}>
                 <Menu
                     selectedKeys={[params.funcId]}
@@ -111,7 +111,7 @@ export default ({ closed }) => {
                 />
             </div>
             <Link to={`/models/${params.modelId}/funcs/new`}>
-                <Button type="primary" style={{ width: "100%" }} icon={<PlusOutlined />}>
+                <Button type="primary" className="add-item-btn" icon={<PlusOutlined />}>
                     Создать функцию
                 </Button>
             </Link>

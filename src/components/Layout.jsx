@@ -1,7 +1,7 @@
-import { Layout, Splitter, Typography } from "antd";
+import { Col, Layout, Menu, Row, Splitter, Typography } from "antd";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Outlet, useLocation, useMatches, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useMatches, useNavigate } from "react-router-dom";
 import ModelsMenu from "./ModelsMenu";
 
 const Main = () => {
@@ -76,12 +76,34 @@ export default () => {
         }
     }, [location]);
 
+    const matches = useMatches();
+
+    const defaultKey = matches.map((m) => m.pathname).includes("/evaluate") ? "evaluation" : "develop";
+
+    const menuItems = [
+        {
+            label: <Link to="/models">Разработка имитационной модели</Link>,
+            key: "develop",
+        },
+        {
+            label: <Link to="/evaluate">Расчет имитационной модели</Link>,
+            key: "evaluation",
+        },
+    ];
+
     return (
         <Layout>
             <Layout.Header>
-                <Typography.Title level={3} style={{ whiteSpace: "nowrap", color: "white", marginTop: 15, marginBottom: 15 }}>
-                    Подсистема имитационного моделирования
-                </Typography.Title>
+                <Row wrap={false} justify="space-between">
+                    <Col>
+                        <Typography.Title level={3} style={{ whiteSpace: "nowrap", color: "white", marginTop: 15, marginBottom: 15 }}>
+                            Подсистема имитационного моделирования
+                        </Typography.Title>
+                    </Col>
+                    <Col>
+                        <Menu style={{minWidth: 484}} mode="horizontal" theme="dark" defaultSelectedKeys={[defaultKey]} items={menuItems} />
+                    </Col>
+                </Row>
             </Layout.Header>
             <Layout.Content>
                 <Main />
