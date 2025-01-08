@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { LOAD_STATUSES } from "../../../../GLOBAL";
 import { loadModels } from "../../../../redux/stores/modelsStore";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { loadTranslatedModels } from "../../../../redux/stores/translatedModelsStore";
 
 export default ({ form, ...props }) => {
     const [actualForm] = form ? [form] : Form.useForm();
@@ -11,10 +13,17 @@ export default ({ form, ...props }) => {
     const params = useParams();
 
     const models = useSelector((state) => state.models);
+    const translatedModels = useSelector((state) => state.translatedModels);
 
-    if (models.status !== LOAD_STATUSES.SUCCESS) {
-        dispatch(loadModels());
-    }
+    useEffect(() => {
+        if (models.status !== LOAD_STATUSES.SUCCESS) {
+            dispatch(loadModels());
+        }
+        if (translatedModels.status !== LOAD_STATUSES.SUCCESS) {
+            dispatch(loadTranslatedModels());
+        }
+    });
+
     if (params.selectedModelId) {
         actualForm.setFieldValue("id", parseInt(params.selectedModelId));
         const foundModel = models.data.find(({ id }) => id === parseInt(params.selectedModelId));

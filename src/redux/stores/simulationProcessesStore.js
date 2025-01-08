@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
-import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
+import { API_URL, getHeaders, LOAD_STATUSES, MOCKING, PROCES_STATUSES } from "../../GLOBAL";
 
 export const loadSimulationProcesses = createFrameActionAsyncThunk("simulationProcesses/load", async () => {
     const url = `${API_URL}/api/editor/simulationProcesses/`;
@@ -14,8 +14,10 @@ export const loadSimulationProcesses = createFrameActionAsyncThunk("simulationPr
             simulation_processes: [
                 {
                     id: 1,
-                    name: "translated model 1 (21.12.2021)",
+                    name: "Experiment 1 (21.12.2021)",
                     translated_model_id: 1,
+                    status: "paused",
+                    tact: 0,
                 },
             ],
             total: 0,
@@ -40,7 +42,7 @@ export const createSimulationProcess = createFrameActionAsyncThunk("simulationPr
             headers,
             body: JSON.stringify({ name, translated_model_id: translatedModelId }),
         });
-        const json = { name, translated_model_id: translatedModelId };
+        const json = { name, translated_model_id: translatedModelId, status: PROCES_STATUSES.PAUSED, tact: 0 };
 
         if (!json.id) {
             json.id = Math.floor(Math.random() * 10000) + 1;
@@ -63,9 +65,88 @@ export const createSimulationProcess = createFrameActionAsyncThunk("simulationPr
     }
 });
 
-export const runSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/run", async ({id, tacts, wait}, {rejectWithValue}) => {
+export const runSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/run", async ({ id, tacts, wait }, { rejectWithValue }) => {
+    const url = `${API_URL}/api/editor/simulationProcesses/${id}/run/`;
+    const headers = getHeaders();
 
-})
+    if (MOCKING) {
+        console.log(url, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({ tacts, wait }),
+        });
+        return { id, status: PROCES_STATUSES.RUNNING };
+    }
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ tacts, wait }),
+    });
+    if (response.ok) {
+        const json = await response.json();
+        return json.data;
+    }
+    try {
+        return rejectWithValue(await response.json());
+    } catch (error) {
+        return rejectWithValue({ error_message: await response.text(), status_code: response.status });
+    }
+});
+
+export const pauseSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/pause", async (id, { rejectWithValue }) => {
+    const url = `${API_URL}/api/editor/simulationProcesses/${id}/pause/`;
+    const headers = getHeaders();
+
+    if (MOCKING) {
+        console.log(url, {
+            method: "POST",
+            headers,
+        });
+        return { id, status: PROCES_STATUSES.PAUSED };
+    }
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers,
+    });
+    if (response.ok) {
+        const json = await response.json();
+        return json.data;
+    }
+    try {
+        return rejectWithValue(await response.json());
+    } catch (error) {
+        return rejectWithValue({ error_message: await response.text(), status_code: response.status });
+    }
+});
+
+export const killSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/kill", async (id, { rejectWithValue }) => {
+    const url = `${API_URL}/api/editor/simulationProcesses/${id}/kill/`;
+    const headers = getHeaders();
+
+    if (MOCKING) {
+        console.log(url, {
+            method: "POST",
+            headers,
+        });
+        return { id, status: PROCES_STATUSES.KILLED };
+    }
+
+    const response = await fetch(url, {
+        method: "POST",
+        headers,
+    });
+    if (response.ok) {
+        const json = await response.json();
+        return json.data;
+    }
+    try {
+        return rejectWithValue(await response.json());
+    } catch (error) {
+        return rejectWithValue({ error_message: await response.text(), status_code: response.status });
+    }
+});
 
 const simulationProcessesSlice = createSlice({
     name: "simulationProcesses",
@@ -88,6 +169,24 @@ const simulationProcessesSlice = createSlice({
             })
             .addCase(createSimulationProcess.fulfilled, (state, action) => {
                 state.data.push(action.payload);
+            })
+            .addCase(runSimulationProcess.fulfilled, (state, action) => {
+                const index = state.data.findIndex((process) => process.id === action.payload.id);
+                if (index >= 0) {
+                    state.data[index] = { ...state.data[index], ...action.payload };
+                }
+            })
+            .addCase(pauseSimulationProcess.fulfilled, (state, action) => {
+                const index = state.data.findIndex((process) => process.id === action.payload.id);
+                if (index >= 0) {
+                    state.data[index] = { ...state.data[index], ...action.payload };
+                }
+            })
+            .addCase(killSimulationProcess.fulfilled, (state, action) => {
+                const index = state.data.findIndex((process) => process.id === action.payload.id);
+                if (index >= 0) {
+                    state.data[index] = { ...state.data[index], ...action.payload };
+                }
             });
     },
 });

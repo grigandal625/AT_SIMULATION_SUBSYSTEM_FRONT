@@ -77,6 +77,8 @@ export default () => {
     }, [location]);
 
     const matches = useMatches();
+    const authenticationNow = Boolean(matches.find((match) => /^\/token/g.test(match.pathname)));
+    const currentToken = window.sessionStorage.getItem("token");
 
     const defaultKey = matches.map((m) => m.pathname).includes("/evaluate") ? "evaluation" : "develop";
 
@@ -101,7 +103,9 @@ export default () => {
                         </Typography.Title>
                     </Col>
                     <Col>
-                        <Menu style={{minWidth: 484}} mode="horizontal" theme="dark" defaultSelectedKeys={[defaultKey]} items={menuItems} />
+                        {currentToken && !authenticationNow && (
+                            <Menu style={{ minWidth: 484 }} mode="horizontal" theme="dark" defaultSelectedKeys={[defaultKey]} items={menuItems} />
+                        )}
                     </Col>
                 </Row>
             </Layout.Header>

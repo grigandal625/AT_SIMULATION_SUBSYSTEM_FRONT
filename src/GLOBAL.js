@@ -6,6 +6,13 @@ export const LOAD_STATUSES = {
     IDLE: "idle",
 };
 
+export const PROCES_STATUSES = {
+    RUNNING: "running",
+    PAUSED: "paused",
+    KILLED: "killed",
+    ERROR: "error",
+}
+
 export const API_PROTOCOL = process.env.REACT_APP_API_PROTOCOL || "http";
 export const API_HOST = process.env.REACT_APP_API_HOST || window.location.hostname;
 export const API_PORT = process.env.REACT_APP_API_PORT || 80;

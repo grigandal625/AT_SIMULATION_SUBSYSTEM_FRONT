@@ -8,6 +8,7 @@ import Token from "./components/Token";
 import EvaluateTabs from "./components/evaluate/EvaluateTabs";
 import Translation from "./components/evaluate/translation/Translation";
 import Runner from "./components/evaluate/runner/Runner";
+import Process from "./components/evaluate/process/Process";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -83,6 +84,7 @@ export const router = createBrowserRouter(
                 </Route>
                 <Route path="runner" element={<Outlet />}>
                     <Route path="" element={<Runner />} />
+                    <Route path="process/:processId" element={<Process />} />
                     <Route path=":selectedTranslatedModelId" element={<Runner />} />
                 </Route>
             </Route>
