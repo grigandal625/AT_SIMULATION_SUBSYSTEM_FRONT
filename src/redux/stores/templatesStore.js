@@ -124,7 +124,7 @@ export const createTemplate = createFrameActionAsyncThunk("templates/create", as
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    return {...template, ...json.data};
 });
 
 export const updateTemplate = createFrameActionAsyncThunk("templates/update", async ({ modelId, template }, { rejectWithValue }) => {
@@ -153,7 +153,7 @@ export const updateTemplate = createFrameActionAsyncThunk("templates/update", as
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    return {...template, ...json.data};
 });
 
 export const deleteTemplate = createFrameActionAsyncThunk("templates/delete", async ({ modelId, templateId }, { rejectWithValue }) => {

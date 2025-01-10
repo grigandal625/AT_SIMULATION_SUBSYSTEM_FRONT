@@ -73,7 +73,7 @@ export const createTemplateUsage = createFrameActionAsyncThunk("templateUsages/c
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    return {...templateUsage, ...json.data};
 });
 
 export const updateTemplateUsage = createFrameActionAsyncThunk("templateUsages/update", async ({ modelId, templateUsage }, { rejectWithValue }) => {
@@ -102,7 +102,7 @@ export const updateTemplateUsage = createFrameActionAsyncThunk("templateUsages/u
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    return {...templateUsage, ...json.data};
 });
 
 export const deleteTemplateUsage = createFrameActionAsyncThunk("templateUsages/delete", async ({ modelId, templateUsageId }, { rejectWithValue }) => {

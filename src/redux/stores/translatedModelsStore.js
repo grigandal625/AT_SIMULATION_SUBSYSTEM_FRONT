@@ -66,7 +66,7 @@ export const createTranslatedModel = createFrameActionAsyncThunk("translatedMode
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    return {name, ...json.data};
 });
 
 const translatedModelsSlice = createSlice({

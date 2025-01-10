@@ -68,7 +68,7 @@ export const createSimulationProcess = createFrameActionAsyncThunk("simulationPr
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    return {name, ...json.data};
 });
 
 export const runSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/run", async ({ id, tacts, wait }, { rejectWithValue }) => {
