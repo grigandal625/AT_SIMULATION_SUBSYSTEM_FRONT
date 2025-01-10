@@ -27,7 +27,7 @@ export const loadModels = createFrameActionAsyncThunk("models/load", async () =>
         headers,
     });
     const json = await response.json();
-    return json.models;
+    return json.data.models;
 });
 
 export const createModel = createFrameActionAsyncThunk("models/create", async (model) => {
@@ -46,7 +46,7 @@ export const createModel = createFrameActionAsyncThunk("models/create", async (m
         body: JSON.stringify(model),
     });
     const json = await response.json();
-    return json;
+    return json.data;
 });
 
 export const deleteModel = createFrameActionAsyncThunk("models/delete", async (modelId) => {
@@ -67,7 +67,7 @@ export const deleteModel = createFrameActionAsyncThunk("models/delete", async (m
         headers,
     });
     const json = await response.json();
-    return json;
+    return json.data;
 });
 
 const modelsSlice = createSlice({

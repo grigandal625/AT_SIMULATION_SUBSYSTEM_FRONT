@@ -34,7 +34,7 @@ export const loadTemplateUsages = createFrameActionAsyncThunk("templateUsages/lo
         headers,
     });
     const json = await response.json();
-    return { items: json.usages, modelId };
+    return { items: json.data.usages, modelId };
 });
 
 export const createTemplateUsage = createFrameActionAsyncThunk("templateUsages/create", async ({ modelId, templateUsage }) => {
@@ -60,7 +60,7 @@ export const createTemplateUsage = createFrameActionAsyncThunk("templateUsages/c
         body: JSON.stringify(templateUsage),
     });
     const json = await response.json();
-    return json;
+    return json.data;
 });
 
 export const updateTemplateUsage = createFrameActionAsyncThunk("templateUsages/update", async ({ modelId, templateUsage }) => {
@@ -83,7 +83,7 @@ export const updateTemplateUsage = createFrameActionAsyncThunk("templateUsages/u
         body: JSON.stringify(templateUsage),
     });
     const json = await response.json();
-    return json;
+    return json.data;
 });
 
 export const deleteTemplateUsage = createFrameActionAsyncThunk("templateUsages/delete", async ({ modelId, templateUsageId }) => {
@@ -104,7 +104,7 @@ export const deleteTemplateUsage = createFrameActionAsyncThunk("templateUsages/d
         headers,
     });
     const json = await response.json();
-    return json.id;
+    return json.data.id;
 });
 
 const templateUsagesSlice = createSlice({

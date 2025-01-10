@@ -71,7 +71,7 @@ export const loadResources = createFrameActionAsyncThunk("resources/load", async
         headers,
     });
     const json = await response.json();
-    return { items: json.resources, modelId };
+    return { items: json.data.resources, modelId };
 });
 
 export const createResource = createFrameActionAsyncThunk("resources/create", async ({ modelId, resource }) => {
@@ -97,7 +97,7 @@ export const createResource = createFrameActionAsyncThunk("resources/create", as
         body: JSON.stringify(resource),
     });
     const json = await response.json();
-    return json;
+    return json.data;
 });
 
 export const updateResource = createFrameActionAsyncThunk("resources/update", async ({ modelId, resource }) => {
@@ -120,7 +120,7 @@ export const updateResource = createFrameActionAsyncThunk("resources/update", as
         body: JSON.stringify(resource),
     });
     const json = await response.json();
-    return json;
+    return json.data;
 });
 
 export const deleteResource = createFrameActionAsyncThunk("resources/delete", async ({ modelId, resourceId }) => {
@@ -141,7 +141,7 @@ export const deleteResource = createFrameActionAsyncThunk("resources/delete", as
         headers,
     });
     const json = await response.json();
-    return json.id;
+    return json.data.id;
 });
 
 const resourcesSlice = createSlice({

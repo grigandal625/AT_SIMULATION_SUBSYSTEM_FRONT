@@ -87,7 +87,7 @@ export const loadResourceTypes = createFrameActionAsyncThunk("resourceTypes/load
     });
     const json = await response.json();
 
-    return { items: json.resource_types, modelId };
+    return { items: json.data.resource_types, modelId };
 });
 
 export const createResourceType = createFrameActionAsyncThunk("resourceTypes/create", async ({ modelId, resourceType }) => {
@@ -118,7 +118,7 @@ export const createResourceType = createFrameActionAsyncThunk("resourceTypes/cre
         body: JSON.stringify(resourceType),
     });
     const json = await response.json();
-    return json;
+    return json.data;
 });
 
 export const updateResourceType = createFrameActionAsyncThunk("resourceTypes/update", async ({ modelId, resourceType }) => {
@@ -141,7 +141,7 @@ export const updateResourceType = createFrameActionAsyncThunk("resourceTypes/upd
         body: JSON.stringify(resourceType),
     });
     const json = await response.json();
-    return json;
+    return json.data;
 });
 
 export const deleteResourceType = createFrameActionAsyncThunk("resourceTypes/delete", async ({ modelId, resourceTypeId }) => {
@@ -161,7 +161,7 @@ export const deleteResourceType = createFrameActionAsyncThunk("resourceTypes/del
         headers,
     });
     const json = await response.json();
-    return json.id;
+    return json.data.id;
 });
 
 const resourceTypesSlice = createSlice({

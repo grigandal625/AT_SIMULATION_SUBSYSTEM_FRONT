@@ -33,7 +33,7 @@ export const loadFuncs = createFrameActionAsyncThunk("funcs/load", async (modelI
         headers,
     });
     const json = await response.json();
-    return { items: json.functions, modelId };
+    return { items: json.data.functions, modelId };
 });
 
 export const createFunc = createFrameActionAsyncThunk("funcs/create", async ({ modelId, func }) => {
@@ -60,7 +60,7 @@ export const createFunc = createFrameActionAsyncThunk("funcs/create", async ({ m
         body: JSON.stringify(func),
     });
     const json = await response.json();
-    return json;
+    return json.data;
 });
 
 export const updateFunc = createFrameActionAsyncThunk("funcs/update", async ({ modelId, func }) => {
@@ -83,7 +83,7 @@ export const updateFunc = createFrameActionAsyncThunk("funcs/update", async ({ m
         body: JSON.stringify(func),
     });
     const json = await response.json();
-    return json;
+    return json.data;
 });
 
 export const deleteFunc = createFrameActionAsyncThunk("funcs/delete", async ({ modelId, funcId }) => {
@@ -104,7 +104,7 @@ export const deleteFunc = createFrameActionAsyncThunk("funcs/delete", async ({ m
         headers,
     });
     const json = await response.json();
-    return json.id;
+    return json.data.id;
 });
 
 const funcsSlice = createSlice({

@@ -85,7 +85,7 @@ export const loadTemplates = createFrameActionAsyncThunk("templates/load", async
         headers,
     });
     const json = await response.json();
-    return { items: json.irregular_events.concat(json.operations.concat(json.rules)), modelId };
+    return { items: json.data.irregular_events.concat(json.data.operations.concat(json.data.rules)), modelId };
 });
 
 export const createTemplate = createFrameActionAsyncThunk("templates/create", async ({ modelId, template }) => {
@@ -111,7 +111,7 @@ export const createTemplate = createFrameActionAsyncThunk("templates/create", as
         body: JSON.stringify(template),
     });
     const json = await response.json();
-    return json;
+    return json.data;
 });
 
 export const updateTemplate = createFrameActionAsyncThunk("templates/update", async ({ modelId, template }) => {
@@ -134,7 +134,7 @@ export const updateTemplate = createFrameActionAsyncThunk("templates/update", as
         body: JSON.stringify(template),
     });
     const json = await response.json();
-    return json;
+    return json.data;
 });
 
 export const deleteTemplate = createFrameActionAsyncThunk("templates/delete", async ({ modelId, templateId }) => {
@@ -155,7 +155,7 @@ export const deleteTemplate = createFrameActionAsyncThunk("templates/delete", as
         headers,
     });
     const json = await response.json();
-    return json.id;
+    return json.data.id;
 });
 
 const templatesSlice = createSlice({
