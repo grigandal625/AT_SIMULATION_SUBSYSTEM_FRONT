@@ -3,7 +3,7 @@ import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 import { rejector } from "../rejector";
 
-export const loadTemplateUsages = createFrameActionAsyncThunk("templateUsages/load", async (modelId, {rejectWithValue}) => {
+export const loadTemplateUsages = createFrameActionAsyncThunk("templateUsages/load", async (modelId, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/templates/usages/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -44,7 +44,7 @@ export const loadTemplateUsages = createFrameActionAsyncThunk("templateUsages/lo
     return { items: json.data.usages, modelId };
 });
 
-export const createTemplateUsage = createFrameActionAsyncThunk("templateUsages/create", async ({ modelId, templateUsage }, {rejectWithValue}) => {
+export const createTemplateUsage = createFrameActionAsyncThunk("templateUsages/create", async ({ modelId, templateUsage }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/templates/usages/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -76,7 +76,7 @@ export const createTemplateUsage = createFrameActionAsyncThunk("templateUsages/c
     return json.data;
 });
 
-export const updateTemplateUsage = createFrameActionAsyncThunk("templateUsages/update", async ({ modelId, templateUsage }, {rejectWithValue}) => {
+export const updateTemplateUsage = createFrameActionAsyncThunk("templateUsages/update", async ({ modelId, templateUsage }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/templates/usages/${templateUsage.id}/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -105,7 +105,7 @@ export const updateTemplateUsage = createFrameActionAsyncThunk("templateUsages/u
     return json.data;
 });
 
-export const deleteTemplateUsage = createFrameActionAsyncThunk("templateUsages/delete", async ({ modelId, templateUsageId }, {rejectWithValue}) => {
+export const deleteTemplateUsage = createFrameActionAsyncThunk("templateUsages/delete", async ({ modelId, templateUsageId }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/templates/usages/${templateUsageId}/`;
     const headers = getHeaders({ "model-id": modelId });
 

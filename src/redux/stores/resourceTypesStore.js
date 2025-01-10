@@ -3,7 +3,7 @@ import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 import { rejector } from "../rejector";
 
-export const loadResourceTypes = createFrameActionAsyncThunk("resourceTypes/load", async (modelId, {rejectWithValue}) => {
+export const loadResourceTypes = createFrameActionAsyncThunk("resourceTypes/load", async (modelId, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/resources/types/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -97,7 +97,7 @@ export const loadResourceTypes = createFrameActionAsyncThunk("resourceTypes/load
     return { items: json.data.resource_types, modelId };
 });
 
-export const createResourceType = createFrameActionAsyncThunk("resourceTypes/create", async ({ modelId, resourceType }, {rejectWithValue}) => {
+export const createResourceType = createFrameActionAsyncThunk("resourceTypes/create", async ({ modelId, resourceType }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/resources/types/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -134,7 +134,7 @@ export const createResourceType = createFrameActionAsyncThunk("resourceTypes/cre
     return json.data;
 });
 
-export const updateResourceType = createFrameActionAsyncThunk("resourceTypes/update", async ({ modelId, resourceType }, {rejectWithValue}) => {
+export const updateResourceType = createFrameActionAsyncThunk("resourceTypes/update", async ({ modelId, resourceType }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/resources/types/${resourceType.id}/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -163,7 +163,7 @@ export const updateResourceType = createFrameActionAsyncThunk("resourceTypes/upd
     return json.data;
 });
 
-export const deleteResourceType = createFrameActionAsyncThunk("resourceTypes/delete", async ({ modelId, resourceTypeId }, {rejectWithValue}) => {
+export const deleteResourceType = createFrameActionAsyncThunk("resourceTypes/delete", async ({ modelId, resourceTypeId }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/resources/types/${resourceTypeId}/`;
     const headers = getHeaders({ "model-id": modelId });
     if (MOCKING) {

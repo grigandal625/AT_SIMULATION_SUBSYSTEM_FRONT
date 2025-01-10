@@ -3,7 +3,7 @@ import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 import { rejector } from "../rejector";
 
-export const loadTranslatedModels = createFrameActionAsyncThunk("translatedModels/load", async (_, {rejectWithValue}) => {
+export const loadTranslatedModels = createFrameActionAsyncThunk("translatedModels/load", async (_, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/translatedModels/`;
     const headers = getHeaders();
 
@@ -66,7 +66,7 @@ export const createTranslatedModel = createFrameActionAsyncThunk("translatedMode
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data
+    return json.data;
 });
 
 const translatedModelsSlice = createSlice({

@@ -3,7 +3,7 @@ import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 import { rejector } from "../rejector";
 
-export const loadTemplates = createFrameActionAsyncThunk("templates/load", async (modelId, {rejectWithValue}) => {
+export const loadTemplates = createFrameActionAsyncThunk("templates/load", async (modelId, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/templates/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -95,7 +95,7 @@ export const loadTemplates = createFrameActionAsyncThunk("templates/load", async
     return { items: json.data.irregular_events.concat(json.data.operations.concat(json.data.rules)), modelId };
 });
 
-export const createTemplate = createFrameActionAsyncThunk("templates/create", async ({ modelId, template }, {rejectWithValue}) => {
+export const createTemplate = createFrameActionAsyncThunk("templates/create", async ({ modelId, template }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/templates/${template.meta.type}/`;
     const headers = getHeaders({ "model-id": modelId });
     if (MOCKING) {
@@ -127,7 +127,7 @@ export const createTemplate = createFrameActionAsyncThunk("templates/create", as
     return json.data;
 });
 
-export const updateTemplate = createFrameActionAsyncThunk("templates/update", async ({ modelId, template }, {rejectWithValue}) => {
+export const updateTemplate = createFrameActionAsyncThunk("templates/update", async ({ modelId, template }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/templates/${template.meta.id}/${template.meta.type}/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -156,7 +156,7 @@ export const updateTemplate = createFrameActionAsyncThunk("templates/update", as
     return json.data;
 });
 
-export const deleteTemplate = createFrameActionAsyncThunk("templates/delete", async ({ modelId, templateId }, {rejectWithValue}) => {
+export const deleteTemplate = createFrameActionAsyncThunk("templates/delete", async ({ modelId, templateId }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/templates/${templateId}/`;
     const headers = getHeaders({ "model-id": modelId });
 

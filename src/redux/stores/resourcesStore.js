@@ -1,9 +1,9 @@
-import { createSlice} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 import { rejector } from "../rejector";
 
-export const loadResources = createFrameActionAsyncThunk("resources/load", async (modelId, {rejectWithValue}) => {
+export const loadResources = createFrameActionAsyncThunk("resources/load", async (modelId, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/resources/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -81,7 +81,7 @@ export const loadResources = createFrameActionAsyncThunk("resources/load", async
     return { items: json.data.resources, modelId };
 });
 
-export const createResource = createFrameActionAsyncThunk("resources/create", async ({ modelId, resource }, {rejectWithValue}) => {
+export const createResource = createFrameActionAsyncThunk("resources/create", async ({ modelId, resource }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/resources/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -113,7 +113,7 @@ export const createResource = createFrameActionAsyncThunk("resources/create", as
     return json.data;
 });
 
-export const updateResource = createFrameActionAsyncThunk("resources/update", async ({ modelId, resource }, {rejectWithValue}) => {
+export const updateResource = createFrameActionAsyncThunk("resources/update", async ({ modelId, resource }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/resources/${resource.id}/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -142,7 +142,7 @@ export const updateResource = createFrameActionAsyncThunk("resources/update", as
     return json.data;
 });
 
-export const deleteResource = createFrameActionAsyncThunk("resources/delete", async ({ modelId, resourceId }, {rejectWithValue}) => {
+export const deleteResource = createFrameActionAsyncThunk("resources/delete", async ({ modelId, resourceId }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/resources/${resourceId}/`;
     const headers = getHeaders({ "model-id": modelId });
 

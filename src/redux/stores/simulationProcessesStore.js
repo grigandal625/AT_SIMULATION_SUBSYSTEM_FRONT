@@ -3,7 +3,7 @@ import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING, PROCES_STATUSES } from "../../GLOBAL";
 import { rejector } from "../rejector";
 
-export const loadSimulationProcesses = createFrameActionAsyncThunk("simulationProcesses/load", async (_, {rejectWithValue}) => {
+export const loadSimulationProcesses = createFrameActionAsyncThunk("simulationProcesses/load", async (_, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/simulationProcesses/`;
     const headers = getHeaders();
 
@@ -68,7 +68,7 @@ export const createSimulationProcess = createFrameActionAsyncThunk("simulationPr
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data
+    return json.data;
 });
 
 export const runSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/run", async ({ id, tacts, wait }, { rejectWithValue }) => {
@@ -96,7 +96,7 @@ export const runSimulationProcess = createFrameActionAsyncThunk("simulationProce
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data
+    return json.data;
 });
 
 export const pauseSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/pause", async (id, { rejectWithValue }) => {
@@ -122,7 +122,7 @@ export const pauseSimulationProcess = createFrameActionAsyncThunk("simulationPro
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data
+    return json.data;
 });
 
 export const killSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/kill", async (id, { rejectWithValue }) => {
@@ -148,7 +148,7 @@ export const killSimulationProcess = createFrameActionAsyncThunk("simulationProc
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data
+    return json.data;
 });
 
 const simulationProcessesSlice = createSlice({

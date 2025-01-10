@@ -1,9 +1,9 @@
-import { createSlice} from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 import { rejector } from "../rejector";
 
-export const loadModels = createFrameActionAsyncThunk("models/load", async (_, {rejectWithValue}) => {
+export const loadModels = createFrameActionAsyncThunk("models/load", async (_, { rejectWithValue }) => {
     const url = `${API_URL}/api/models/`;
     const headers = getHeaders();
 
@@ -37,7 +37,7 @@ export const loadModels = createFrameActionAsyncThunk("models/load", async (_, {
     return json.data.models;
 });
 
-export const createModel = createFrameActionAsyncThunk("models/create", async (model, {rejectWithValue}) => {
+export const createModel = createFrameActionAsyncThunk("models/create", async (model, { rejectWithValue }) => {
     const url = `${API_URL}/api/models/`;
     const headers = getHeaders();
     if (MOCKING) {
@@ -62,10 +62,10 @@ export const createModel = createFrameActionAsyncThunk("models/create", async (m
     return json.data;
 });
 
-export const deleteModel = createFrameActionAsyncThunk("models/delete", async (modelId, {rejectWithValue}) => {
+export const deleteModel = createFrameActionAsyncThunk("models/delete", async (modelId, { rejectWithValue }) => {
     const url = `${API_URL}/api/models/${modelId}/`;
     const headers = getHeaders();
-    
+
     if (MOCKING) {
         console.log(url, {
             method: "DELETE",
