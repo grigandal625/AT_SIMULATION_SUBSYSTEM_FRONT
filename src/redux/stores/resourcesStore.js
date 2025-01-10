@@ -1,8 +1,9 @@
 import { createSlice} from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
+import { rejector } from "../rejector";
 
-export const loadResources = createFrameActionAsyncThunk("resources/load", async (modelId) => {
+export const loadResources = createFrameActionAsyncThunk("resources/load", async (modelId, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/resources/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -70,11 +71,17 @@ export const loadResources = createFrameActionAsyncThunk("resources/load", async
     const response = await fetch(url, {
         headers,
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return { items: json.data.resources, modelId };
 });
 
-export const createResource = createFrameActionAsyncThunk("resources/create", async ({ modelId, resource }) => {
+export const createResource = createFrameActionAsyncThunk("resources/create", async ({ modelId, resource }, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/resources/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -96,11 +103,17 @@ export const createResource = createFrameActionAsyncThunk("resources/create", as
         headers,
         body: JSON.stringify(resource),
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return json.data;
 });
 
-export const updateResource = createFrameActionAsyncThunk("resources/update", async ({ modelId, resource }) => {
+export const updateResource = createFrameActionAsyncThunk("resources/update", async ({ modelId, resource }, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/resources/${resource.id}/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -119,11 +132,17 @@ export const updateResource = createFrameActionAsyncThunk("resources/update", as
         headers,
         body: JSON.stringify(resource),
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return json.data;
 });
 
-export const deleteResource = createFrameActionAsyncThunk("resources/delete", async ({ modelId, resourceId }) => {
+export const deleteResource = createFrameActionAsyncThunk("resources/delete", async ({ modelId, resourceId }, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/resources/${resourceId}/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -140,7 +159,13 @@ export const deleteResource = createFrameActionAsyncThunk("resources/delete", as
         method: "DELETE",
         headers,
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return json.data.id;
 });
 

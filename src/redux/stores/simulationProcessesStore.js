@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING, PROCES_STATUSES } from "../../GLOBAL";
+import { rejector } from "../rejector";
 
-export const loadSimulationProcesses = createFrameActionAsyncThunk("simulationProcesses/load", async () => {
+export const loadSimulationProcesses = createFrameActionAsyncThunk("simulationProcesses/load", async (_, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/simulationProcesses/`;
     const headers = getHeaders();
 
@@ -28,7 +29,13 @@ export const loadSimulationProcesses = createFrameActionAsyncThunk("simulationPr
     const response = await fetch(url, {
         headers,
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return { items: json.data.simulation_processes };
 });
 
@@ -54,15 +61,14 @@ export const createSimulationProcess = createFrameActionAsyncThunk("simulationPr
         headers,
         body: JSON.stringify({ name }),
     });
-    if (response.ok) {
-        const json = await response.json();
-        return json.data;
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
     }
-    try {
-        return rejectWithValue(await response.json());
-    } catch (error) {
-        return rejectWithValue({ error_message: await response.text(), status_code: response.status });
+    const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
     }
+    return json.data
 });
 
 export const runSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/run", async ({ id, tacts, wait }, { rejectWithValue }) => {
@@ -83,15 +89,14 @@ export const runSimulationProcess = createFrameActionAsyncThunk("simulationProce
         headers,
         body: JSON.stringify({ tacts, wait }),
     });
-    if (response.ok) {
-        const json = await response.json();
-        return json.data;
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
     }
-    try {
-        return rejectWithValue(await response.json());
-    } catch (error) {
-        return rejectWithValue({ error_message: await response.text(), status_code: response.status });
+    const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
     }
+    return json.data
 });
 
 export const pauseSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/pause", async (id, { rejectWithValue }) => {
@@ -110,15 +115,14 @@ export const pauseSimulationProcess = createFrameActionAsyncThunk("simulationPro
         method: "POST",
         headers,
     });
-    if (response.ok) {
-        const json = await response.json();
-        return json.data;
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
     }
-    try {
-        return rejectWithValue(await response.json());
-    } catch (error) {
-        return rejectWithValue({ error_message: await response.text(), status_code: response.status });
+    const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
     }
+    return json.data
 });
 
 export const killSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/kill", async (id, { rejectWithValue }) => {
@@ -137,15 +141,14 @@ export const killSimulationProcess = createFrameActionAsyncThunk("simulationProc
         method: "POST",
         headers,
     });
-    if (response.ok) {
-        const json = await response.json();
-        return json.data;
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
     }
-    try {
-        return rejectWithValue(await response.json());
-    } catch (error) {
-        return rejectWithValue({ error_message: await response.text(), status_code: response.status });
+    const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
     }
+    return json.data
 });
 
 const simulationProcessesSlice = createSlice({

@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
+import { rejector } from "../rejector";
 
-export const loadTemplateUsages = createFrameActionAsyncThunk("templateUsages/load", async (modelId) => {
+export const loadTemplateUsages = createFrameActionAsyncThunk("templateUsages/load", async (modelId, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/templates/usages/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -33,11 +34,17 @@ export const loadTemplateUsages = createFrameActionAsyncThunk("templateUsages/lo
     const response = await fetch(url, {
         headers,
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return { items: json.data.usages, modelId };
 });
 
-export const createTemplateUsage = createFrameActionAsyncThunk("templateUsages/create", async ({ modelId, templateUsage }) => {
+export const createTemplateUsage = createFrameActionAsyncThunk("templateUsages/create", async ({ modelId, templateUsage }, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/templates/usages/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -59,11 +66,17 @@ export const createTemplateUsage = createFrameActionAsyncThunk("templateUsages/c
         headers,
         body: JSON.stringify(templateUsage),
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return json.data;
 });
 
-export const updateTemplateUsage = createFrameActionAsyncThunk("templateUsages/update", async ({ modelId, templateUsage }) => {
+export const updateTemplateUsage = createFrameActionAsyncThunk("templateUsages/update", async ({ modelId, templateUsage }, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/templates/usages/${templateUsage.id}/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -82,11 +95,17 @@ export const updateTemplateUsage = createFrameActionAsyncThunk("templateUsages/u
         headers,
         body: JSON.stringify(templateUsage),
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return json.data;
 });
 
-export const deleteTemplateUsage = createFrameActionAsyncThunk("templateUsages/delete", async ({ modelId, templateUsageId }) => {
+export const deleteTemplateUsage = createFrameActionAsyncThunk("templateUsages/delete", async ({ modelId, templateUsageId }, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/templates/usages/${templateUsageId}/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -103,7 +122,13 @@ export const deleteTemplateUsage = createFrameActionAsyncThunk("templateUsages/d
         method: "DELETE",
         headers,
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return json.data.id;
 });
 

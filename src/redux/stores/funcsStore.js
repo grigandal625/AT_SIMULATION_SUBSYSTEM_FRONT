@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
+import { rejector } from "../rejector";
 
-export const loadFuncs = createFrameActionAsyncThunk("funcs/load", async (modelId) => {
+export const loadFuncs = createFrameActionAsyncThunk("funcs/load", async (modelId, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/functions/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -32,11 +33,17 @@ export const loadFuncs = createFrameActionAsyncThunk("funcs/load", async (modelI
     const response = await fetch(url, {
         headers,
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return { items: json.data.functions, modelId };
 });
 
-export const createFunc = createFrameActionAsyncThunk("funcs/create", async ({ modelId, func }) => {
+export const createFunc = createFrameActionAsyncThunk("funcs/create", async ({ modelId, func }, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/functions/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -59,11 +66,17 @@ export const createFunc = createFrameActionAsyncThunk("funcs/create", async ({ m
         headers,
         body: JSON.stringify(func),
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return json.data;
 });
 
-export const updateFunc = createFrameActionAsyncThunk("funcs/update", async ({ modelId, func }) => {
+export const updateFunc = createFrameActionAsyncThunk("funcs/update", async ({ modelId, func }, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/functions/${func.id}/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -82,11 +95,17 @@ export const updateFunc = createFrameActionAsyncThunk("funcs/update", async ({ m
         headers,
         body: JSON.stringify(func),
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return json.data;
 });
 
-export const deleteFunc = createFrameActionAsyncThunk("funcs/delete", async ({ modelId, funcId }) => {
+export const deleteFunc = createFrameActionAsyncThunk("funcs/delete", async ({ modelId, funcId }, {rejectWithValue}) => {
     const url = `${API_URL}/api/editor/functions/${funcId}/`;
     const headers = getHeaders({ "model-id": modelId });
 
@@ -103,7 +122,13 @@ export const deleteFunc = createFrameActionAsyncThunk("funcs/delete", async ({ m
         method: "DELETE",
         headers,
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return json.data.id;
 });
 

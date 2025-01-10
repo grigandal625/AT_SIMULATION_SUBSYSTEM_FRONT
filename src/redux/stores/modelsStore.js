@@ -1,8 +1,9 @@
 import { createSlice} from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
+import { rejector } from "../rejector";
 
-export const loadModels = createFrameActionAsyncThunk("models/load", async () => {
+export const loadModels = createFrameActionAsyncThunk("models/load", async (_, {rejectWithValue}) => {
     const url = `${API_URL}/api/models/`;
     const headers = getHeaders();
 
@@ -26,11 +27,17 @@ export const loadModels = createFrameActionAsyncThunk("models/load", async () =>
     const response = await fetch(url, {
         headers,
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return json.data.models;
 });
 
-export const createModel = createFrameActionAsyncThunk("models/create", async (model) => {
+export const createModel = createFrameActionAsyncThunk("models/create", async (model, {rejectWithValue}) => {
     const url = `${API_URL}/api/models/`;
     const headers = getHeaders();
     if (MOCKING) {
@@ -45,11 +52,17 @@ export const createModel = createFrameActionAsyncThunk("models/create", async (m
         headers,
         body: JSON.stringify(model),
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return json.data;
 });
 
-export const deleteModel = createFrameActionAsyncThunk("models/delete", async (modelId) => {
+export const deleteModel = createFrameActionAsyncThunk("models/delete", async (modelId, {rejectWithValue}) => {
     const url = `${API_URL}/api/models/${modelId}/`;
     const headers = getHeaders();
     
@@ -66,7 +79,13 @@ export const deleteModel = createFrameActionAsyncThunk("models/delete", async (m
         method: "DELETE",
         headers,
     });
+    if (!response.ok) {
+        return await rejector(response, rejectWithValue);
+    }
     const json = await response.json();
+    if (json.is_error) {
+        return await rejector(response, rejectWithValue);
+    }
     return json.data;
 });
 
