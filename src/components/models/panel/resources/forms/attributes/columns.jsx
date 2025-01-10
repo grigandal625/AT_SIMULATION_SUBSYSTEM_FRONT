@@ -2,7 +2,7 @@ import { Typography, Form, Tag } from "antd";
 import AttributeControl from "./controls";
 import TinyFormItem from "../../../../../../utils/TinyFormItem";
 
-export const typeLabels = { int: "Целочисленный", float: "Численный", bool: "Логический", enum: "Перечислимый" };
+export const typeLabels = { INT: "Целочисленный", FLOAT: "Численный", BOOL: "Логический", ENUM: "Перечислимый" };
 
 export const getCollumns = ({ resourceType }) => {
     return [

@@ -34,7 +34,7 @@ export const loadModels = createFrameActionAsyncThunk("models/load", async (_, {
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data.models;
+    return json.data.metas;
 });
 
 export const createModel = createFrameActionAsyncThunk("models/create", async (model, { rejectWithValue }) => {

@@ -8,22 +8,22 @@ import { getControlsTypesMapping } from "./controls";
 export const parameterTypeOptions = [
     {
         key: "int",
-        value: "int",
+        value: "INT",
         label: "Целочисленный",
     },
     {
         key: "float",
-        value: "float",
+        value: "FLOAT",
         label: "Числовой",
     },
     {
         key: "bool",
-        value: "bool",
+        value: "BOOL",
         label: "Логический",
     },
     {
         key: "enum",
-        value: "enum",
+        value: "ENUM",
         label: "Перечислимый",
     },
 ];
@@ -33,7 +33,7 @@ export const getColumns = ({ form, enumOptions, setEnumOptions, selectedTypes, s
         const newSelectedTypes = { ...selectedTypes };
         newSelectedTypes[i] = value;
         setSelectedTypes(newSelectedTypes);
-        if (value !== "enum") {
+        if (value !== "ENUM") {
             const newEnumOptions = { ...enumOptions };
             newEnumOptions[i] = null;
             setEnumOptions(newEnumOptions);
@@ -65,7 +65,7 @@ export const getColumns = ({ form, enumOptions, setEnumOptions, selectedTypes, s
     };
 
     const renderAdditional = (field, _, i) => {
-        if (selectedTypes[i] !== "enum") {
+        if (selectedTypes[i] !== "ENUM") {
             return <></>;
         }
         return (

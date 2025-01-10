@@ -20,25 +20,25 @@ export const loadResourceTypes = createFrameActionAsyncThunk("resourceTypes/load
                         {
                             id: 1,
                             name: "attr1",
-                            type: "int",
+                            type: "INT",
                             default_value: 5,
                         },
                         {
                             id: 2,
                             name: "attr2",
-                            type: "float",
+                            type: "FLOAT",
                             default_value: 5.0,
                         },
                         {
                             id: 3,
                             name: "attr3",
-                            type: "bool",
+                            type: "BOOL",
                             default_value: true,
                         },
                         {
                             id: 4,
                             name: "attr4",
-                            type: "enum",
+                            type: "ENUM",
                             enum_values_set: ["hello", "world"],
                             default_value: "hello",
                         },
@@ -52,25 +52,25 @@ export const loadResourceTypes = createFrameActionAsyncThunk("resourceTypes/load
                         {
                             id: 5,
                             name: "attr1",
-                            type: "int",
+                            type: "INT",
                             default_value: 5,
                         },
                         {
                             id: 6,
                             name: "attr2",
-                            type: "float",
+                            type: "FLOAT",
                             default_value: 5.0,
                         },
                         {
                             id: 7,
                             name: "attr3",
-                            type: "bool",
+                            type: "BOOL",
                             default_value: true,
                         },
                         {
                             id: 8,
                             name: "attr4",
-                            type: "enum",
+                            type: "ENUM",
                             enum_values_set: ["hello", "world"],
                             default_value: "hello",
                         },
@@ -224,7 +224,7 @@ const resourceTypesSlice = createSlice({
                 state.status = LOAD_STATUSES.SUCCESS;
                 const index = state.data.findIndex((item) => item.id === action.payload.id);
                 if (index > -1) {
-                    state.data[index] = action.payload;
+                    state.data[index] = {...state.data[index], ...action.payload};
                 }
             })
             .addCase(deleteResourceType.pending, (state) => {

@@ -13,7 +13,7 @@ const AttributesFormList = ({ form, fields, add, remove }) => {
         Object.fromEntries(
             form
                 .getFieldValue("attributes")
-                ?.map((attribute, i) => [i, attribute.type === "enum" ? attribute.enum_values_set : null]) || []
+                ?.map((attribute, i) => [i, attribute.type === "ENUM" ? attribute.enum_values_set : null]) || []
         )
     );
 

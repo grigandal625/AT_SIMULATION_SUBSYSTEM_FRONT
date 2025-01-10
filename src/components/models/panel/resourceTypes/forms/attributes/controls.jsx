@@ -2,7 +2,7 @@ import { InputNumber, Select } from "antd";
 import CheckboxItem from "../../../../../../utils/CheckboxItem";
 
 export const getControlsTypesMapping = ({ enumOptions }) => ({
-    int: {
+    INT: {
         component: InputNumber,
         getProps: () => ({
             placeholder: "Введите целочисленное значение",
@@ -11,7 +11,7 @@ export const getControlsTypesMapping = ({ enumOptions }) => ({
             
         }),
     },
-    float: {
+    FLOAT: {
         component: InputNumber,
         getProps: () => ({
             placeholder: "Введите числовое значение",
@@ -19,14 +19,14 @@ export const getControlsTypesMapping = ({ enumOptions }) => ({
             
         }),
     },
-    bool: {
+    BOOL: {
         component: CheckboxItem,
         getProps: () => ({
             children: "Укажите логическое значение",
             style: { marginLeft: 7 },
         }),
     },
-    enum: {
+    ENUM: {
         component: Select,
         getProps: (i) => ({
             style: { width: "100%" },

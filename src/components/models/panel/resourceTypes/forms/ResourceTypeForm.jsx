@@ -8,11 +8,11 @@ export default ({ form, resourceTypes, ...formProps }) => {
     const typeOptions = [
         {
             label: "Постоянный",
-            value: "constant",
+            value: "CONSTANT",
         },
         {
             label: "Временный",
-            value: "temporal",
+            value: "TEMPORAL",
         },
     ];
 
