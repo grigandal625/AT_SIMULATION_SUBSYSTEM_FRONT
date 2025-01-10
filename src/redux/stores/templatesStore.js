@@ -96,7 +96,7 @@ export const loadTemplates = createFrameActionAsyncThunk("templates/load", async
 });
 
 export const createTemplate = createFrameActionAsyncThunk("templates/create", async ({ modelId, template }, { rejectWithValue }) => {
-    const url = `${API_URL}/api/editor/templates/${template.meta.type}/`;
+    const url = `${API_URL}/api/editor/templates/${template.meta.type.toLowerCase()}/`;
     const headers = getHeaders({ "model-id": modelId });
     if (MOCKING) {
         console.log(url, {

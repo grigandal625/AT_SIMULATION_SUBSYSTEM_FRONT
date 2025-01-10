@@ -10,19 +10,19 @@ import { requiredRule } from "../../../../../../utils/validators/general";
 export default ({ form, relevantResources, resourceTypes, selectedType, funcs }) => {
 
     const options = [
-        { value: "normal", label: "Нормальное распределение" },
-        { value: "precise", label: "Точное число" },
-        { value: "random", label: "Случайное число" },
-        { value: "uniform", label: "Равномерное распределение" },
-        { value: "exponential", label: "Экспоненциальное распределение" },
-        { value: "gaussian", label: "Распределение Гаусса" },
-        { value: "poisson", label: "Распределение Пуассона" },
+        { value: "NORMAL", label: "Нормальное распределение" },
+        { value: "PRECISE", label: "Точное число" },
+        { value: "RANDOM", label: "Случайное число" },
+        { value: "UNIFORM", label: "Равномерное распределение" },
+        { value: "EXPONENTIAL", label: "Экспоненциальное распределение" },
+        { value: "GAUSSIAN", label: "Распределение Гаусса" },
+        { value: "POISSON", label: "Распределение Пуассона" },
     ];
 
     const [selectedGeneratorType, setSelectedGeneratorType] = useState(form.getFieldValue(["generator", "type"]));
 
     useEffect(() => {
-        if (selectedGeneratorType === "precise") {
+        if (selectedGeneratorType === "PRECISE") {
             form.setFieldValue(["generator", "dispersion"], 0);
         }
     }, [selectedGeneratorType]);
@@ -46,7 +46,7 @@ export default ({ form, relevantResources, resourceTypes, selectedType, funcs })
                 <InputNumber style={{ width: "100%" }} placeholder="Укажите мат. ожидание" />
             </Form.Item>,
             <Form.Item label="Дисперсия" name={["generator", "dispersion"]} rules={[requiredRule]}>
-                <InputNumber style={{ width: "100%" }} disabled={selectedGeneratorType === "precise"} placeholder="Укажите диперсию" />
+                <InputNumber style={{ width: "100%" }} disabled={selectedGeneratorType === "PRECISE"} placeholder="Укажите диперсию" />
             </Form.Item>,
         ],
     };

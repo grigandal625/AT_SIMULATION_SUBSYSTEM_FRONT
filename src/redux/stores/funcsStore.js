@@ -73,7 +73,7 @@ export const createFunc = createFrameActionAsyncThunk("funcs/create", async ({ m
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    return {...func, ...json.data};
 });
 
 export const updateFunc = createFrameActionAsyncThunk("funcs/update", async ({ modelId, func }, { rejectWithValue }) => {
@@ -102,7 +102,7 @@ export const updateFunc = createFrameActionAsyncThunk("funcs/update", async ({ m
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    return {...func, ...json.data};
 });
 
 export const deleteFunc = createFrameActionAsyncThunk("funcs/delete", async ({ modelId, funcId }, { rejectWithValue }) => {

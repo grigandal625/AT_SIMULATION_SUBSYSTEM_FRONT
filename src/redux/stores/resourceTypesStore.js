@@ -131,7 +131,7 @@ export const createResourceType = createFrameActionAsyncThunk("resourceTypes/cre
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    return {...resourceType, ...json.data};
 });
 
 export const updateResourceType = createFrameActionAsyncThunk("resourceTypes/update", async ({ modelId, resourceType }, { rejectWithValue }) => {

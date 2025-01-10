@@ -89,17 +89,17 @@ export default ({ form, resourceTypes, modelId, templates, funcs, ...formProps }
     // }, [actualForm]);
 
     const bodyItems = {
-        irregular_event: IrregularEventBody,
-        operation: OperationBody,
-        rule: RuleBody,
+        IRREGULAR_EVENT: IrregularEventBody,
+        OPERATION: OperationBody,
+        RULE: RuleBody,
     };
 
     const SelectedBodyItem = selectedType ? bodyItems[selectedType] : () => <Typography.Text type="secondary">Укажите вид операции</Typography.Text>;
 
     const typeOptions = [
-        { value: "irregular_event", label: "Нерегулярное событие" },
-        { value: "operation", label: "Операция" },
-        { value: "rule", label: "Правило" },
+        { value: "IRREGULAR_EVENT", label: "Нерегулярное событие" },
+        { value: "OPERATION", label: "Операция" },
+        { value: "RULE", label: "Правило" },
     ];
 
     const getItems = () => (templates || []).filter((item) => item.id !== actualForm.getFieldValue("id"));

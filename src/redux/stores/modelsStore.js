@@ -59,7 +59,7 @@ export const createModel = createFrameActionAsyncThunk("models/create", async (m
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    return {...model, ...json.data};
 });
 
 export const deleteModel = createFrameActionAsyncThunk("models/delete", async (modelId, { rejectWithValue }) => {

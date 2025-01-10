@@ -3,7 +3,7 @@ import CheckboxItem from "../../../../../../utils/CheckboxItem";
 
 const AttributeControl = ({ attribute, value, onChange }) => {
     const controlsTypesMapping = {
-        int: {
+        INT: {
             component: InputNumber,
             props: {
                 value,
@@ -13,7 +13,7 @@ const AttributeControl = ({ attribute, value, onChange }) => {
                 style: { width: "100%" },
             },
         },
-        float: {
+        FLOAT: {
             component: InputNumber,
             props: {
                 value,
@@ -22,7 +22,7 @@ const AttributeControl = ({ attribute, value, onChange }) => {
                 style: { width: "100%" },
             },
         },
-        bool: {
+        BOOL: {
             component: CheckboxItem,
             props: {
                 value,
@@ -30,7 +30,7 @@ const AttributeControl = ({ attribute, value, onChange }) => {
                 children: "Укажите логическое значение",
             },
         },
-        enum: {
+        ENUM: {
             component: Select,
             props: {
                 value,
