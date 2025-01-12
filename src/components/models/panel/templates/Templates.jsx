@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useMatches, useNavigate, useParams } from "react-router-dom";
 import { deleteTemplate, loadTemplates } from "../../../../redux/stores/templatesStore";
 import { LOAD_STATUSES } from "../../../../GLOBAL";
-import { Button, Col, Dropdown, Menu, Modal, Row, Skeleton } from "antd";
+import { Button, Col, Dropdown, Empty, Menu, Modal, Row, Skeleton } from "antd";
 import { EditOutlined, PlusOutlined, CopyOutlined, DeleteOutlined, DashOutlined } from "@ant-design/icons";
 
 import "../PanelMenu.css";
@@ -23,7 +23,7 @@ export default ({ closed }) => {
 
     useEffect(() => {
         dispatch(loadTemplates(params.modelId));
-    }, []);
+    }, [params]);
 
     const dropDownItems = (template) => [
         {
@@ -78,38 +78,44 @@ export default ({ closed }) => {
         delete: confirmDeleteTemplate,
     };
 
+    const itemLabel = (template) => (
+        <Row style={{ width: "100%" }} gutter={10}>
+            <Col flex="auto">
+                <Link to={`/models/${params.modelId}/templates/${template.meta.id}`}>{template.meta.name}</Link>
+            </Col>
+            <Col>
+                <Dropdown
+                    trigger={["click"]}
+                    menu={{
+                        items: dropDownItems(template),
+                        onClick: ({ key }) => options[key](template),
+                    }}
+                >
+                    <Button size="small" icon={<DashOutlined />} />
+                </Dropdown>
+            </Col>
+        </Row>
+    );
+
+    const itemsMenu = templates.data.length ? (
+        <Menu
+            selectedKeys={[params.templateId]}
+            items={templates.data.map((template) => {
+                return {
+                    key: template.meta.id.toString(),
+                    label: itemLabel(template),
+                };
+            })}
+        />
+    ) : (
+        <Empty description="Образцов операций не создано" />
+    );
+
     const className = closed ? ["model-item-menu", "closed"] : ["model-item-menu"];
 
     return templates.status === LOAD_STATUSES.SUCCESS ? (
         <div className="item-menu-wrapper">
-            <div className={className.join(' ')}>
-                <Menu
-                    selectedKeys={[params.templateId]}
-                    items={templates.data.map((template) => {
-                        return {
-                            key: template.meta.id.toString(),
-                            label: (
-                                <Row style={{ width: "100%" }} gutter={10}>
-                                    <Col flex="auto">
-                                        <Link to={`/models/${params.modelId}/templates/${template.meta.id}`}>{template.meta.name}</Link>
-                                    </Col>
-                                    <Col>
-                                        <Dropdown
-                                            trigger={["click"]}
-                                            menu={{
-                                                items: dropDownItems(template),
-                                                onClick: ({ key }) => options[key](template),
-                                            }}
-                                        >
-                                            <Button size="small" icon={<DashOutlined />} />
-                                        </Dropdown>
-                                    </Col>
-                                </Row>
-                            ),
-                        };
-                    })}
-                />
-            </div>
+            <div className={className.join(" ")}>{itemsMenu}</div>
             <Link to={`/models/${params.modelId}/templates/new`}>
                 <Button type="primary" className="add-item-btn" icon={<PlusOutlined />}>
                     Создать образец операции

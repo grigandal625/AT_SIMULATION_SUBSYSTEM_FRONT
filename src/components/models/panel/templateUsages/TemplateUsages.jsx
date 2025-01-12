@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useMatches, useNavigate, useParams } from "react-router-dom";
 import { deleteTemplateUsage, loadTemplateUsages } from "../../../../redux/stores/templateUsagesStore";
 import { LOAD_STATUSES } from "../../../../GLOBAL";
-import { Button, Col, Dropdown, Menu, Modal, Row, Skeleton } from "antd";
+import { Button, Col, Dropdown, Empty, Menu, Modal, Row, Skeleton } from "antd";
 import { EditOutlined, PlusOutlined, CopyOutlined, DeleteOutlined, DashOutlined } from "@ant-design/icons";
 
 import "../PanelMenu.css";
 import CreateTemplateUsageModal from "./dialogs/CreateTemplateUsageModal";
 import EditTemplateUsageModal from "./dialogs/EditTemplateUsageModal";
 
-export default ({closed}) => {
+export default ({ closed }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [modal, contextHandler] = Modal.useModal();
@@ -23,7 +23,7 @@ export default ({closed}) => {
 
     useEffect(() => {
         dispatch(loadTemplateUsages(params.modelId));
-    }, []);
+    }, [params]);
 
     const dropDownItems = () => [
         {
@@ -78,38 +78,44 @@ export default ({closed}) => {
         delete: confirmDeleteTemplateUsage,
     };
 
+    const itemLabel = (templateUsage) => (
+        <Row wrap={false} style={{ width: "100%" }} gutter={10}>
+            <Col flex="auto">
+                <Link to={`/models/${params.modelId}/template-usages/${templateUsage.id}`}>{templateUsage.name}</Link>
+            </Col>
+            <Col>
+                <Dropdown
+                    trigger={["click"]}
+                    menu={{
+                        items: dropDownItems(templateUsage),
+                        onClick: ({ key }) => options[key](templateUsage),
+                    }}
+                >
+                    <Button size="small" icon={<DashOutlined />} />
+                </Dropdown>
+            </Col>
+        </Row>
+    );
+
+    const itemsMenu = templateUsages.data.length ? (
+        <Menu
+            selectedKeys={[params.templateUsageId]}
+            items={templateUsages.data.map((templateUsage) => {
+                return {
+                    key: templateUsage.id.toString(),
+                    label: itemLabel(templateUsage),
+                };
+            })}
+        />
+    ) : (
+        <Empty description="Операций не создано" />
+    );
+
     const className = closed ? ["model-item-menu", "closed"] : ["model-item-menu"];
 
     return templateUsages.status === LOAD_STATUSES.SUCCESS ? (
         <div className="item-menu-wrapper">
-            <div className={className.join(' ')}>
-                <Menu
-                    selectedKeys={[params.templateUsageId]}
-                    items={templateUsages.data.map((templateUsage) => {
-                        return {
-                            key: templateUsage.id.toString(),
-                            label: (
-                                <Row wrap={false} style={{ width: "100%" }} gutter={10}>
-                                    <Col flex="auto">
-                                        <Link to={`/models/${params.modelId}/template-usages/${templateUsage.id}`}>{templateUsage.name}</Link>
-                                    </Col>
-                                    <Col>
-                                        <Dropdown
-                                            trigger={["click"]}
-                                            menu={{
-                                                items: dropDownItems(templateUsage),
-                                                onClick: ({ key }) => options[key](templateUsage),
-                                            }}
-                                        >
-                                            <Button size="small" icon={<DashOutlined />} />
-                                        </Dropdown>
-                                    </Col>
-                                </Row>
-                            ),
-                        };
-                    })}
-                />
-            </div>
+            <div className={className.join(" ")}>{itemsMenu}</div>
             <Link to={`/models/${params.modelId}/template-usages/new`}>
                 <Button type="primary" className="add-item-btn" icon={<PlusOutlined />}>
                     Создать операцию

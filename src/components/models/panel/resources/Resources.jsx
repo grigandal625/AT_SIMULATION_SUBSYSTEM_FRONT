@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useMatches, useNavigate, useParams } from "react-router-dom";
 import { deleteResource, loadResources } from "../../../../redux/stores/resourcesStore";
 import { LOAD_STATUSES } from "../../../../GLOBAL";
-import { Button, Col, Dropdown, Menu, Modal, Row, Skeleton } from "antd";
+import { Button, Col, Dropdown, Empty, Menu, Modal, Row, Skeleton } from "antd";
 import { EditOutlined, PlusOutlined, CopyOutlined, DeleteOutlined, DashOutlined } from "@ant-design/icons";
 
 import "../PanelMenu.css";
 import CreateResourceModal from "./dialogs/CreateResourceModal";
 import EditResourceModal from "./dialogs/EditResourceModal";
 
-export default ({closed}) => {
+export default ({ closed }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [modal, contextHandler] = Modal.useModal();
@@ -23,7 +23,7 @@ export default ({closed}) => {
 
     useEffect(() => {
         dispatch(loadResources(params.modelId));
-    }, []);
+    }, [params]);
 
     const dropDownItems = (resource) => [
         {
@@ -44,8 +44,7 @@ export default ({closed}) => {
         },
     ];
 
-    const handleEditResource = (resource) =>
-        navigate(`/models/${params.modelId}/resources/${resource.id}/edit`);
+    const handleEditResource = (resource) => navigate(`/models/${params.modelId}/resources/${resource.id}/edit`);
 
     const handleDuplicateResource = async (resource) => {
         // duplicate resource
@@ -81,38 +80,42 @@ export default ({closed}) => {
 
     const className = closed ? ["model-item-menu", "closed"] : ["model-item-menu"];
 
+    const itemLabel = (resource) => (
+        <Row style={{ width: "100%" }} gutter={10}>
+            <Col flex="auto">
+                <Link to={`/models/${params.modelId}/resources/${resource.id}`}>{resource.name}</Link>
+            </Col>
+            <Col>
+                <Dropdown
+                    trigger={["click"]}
+                    menu={{
+                        items: dropDownItems(resource),
+                        onClick: ({ key }) => options[key](resource),
+                    }}
+                >
+                    <Button size="small" icon={<DashOutlined />} />
+                </Dropdown>
+            </Col>
+        </Row>
+    );
+
+    const itemsMenu = resources.data.length ? (
+        <Menu
+            selectedKeys={[params.resourceId]}
+            items={resources.data.map((resource) => {
+                return {
+                    key: resource.id.toString(),
+                    label: itemLabel(resource),
+                };
+            })}
+        />
+    ) : (
+        <Empty description="Ресурсов не создано" />
+    );
+
     return resources.status === LOAD_STATUSES.SUCCESS ? (
         <div className="item-menu-wrapper">
-            <div className={className.join(' ')}>
-                <Menu
-                    selectedKeys={[params.resourceId]}
-                    items={resources.data.map((resource) => {
-                        return {
-                            key: resource.id.toString(),
-                            label: (
-                                <Row style={{ width: "100%" }} gutter={10}>
-                                    <Col flex="auto">
-                                        <Link to={`/models/${params.modelId}/resources/${resource.id}`}>
-                                            {resource.name}
-                                        </Link>
-                                    </Col>
-                                    <Col>
-                                        <Dropdown
-                                            trigger={["click"]}
-                                            menu={{
-                                                items: dropDownItems(resource),
-                                                onClick: ({ key }) => options[key](resource),
-                                            }}
-                                        >
-                                            <Button size="small" icon={<DashOutlined />} />
-                                        </Dropdown>
-                                    </Col>
-                                </Row>
-                            ),
-                        };
-                    })}
-                />
-            </div>
+            <div className={className.join(" ")}>{itemsMenu}</div>
             <Link to={`/models/${params.modelId}/resources/new`}>
                 <Button type="primary" className="add-item-btn" icon={<PlusOutlined />}>
                     Создать ресурс

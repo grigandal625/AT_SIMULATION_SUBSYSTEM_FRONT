@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useMatches, useNavigate, useParams } from "react-router-dom";
 import { deleteFunc, loadFuncs } from "../../../../redux/stores/funcsStore";
 import { LOAD_STATUSES } from "../../../../GLOBAL";
-import { Button, Col, Dropdown, Menu, Modal, Row, Skeleton } from "antd";
+import { Button, Col, Dropdown, Empty, Menu, Modal, Row, Skeleton } from "antd";
 import { EditOutlined, PlusOutlined, CopyOutlined, DeleteOutlined, DashOutlined } from "@ant-design/icons";
 
 import "../PanelMenu.css";
@@ -23,7 +23,7 @@ export default ({ closed }) => {
 
     useEffect(() => {
         dispatch(loadFuncs(params.modelId));
-    }, []);
+    }, [params]);
 
     const dropDownItems = (func) => [
         {
@@ -78,38 +78,44 @@ export default ({ closed }) => {
         delete: confirmDeleteFunc,
     };
 
+    const itemLabel = (func) => (
+        <Row style={{ width: "100%" }} gutter={10}>
+            <Col flex="auto">
+                <Link to={`/models/${params.modelId}/funcs/${func.id}`}>{func.name}</Link>
+            </Col>
+            <Col>
+                <Dropdown
+                    trigger={["click"]}
+                    menu={{
+                        items: dropDownItems(func),
+                        onClick: ({ key }) => options[key](func),
+                    }}
+                >
+                    <Button size="small" icon={<DashOutlined />} />
+                </Dropdown>
+            </Col>
+        </Row>
+    );
+
+    const itemsMenu = funcs.data.length ? (
+        <Menu
+            selectedKeys={[params.funcId]}
+            items={funcs.data.map((func) => {
+                return {
+                    key: func.id.toString(),
+                    label: itemLabel(func),
+                };
+            })}
+        />
+    ) : (
+        <Empty description="Функций не создано" />
+    );
+
     const className = closed ? ["model-item-menu", "closed"] : ["model-item-menu"];
 
     return funcs.status === LOAD_STATUSES.SUCCESS ? (
         <div className="item-menu-wrapper">
-            <div className={className.join(' ')}>
-                <Menu
-                    selectedKeys={[params.funcId]}
-                    items={funcs.data.map((func) => {
-                        return {
-                            key: func.id.toString(),
-                            label: (
-                                <Row style={{ width: "100%" }} gutter={10}>
-                                    <Col flex="auto">
-                                        <Link to={`/models/${params.modelId}/funcs/${func.id}`}>{func.name}</Link>
-                                    </Col>
-                                    <Col>
-                                        <Dropdown
-                                            trigger={["click"]}
-                                            menu={{
-                                                items: dropDownItems(func),
-                                                onClick: ({ key }) => options[key](func),
-                                            }}
-                                        >
-                                            <Button size="small" icon={<DashOutlined />} />
-                                        </Dropdown>
-                                    </Col>
-                                </Row>
-                            ),
-                        };
-                    })}
-                />
-            </div>
+            <div className={className.join(" ")}>{itemsMenu}</div>
             <Link to={`/models/${params.modelId}/funcs/new`}>
                 <Button type="primary" className="add-item-btn" icon={<PlusOutlined />}>
                     Создать функцию

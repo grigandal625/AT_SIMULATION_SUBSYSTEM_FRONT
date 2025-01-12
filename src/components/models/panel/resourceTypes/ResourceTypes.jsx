@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useMatches, useNavigate, useParams } from "react-router-dom";
 import { deleteResourceType, loadResourceTypes } from "../../../../redux/stores/resourceTypesStore";
 import { LOAD_STATUSES } from "../../../../GLOBAL";
-import { Button, Col, Dropdown, Menu, Modal, Row, Skeleton } from "antd";
+import { Button, Col, Dropdown, Empty, Menu, Modal, Row, Skeleton } from "antd";
 import { EditOutlined, PlusOutlined, CopyOutlined, DeleteOutlined, DashOutlined } from "@ant-design/icons";
 
 import "../PanelMenu.css";
@@ -23,7 +23,7 @@ export default ({ closed }) => {
 
     useEffect(() => {
         dispatch(loadResourceTypes(params.modelId));
-    }, []);
+    }, [params]);
 
     const dropDownItems = (resourceType) => [
         {
@@ -80,36 +80,42 @@ export default ({ closed }) => {
 
     const className = closed ? ["model-item-menu", "closed"] : ["model-item-menu"];
 
+    const itemLabel = (resourceType) => (
+        <Row style={{ width: "100%" }} gutter={10}>
+            <Col flex="auto">
+                <Link to={`/models/${params.modelId}/resource-types/${resourceType.id}`}>{resourceType.name}</Link>
+            </Col>
+            <Col>
+                <Dropdown
+                    trigger={["click"]}
+                    menu={{
+                        items: dropDownItems(resourceType),
+                        onClick: ({ key }) => options[key](resourceType),
+                    }}
+                >
+                    <Button size="small" icon={<DashOutlined />} />
+                </Dropdown>
+            </Col>
+        </Row>
+    );
+
+    const itemsMenu = resourceTypes.data.length ? (
+        <Menu
+            selectedKeys={[params.resourceTypeId]}
+            items={resourceTypes.data.map((resourceType) => {
+                return {
+                    key: resourceType.id.toString(),
+                    label: itemLabel(resourceType),
+                };
+            })}
+        />
+    ) : (
+        <Empty description="Типов ресурсов не создано" />
+    );
+
     return resourceTypes.status === LOAD_STATUSES.SUCCESS ? (
         <div className="item-menu-wrapper">
-            <div className={className.join(' ')}>
-                <Menu
-                    selectedKeys={[params.resourceTypeId]}
-                    items={resourceTypes.data.map((resourceType) => {
-                        return {
-                            key: resourceType.id.toString(),
-                            label: (
-                                <Row style={{ width: "100%" }} gutter={10}>
-                                    <Col flex="auto">
-                                        <Link to={`/models/${params.modelId}/resource-types/${resourceType.id}`}>{resourceType.name}</Link>
-                                    </Col>
-                                    <Col>
-                                        <Dropdown
-                                            trigger={["click"]}
-                                            menu={{
-                                                items: dropDownItems(resourceType),
-                                                onClick: ({ key }) => options[key](resourceType),
-                                            }}
-                                        >
-                                            <Button size="small" icon={<DashOutlined />} />
-                                        </Dropdown>
-                                    </Col>
-                                </Row>
-                            ),
-                        };
-                    })}
-                />
-            </div>
+            <div className={className.join(" ")}>{itemsMenu}</div>
             <Link to={`/models/${params.modelId}/resource-types/new`}>
                 <Button type="primary" className="add-item-btn" icon={<PlusOutlined />}>
                     Создать тип ресурса
