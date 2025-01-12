@@ -80,7 +80,7 @@ export default () => {
     const authenticationNow = Boolean(matches.find((match) => /^\/token/g.test(match.pathname)));
     const currentToken = window.sessionStorage.getItem("token");
 
-    const defaultKey = matches.map((m) => m.pathname).includes("/evaluate") ? "evaluation" : "develop";
+    const activeKey = matches.map((m) => m.pathname).includes("/evaluate") ? "evaluation" : "develop";
 
     const menuItems = [
         {
@@ -104,7 +104,7 @@ export default () => {
                     </Col>
                     <Col>
                         {currentToken && !authenticationNow && (
-                            <Menu style={{ minWidth: 484 }} mode="horizontal" theme="dark" defaultSelectedKeys={[defaultKey]} items={menuItems} />
+                            <Menu style={{ minWidth: 484 }} mode="horizontal" theme="dark" selectedKeys={[activeKey]} items={menuItems} />
                         )}
                     </Col>
                 </Row>

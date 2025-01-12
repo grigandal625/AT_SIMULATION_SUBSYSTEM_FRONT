@@ -1,4 +1,4 @@
-import { Row, Col, Input, Button, Empty, Form, Collapse, Table } from "antd";
+import { Row, Col, Input, Button, Empty, Form, Collapse, Table, Typography } from "antd";
 import GoTypingInput from "../../../../../../utils/GoTypingInput";
 import TinyFormItem from "../../../../../../utils/TinyFormItem";
 import { useState } from "react";
@@ -59,19 +59,47 @@ const ParametersList = ({ fields, parameters, setParameters, add, remove }) => {
 
     return (
         <>
-            {fields.length ? <Table size="small" columns={columns} dataSource={fields} pagination={false} /> : <Empty description="Параметров не добавлено" />}
-            <div style={{ marginTop: 5 }}>
-                <Button
-                    style={{ width: "100%" }}
-                    icon={<PlusOutlined />}
-                    onClick={() => {
-                        add({});
-                        setParameters([...parameters, {}]);
-                    }}
-                >
-                    Добавить
-                </Button>
-            </div>
+            {fields.length ? (
+                <Table
+                    title={() => (
+                        <Row align="middle">
+                            <Col flex="auto">
+                                <Typography.Title level={5} style={{ marginTop: 10 }}>
+                                    Список параметров
+                                </Typography.Title>
+                            </Col>
+                            <Col>
+                                <Button
+                                    style={{ width: "100%" }}
+                                    icon={<PlusOutlined />}
+                                    onClick={() => {
+                                        add({});
+                                        setParameters([...parameters, {}]);
+                                    }}
+                                >
+                                    Добавить
+                                </Button>
+                            </Col>
+                        </Row>
+                    )}
+                    size="small"
+                    columns={columns}
+                    dataSource={fields}
+                    pagination={false}
+                />
+            ) : (
+                <Empty description="Параметров не добавлено">
+                    <Button
+                        icon={<PlusOutlined />}
+                        onClick={() => {
+                            add({});
+                            setParameters([...parameters, {}]);
+                        }}
+                    >
+                        Добавить
+                    </Button>
+                </Empty>
+            )}
         </>
     );
 };
