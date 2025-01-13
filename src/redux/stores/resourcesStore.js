@@ -219,7 +219,7 @@ const resourcesSlice = createSlice({
                 }
             })
             .addCase(deleteResourceType.fulfilled, (state, action) => {
-                state.data = state.data.filter((item) => item.id !== parseInt(action.payload));
+                state.data = state.data.filter((item) => item.resource_type_id !== parseInt(action.payload));
             });
     },
 });

@@ -126,7 +126,7 @@ export const createTemplate = createFrameActionAsyncThunk("templates/create", as
         return await rejector(response, rejectWithValue);
     }
 
-    const {id} = json.data;
+    const { id } = json.data;
 
     const retrieveUrl = `${API_URL}/api/editor/templates/${id}/${template.meta.type.toLowerCase()}`;
     const retrieveResponse = await fetch(retrieveUrl, { headers });
@@ -169,7 +169,7 @@ export const updateTemplate = createFrameActionAsyncThunk("templates/update", as
         return await rejector(response, rejectWithValue);
     }
 
-    const {id} = json.data;
+    const { id } = json.data;
 
     const retrieveUrl = `${API_URL}/api/editor/templates/${id}/${template.meta.type.toLowerCase()}`;
     const retrieveResponse = await fetch(retrieveUrl, { headers });
@@ -260,8 +260,9 @@ const templatesSlice = createSlice({
                     state.data.splice(index, 1);
                 }
             })
-            .addCase(deleteResourceType.fulfilled, (state, action) => {
-                state.data = state.data.filter((item) => !item.meta.rel_resources.map((r) => r.resource_type_id).includes(parseInt(action.payload)));
+            .addCase(deleteResourceType.fulfilled, (state) => {
+                state.status = LOAD_STATUSES.TO_REFRESH;
+                state.data = [];
             });
     },
 });

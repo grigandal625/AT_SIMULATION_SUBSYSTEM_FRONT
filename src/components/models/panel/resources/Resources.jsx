@@ -65,7 +65,7 @@ export default ({ closed }) => {
                     <Typography.Paragraph>
                         Вы уверены, что хотите удалить ресурс <b>{resource.name}?</b>
                     </Typography.Paragraph>
-                    <Typography.Paragraph>При удалении ресурса удалятся также все операции, в которых данный ресурс участвует как релевантный ресурс</Typography.Paragraph>
+                    <Typography.Paragraph>При удалении ресурса удалятся также релевантные ресурсы в операциях</Typography.Paragraph>
                 </>
             ),
             okText: "Удалить",

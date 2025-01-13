@@ -22,6 +22,12 @@ export default ({ closed }) => {
     const editOpen = Boolean(matches.find((match) => /models\/\d+\/templates\/\d+\/edit/g.test(match.pathname)));
 
     useEffect(() => {
+        if (templates.status === LOAD_STATUSES.TO_REFRESH) {
+            dispatch(loadTemplates(params.modelId));
+        }
+    }, [templates.status]);
+
+    useEffect(() => {
         dispatch(loadTemplates(params.modelId));
     }, [params.modelId]);
 

@@ -184,15 +184,15 @@ const templateUsagesSlice = createSlice({
                 }
             })
             .addCase(deleteTemplate.fulfilled, (state, action) => {
-                state.data = state.data.filter((item) => item.template.id !== parseInt(action.payload));
+                state.data = state.data.filter((item) => item.template_id !== parseInt(action.payload));
             })
             .addCase(deleteResource.fulfilled, (state, action) => {
-                state.data = state.data.filter((item) => !item.arguments.map((a) => a.resource_id).includes(parseInt(action.payload)));
+                state.status = LOAD_STATUSES.TO_REFRESH;
+                state.data = [];
             })
             .addCase(deleteResourceType.fulfilled, (state) => {
-                // поскольку ресурсы могут быть не загруженными, а операции загруженными, мы возможно не сможем отфильтровать операции, поэтому просто чистим
-                state.status = LOAD_STATUSES.CLEARED
-                state.data = []
+                state.status = LOAD_STATUSES.TO_REFRESH;
+                state.data = [];
             });
     },
 });

@@ -4,7 +4,7 @@ export const LOAD_STATUSES = {
     SUCCESS: "loaded",
     ERROR: "error",
     IDLE: "idle",
-    CLEARED: "cleared",
+    TO_REFRESH: "to_refresh",
 };
 
 export const PROCES_STATUSES = {
