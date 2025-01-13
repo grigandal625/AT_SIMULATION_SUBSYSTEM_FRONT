@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
-import { rejector } from "../rejector";
+import { rejector, ApiError } from "../rejector";
 
 export const loadTranslatedModels = createFrameActionAsyncThunk("translatedModels/load", async (_, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/translatedModels/`;
@@ -40,6 +40,8 @@ export const loadTranslatedModels = createFrameActionAsyncThunk("translatedModel
 export const createTranslatedModel = createFrameActionAsyncThunk("translatedModels/create", async ({ modelId, name }, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/translatedModels/`;
     const headers = getHeaders({ "model-id": modelId });
+
+    // return rejectWithValue(new ApiError("Translate error", 500, { error_message: "Translate error" }, "Test error"))
 
     if (MOCKING) {
         console.log(url, {

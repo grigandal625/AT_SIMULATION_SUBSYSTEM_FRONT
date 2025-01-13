@@ -3,8 +3,8 @@ import { useState } from "react";
 import SelectModelForm from "./forms/SelectModelForm";
 import { useDispatch } from "react-redux";
 import { createTranslatedModel } from "../../../redux/stores/translatedModelsStore";
-import { Link } from "react-router-dom";
-import { DeliveredProcedureOutlined, FileSyncOutlined } from "@ant-design/icons";
+import { Link, useParams } from "react-router-dom";
+import { BackwardOutlined, DeliveredProcedureOutlined, FileSyncOutlined, ReloadOutlined } from "@ant-design/icons";
 
 export default () => {
     const stepsItems = [
@@ -20,6 +20,7 @@ export default () => {
     const [translatedModel, setTranslatedModel] = useState();
     const [errorResult, setErrorResult] = useState();
     const dispatch = useDispatch();
+    const params = useParams();
 
     const [smSelectForm] = Form.useForm();
 
@@ -83,7 +84,45 @@ export default () => {
         0: smSelect,
         1: <div>Лексический анализ</div>,
         2: <div>Синтаксический анализ</div>,
-        3: <div>Семантический анализ</div>,
+        3: errorResult ? (
+            <Result
+                status="error"
+                title="Ошибка трансляции ИМ"
+                subTitle={
+                    <>
+                        <Typography.Title style={{ marginTop: 10, marginBottom: 10 }} level={4}>
+                            {errorResult.message}
+                        </Typography.Title>
+                        <Typography.Paragraph style={{ textAlign: "left", display: "block" }}>
+                            <pre style={{ margin: 0, whiteSpace: "pre-wrap" }}>{JSON.stringify(errorResult, null, 4)}</pre>
+                        </Typography.Paragraph>
+                        <Row justify="center" gutter={10} align="middle">
+                            <Col>
+                                <Link to={`/models/${params.selectedModelId}`}>
+                                    <Button type="link" icon={<BackwardOutlined />}>
+                                        Вернуться к разработке ИМ
+                                    </Button>
+                                </Link>
+                            </Col>
+                            <Col>
+                                <Button
+                                    type="link"
+                                    icon={<ReloadOutlined />}
+                                    onClick={() => {
+                                        setStage(0);
+                                        setStatus();
+                                    }}
+                                >
+                                    Выбрать другой файл ИМ для трансляции
+                                </Button>
+                            </Col>
+                        </Row>
+                    </>
+                }
+            />
+        ) : (
+            <Spin />
+        ),
         4: resultView,
     };
 
