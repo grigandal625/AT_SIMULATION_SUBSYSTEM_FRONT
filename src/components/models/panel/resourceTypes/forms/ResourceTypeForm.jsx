@@ -1,5 +1,5 @@
 import { Form, Input, Select } from "antd";
-import { requiredRule, itemUniqueBetweenRule } from "../../../../../utils/validators/general";
+import { requiredRule, itemUniqueBetweenRule, itemLengthRequiredRule } from "../../../../../utils/validators/general";
 import { goIdentifierRule } from "../../../../../utils/validators/go";
 import AttributesFormList from "./attributes/AttributesList";
 
@@ -16,11 +16,11 @@ export default ({ form, resourceTypes, ...formProps }) => {
         },
     ];
 
-    const getItems = () => (resourceTypes || []).filter(item => item.id !== actualForm.getFieldValue("id"))
-    const getValue = () => actualForm.getFieldsValue()
+    const getItems = () => (resourceTypes || []).filter((item) => item.id !== actualForm.getFieldValue("id"));
+    const getValue = () => actualForm.getFieldsValue();
     const compare = (v, i) => v.name === i.name;
 
-    const uniqueRule = itemUniqueBetweenRule(getValue, getItems, compare)
+    const uniqueRule = itemUniqueBetweenRule(getValue, getItems, compare);
 
     return (
         <Form form={actualForm} {...formProps}>
@@ -32,7 +32,7 @@ export default ({ form, resourceTypes, ...formProps }) => {
             <Form.Item name="type" label="Тип" rules={[requiredRule]}>
                 <Select placeholder="Выберите тип" options={typeOptions} />
             </Form.Item>
-            <Form.Item label="Параметры">
+            <Form.Item label="Параметры" name="_check" rules={[itemLengthRequiredRule(form, "attributes")]}>
                 <Form.List name="attributes">{(fields, { add, remove }) => <AttributesFormList fields={fields} add={add} remove={remove} form={actualForm} />}</Form.List>
             </Form.Item>
         </Form>

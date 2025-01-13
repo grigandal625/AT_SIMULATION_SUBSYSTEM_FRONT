@@ -4,6 +4,7 @@ export const LOAD_STATUSES = {
     SUCCESS: "loaded",
     ERROR: "error",
     IDLE: "idle",
+    CLEARED: "cleared",
 };
 
 export const PROCES_STATUSES = {

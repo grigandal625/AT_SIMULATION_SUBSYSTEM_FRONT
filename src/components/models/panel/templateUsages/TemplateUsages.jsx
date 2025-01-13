@@ -22,8 +22,14 @@ export default ({ closed }) => {
     const editOpen = Boolean(matches.find((match) => /models\/\d+\/template-usages\/\d+\/edit/g.test(match.pathname)));
 
     useEffect(() => {
+        if (templateUsages.status === LOAD_STATUSES.CLEARED) {
+            dispatch(loadTemplateUsages(params.modelId));
+        }
+    }, [templateUsages.status]);
+
+    useEffect(() => {
         dispatch(loadTemplateUsages(params.modelId));
-    }, [params]);
+    }, [params.modelId]);
 
     const dropDownItems = () => [
         {

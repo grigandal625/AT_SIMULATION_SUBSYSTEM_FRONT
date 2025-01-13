@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useMatches, useNavigate, useParams } from "react-router-dom";
 import { deleteResourceType, loadResourceTypes } from "../../../../redux/stores/resourceTypesStore";
 import { LOAD_STATUSES } from "../../../../GLOBAL";
-import { Button, Col, Dropdown, Empty, Menu, Modal, Row, Skeleton } from "antd";
+import { Button, Col, Dropdown, Empty, Menu, Modal, Row, Skeleton, Typography } from "antd";
 import { EditOutlined, PlusOutlined, CopyOutlined, DeleteOutlined, DashOutlined } from "@ant-design/icons";
 
 import "../PanelMenu.css";
@@ -23,7 +23,7 @@ export default ({ closed }) => {
 
     useEffect(() => {
         dispatch(loadResourceTypes(params.modelId));
-    }, [params]);
+    }, [params.modelId]);
 
     const dropDownItems = (resourceType) => [
         {
@@ -62,7 +62,17 @@ export default ({ closed }) => {
             title: "Удаление типа ресурса",
             content: (
                 <>
-                    Вы уверены, что хотите удалить тип рисурса <b>{resourceType.name}?</b>
+                    <Typography.Paragraph>
+                        Вы уверены, что хотите удалить тип ресурса <b>{resourceType.name}?</b>
+                    </Typography.Paragraph>
+                    <Typography.Paragraph>
+                        При удалении типа ресурса удалятся также:
+                        <ul>
+                            <li>Ресурсы данного типа</li>
+                            <li>Образцы операций, в которых данный тип ресурса указан в релевантных ресурсах</li>
+                            <li>Операции, в которых есть релевантные ресурсы данного типа ресурса</li>
+                        </ul>
+                    </Typography.Paragraph>
                 </>
             ),
             okText: "Удалить",

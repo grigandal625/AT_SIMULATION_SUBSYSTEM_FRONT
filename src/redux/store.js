@@ -10,6 +10,13 @@ import translatedModelsStore from "./stores/translatedModelsStore";
 import simulationProcessesStore from "./stores/simulationProcessesStore";
 import importsStore from "./stores/importsStore";
 
+const addGetStateMiddleware = (storeAPI) => (next) => (action) => {
+    if (typeof action === "object" && action.type) {
+        action.meta = { ...action.meta, fullState: storeAPI.getState() };
+    }
+    return next(action);
+};
+
 export default configureStore({
     reducer: {
         models: modelsStore,
@@ -23,5 +30,6 @@ export default configureStore({
         imports: importsStore,
         // Add other store reducers here
     },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(addGetStateMiddleware),
     // Other store configuration goes here
 });

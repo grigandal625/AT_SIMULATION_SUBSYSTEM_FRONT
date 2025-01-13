@@ -15,7 +15,7 @@ export default () => {
 
     useEffect(() => {
         dispatch(loadImports(params.modelId));
-    }, [params]);
+    }, [params.modelId]);
 
     const [form] = Form.useForm();
 
@@ -92,7 +92,7 @@ export default () => {
         },
         {
             title: "Используемые пакеты",
-            dataIndex: "packages",
+            dataIndex: "pkgs",
             key: "packages",
             render: (packages) => (
                 <Space>

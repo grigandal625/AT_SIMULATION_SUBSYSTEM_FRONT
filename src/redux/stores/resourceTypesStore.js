@@ -131,7 +131,21 @@ export const createResourceType = createFrameActionAsyncThunk("resourceTypes/cre
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return {...resourceType, ...json.data};
+
+    const {id} = json.data;
+
+    const retrieveUrl = `${API_URL}/api/editor/resources/types/${id}`;
+    const retrieveResponse = await fetch(retrieveUrl, {headers});
+
+    if (!retrieveResponse.ok) {
+        return await rejector(retrieveResponse, rejectWithValue);
+    }
+    const retrieveJson = await retrieveResponse.json();
+    if (retrieveJson.is_error) {
+        return await rejector(retrieveResponse, rejectWithValue);
+    }
+
+    return {...resourceType, ...retrieveJson.data};
 });
 
 export const updateResourceType = createFrameActionAsyncThunk("resourceTypes/update", async ({ modelId, resourceType }, { rejectWithValue }) => {
@@ -160,7 +174,21 @@ export const updateResourceType = createFrameActionAsyncThunk("resourceTypes/upd
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    
+    const {id} = json.data;
+
+    const retrieveUrl = `${API_URL}/api/editor/resources/types/${id}`;
+    const retrieveResponse = await fetch(retrieveUrl, {headers});
+
+    if (!retrieveResponse.ok) {
+        return await rejector(retrieveResponse, rejectWithValue);
+    }
+    const retrieveJson = await retrieveResponse.json();
+    if (retrieveJson.is_error) {
+        return await rejector(retrieveResponse, rejectWithValue);
+    }
+
+    return {...resourceType, ...retrieveJson.data};
 });
 
 export const deleteResourceType = createFrameActionAsyncThunk("resourceTypes/delete", async ({ modelId, resourceTypeId }, { rejectWithValue }) => {

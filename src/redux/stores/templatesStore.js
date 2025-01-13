@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 import { rejector } from "../rejector";
+import { deleteResourceType } from "./resourceTypesStore";
 
 export const loadTemplates = createFrameActionAsyncThunk("templates/load", async (modelId, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/templates/`;
@@ -124,11 +125,25 @@ export const createTemplate = createFrameActionAsyncThunk("templates/create", as
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return {...template, ...json.data};
+
+    const {id} = json.data;
+
+    const retrieveUrl = `${API_URL}/api/editor/templates/${id}/${template.meta.type.toLowerCase()}`;
+    const retrieveResponse = await fetch(retrieveUrl, { headers });
+
+    if (!retrieveResponse.ok) {
+        return await rejector(retrieveResponse, rejectWithValue);
+    }
+    const retrieveJson = await retrieveResponse.json();
+    if (retrieveJson.is_error) {
+        return await rejector(retrieveResponse, rejectWithValue);
+    }
+
+    return { ...template, ...retrieveJson.data };
 });
 
 export const updateTemplate = createFrameActionAsyncThunk("templates/update", async ({ modelId, template }, { rejectWithValue }) => {
-    const url = `${API_URL}/api/editor/templates/${template.meta.id}/${template.meta.type}/`;
+    const url = `${API_URL}/api/editor/templates/${template.meta.id}/${template.meta.type.toLowerCase()}/`;
     const headers = getHeaders({ "model-id": modelId });
 
     if (MOCKING) {
@@ -153,7 +168,21 @@ export const updateTemplate = createFrameActionAsyncThunk("templates/update", as
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return {...template, ...json.data};
+
+    const {id} = json.data;
+
+    const retrieveUrl = `${API_URL}/api/editor/templates/${id}/${template.meta.type.toLowerCase()}`;
+    const retrieveResponse = await fetch(retrieveUrl, { headers });
+
+    if (!retrieveResponse.ok) {
+        return await rejector(retrieveResponse, rejectWithValue);
+    }
+    const retrieveJson = await retrieveResponse.json();
+    if (retrieveJson.is_error) {
+        return await rejector(retrieveResponse, rejectWithValue);
+    }
+
+    return { ...template, ...retrieveJson.data };
 });
 
 export const deleteTemplate = createFrameActionAsyncThunk("templates/delete", async ({ modelId, templateId }, { rejectWithValue }) => {
@@ -230,6 +259,9 @@ const templatesSlice = createSlice({
                 if (index > -1) {
                     state.data.splice(index, 1);
                 }
+            })
+            .addCase(deleteResourceType.fulfilled, (state, action) => {
+                state.data = state.data.filter((item) => !item.meta.rel_resources.map((r) => r.resource_type_id).includes(parseInt(action.payload)));
             });
     },
 });

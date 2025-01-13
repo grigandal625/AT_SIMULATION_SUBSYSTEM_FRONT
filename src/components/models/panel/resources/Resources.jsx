@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useMatches, useNavigate, useParams } from "react-router-dom";
 import { deleteResource, loadResources } from "../../../../redux/stores/resourcesStore";
 import { LOAD_STATUSES } from "../../../../GLOBAL";
-import { Button, Col, Dropdown, Empty, Menu, Modal, Row, Skeleton } from "antd";
+import { Button, Col, Dropdown, Empty, Menu, Modal, Row, Skeleton, Typography } from "antd";
 import { EditOutlined, PlusOutlined, CopyOutlined, DeleteOutlined, DashOutlined } from "@ant-design/icons";
 
 import "../PanelMenu.css";
@@ -23,7 +23,7 @@ export default ({ closed }) => {
 
     useEffect(() => {
         dispatch(loadResources(params.modelId));
-    }, [params]);
+    }, [params.modelId]);
 
     const dropDownItems = (resource) => [
         {
@@ -62,7 +62,10 @@ export default ({ closed }) => {
             title: "Удаление ресурса",
             content: (
                 <>
-                    Вы уверены, что хотите удалить ресурс <b>{resource.name}?</b>
+                    <Typography.Paragraph>
+                        Вы уверены, что хотите удалить ресурс <b>{resource.name}?</b>
+                    </Typography.Paragraph>
+                    <Typography.Paragraph>При удалении ресурса удалятся также все операции, в которых данный ресурс участвует как релевантный ресурс</Typography.Paragraph>
                 </>
             ),
             okText: "Удалить",

@@ -4,7 +4,7 @@ import SelectModelForm from "./forms/SelectModelForm";
 import { useDispatch } from "react-redux";
 import { createTranslatedModel } from "../../../redux/stores/translatedModelsStore";
 import { Link, useParams } from "react-router-dom";
-import { BackwardOutlined, DeliveredProcedureOutlined, FileSyncOutlined, ReloadOutlined } from "@ant-design/icons";
+import { DeliveredProcedureOutlined, EditOutlined, FileSyncOutlined, ReloadOutlined } from "@ant-design/icons";
 
 export default () => {
     const stepsItems = [
@@ -98,13 +98,6 @@ export default () => {
                         </Typography.Paragraph>
                         <Row justify="center" gutter={10} align="middle">
                             <Col>
-                                <Link to={`/models/${params.selectedModelId}`}>
-                                    <Button type="link" icon={<BackwardOutlined />}>
-                                        Вернуться к разработке ИМ
-                                    </Button>
-                                </Link>
-                            </Col>
-                            <Col>
                                 <Button
                                     type="link"
                                     icon={<ReloadOutlined />}
@@ -115,6 +108,13 @@ export default () => {
                                 >
                                     Выбрать другой файл ИМ для трансляции
                                 </Button>
+                            </Col>
+                            <Col>
+                                <Link to={`/models/${params.selectedModelId}`}>
+                                    <Button type="link" icon={<EditOutlined />}>
+                                        Вернуться к разработке ИМ
+                                    </Button>
+                                </Link>
                             </Col>
                         </Row>
                     </>

@@ -2,6 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 import { rejector } from "../rejector";
+import { deleteTemplate } from "./templatesStore";
+import { deleteResource } from "./resourcesStore";
+import { deleteResourceType } from "./resourceTypesStore";
 
 export const loadTemplateUsages = createFrameActionAsyncThunk("templateUsages/load", async (modelId, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/templates/usages/`;
@@ -73,7 +76,7 @@ export const createTemplateUsage = createFrameActionAsyncThunk("templateUsages/c
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return {...templateUsage, ...json.data};
+    return { ...templateUsage, ...json.data };
 });
 
 export const updateTemplateUsage = createFrameActionAsyncThunk("templateUsages/update", async ({ modelId, templateUsage }, { rejectWithValue }) => {
@@ -102,7 +105,7 @@ export const updateTemplateUsage = createFrameActionAsyncThunk("templateUsages/u
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return {...templateUsage, ...json.data};
+    return { ...templateUsage, ...json.data };
 });
 
 export const deleteTemplateUsage = createFrameActionAsyncThunk("templateUsages/delete", async ({ modelId, templateUsageId }, { rejectWithValue }) => {
@@ -179,6 +182,17 @@ const templateUsagesSlice = createSlice({
                 if (index > -1) {
                     state.data.splice(index, 1);
                 }
+            })
+            .addCase(deleteTemplate.fulfilled, (state, action) => {
+                state.data = state.data.filter((item) => item.template.id !== parseInt(action.payload));
+            })
+            .addCase(deleteResource.fulfilled, (state, action) => {
+                state.data = state.data.filter((item) => !item.arguments.map((a) => a.resource_id).includes(parseInt(action.payload)));
+            })
+            .addCase(deleteResourceType.fulfilled, (state) => {
+                // поскольку ресурсы могут быть не загруженными, а операции загруженными, мы возможно не сможем отфильтровать операции, поэтому просто чистим
+                state.status = LOAD_STATUSES.CLEARED
+                state.data = []
             });
     },
 });
