@@ -18,7 +18,7 @@ export const loadTemplates = createFrameActionAsyncThunk("templates/load", async
                     meta: {
                         id: 1,
                         name: "event1",
-                        type: "irregular_event",
+                        type: "IRREGULAR_EVENT",
                         rel_resources: [
                             {
                                 id: 1,
@@ -42,7 +42,7 @@ export const loadTemplates = createFrameActionAsyncThunk("templates/load", async
                     meta: {
                         id: 2,
                         name: "operation1",
-                        type: "operation",
+                        type: "OPERATION",
                         rel_resources: [
                             {
                                 id: 1,
@@ -64,7 +64,7 @@ export const loadTemplates = createFrameActionAsyncThunk("templates/load", async
                     meta: {
                         id: 3,
                         name: "rule1",
-                        type: "rule",
+                        type: "RULE",
                         rel_resources: [
                             {
                                 id: 1,
