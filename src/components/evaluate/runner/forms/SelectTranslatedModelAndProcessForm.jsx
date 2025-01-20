@@ -59,7 +59,7 @@ export default ({ form, ...props }) => {
     console.log(smVariant);
 
     const newProcessNameItem = (
-        <Form.Item name="name" label="Название прогона" rules={[{ required: true, message: "Укажите название прогона" }]}>
+        <Form.Item name="process_name" label="Название прогона" rules={[{ required: true, message: "Укажите название прогона" }]}>
             <Input placeholder="Укажите название прогона" />
         </Form.Item>
     );
@@ -92,7 +92,7 @@ export default ({ form, ...props }) => {
             <Row align="bottom" gutter={10} wrap={false}>
                 <Col flex="auto">
                     <Form.Item
-                        name="translated_model_id"
+                        name="file_id"
                         label="Файл внутреннего представления ИМ"
                         rules={[{ required: true, message: "Укажите файл внутреннего представления ИМ" }]}
                     >

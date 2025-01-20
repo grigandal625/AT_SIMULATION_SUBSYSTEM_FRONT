@@ -20,6 +20,8 @@ const InternalAndLogs = ({ file_content, translate_logs }) => (
     </div>
 );
 
+const Wait = ({ title }) => <Result icon={<FileSyncOutlined />} title={title} subTitle={<Spin />} />;
+
 export default () => {
     const stepsItems = [
         { title: "Выбор файла модели" },
@@ -48,6 +50,7 @@ export default () => {
         const { id, name } = smSelectForm.getFieldsValue();
 
         try {
+            setStage(1);
             const result = await dispatch(createTranslatedModel({ modelId: id, name })).unwrap();
             setTranslatedModel(result);
             setStage(stepsItems.length - 1);
@@ -191,9 +194,9 @@ export default () => {
 
     const viewByStage = {
         0: smSelect,
-        1: <div>Лексический анализ</div>,
-        2: <div>Синтаксический анализ</div>,
-        3: errorView,
+        1: errorResult ? errorView : <Wait title="Лексический анализ" />,
+        2: errorResult ? errorView : <Wait title="Синтаксический анализ" />,
+        3: errorResult ? errorView : <Wait title="Семантический анализ" />,
         4: resultView,
     };
 

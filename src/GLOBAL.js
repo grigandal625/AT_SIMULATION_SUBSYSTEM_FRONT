@@ -8,10 +8,10 @@ export const LOAD_STATUSES = {
 };
 
 export const PROCES_STATUSES = {
-    RUNNING: "running",
-    PAUSED: "paused",
-    KILLED: "killed",
-    ERROR: "error",
+    RUNNING: "RUNNING",
+    PAUSED: "PAUSED",
+    KILLED: "KILLED",
+    ERROR: "ERROR",
 }
 
 export const API_PROTOCOL = process.env.REACT_APP_API_PROTOCOL || "http";

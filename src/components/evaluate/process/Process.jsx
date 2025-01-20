@@ -89,7 +89,7 @@ export default () => {
             content: (
                 <div>
                     <Typography.Paragraph>
-                        Завершить прогон <b>{currentProcess.name}</b>?
+                        Завершить прогон <b>{currentProcess.process_name}</b>?
                     </Typography.Paragraph>
                     <Typography.Paragraph>Завершенный прогон невозможно будет продолжить</Typography.Paragraph>
                 </div>

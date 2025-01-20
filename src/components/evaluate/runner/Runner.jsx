@@ -24,7 +24,7 @@ export default () => {
             navigate(`/evaluate/runner/process/${data.id}`);
         } else {
             try {
-                const newProcess = await dispatch(createSimulationProcess({ translatedModelId: data.translated_model_id, name: data.name })).unwrap();
+                const newProcess = await dispatch(createSimulationProcess(data)).unwrap();
                 navigate(`/evaluate/runner/process/${newProcess.id}`);
             } catch (e) {
                 console.error(e);
