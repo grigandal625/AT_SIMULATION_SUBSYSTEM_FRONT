@@ -39,7 +39,7 @@ export const loadSimulationProcesses = createFrameActionAsyncThunk("simulationPr
     return { items: json.data.processes };
 });
 
-export const createSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/create", async ({ process }, { rejectWithValue }) => {
+export const createSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/create", async (process, { rejectWithValue }) => {
     const url = `${API_URL}/api/processor`;
     const headers = getHeaders();
 
@@ -100,7 +100,7 @@ export const runSimulationProcess = createFrameActionAsyncThunk("simulationProce
 });
 
 export const pauseSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/pause", async (id, { rejectWithValue }) => {
-    const url = `${API_URL}/api/editor/simulationProcesses/${id}/pause/`;
+    const url = `${API_URL}/api/processor/${id}/pause/`;
     const headers = getHeaders();
 
     if (MOCKING) {
@@ -126,7 +126,7 @@ export const pauseSimulationProcess = createFrameActionAsyncThunk("simulationPro
 });
 
 export const killSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/kill", async (id, { rejectWithValue }) => {
-    const url = `${API_URL}/api/editor/simulationProcesses/${id}/kill/`;
+    const url = `${API_URL}/api/processor/${id}/kill/`;
     const headers = getHeaders();
 
     if (MOCKING) {
@@ -159,7 +159,17 @@ const simulationProcessesSlice = createSlice({
         error: null,
     },
     reducers: {
-        // Define reducers here
+        addTicks: (state, action) => {
+            const index = state.data.findIndex((process) => process.id === action.payload.id);
+            if (index >= 0) {
+                const currentProcess = state.data[index];
+                const ticks = currentProcess?.ticks || [];
+                const newTicks = [action.payload.ticks, ...ticks];
+                state.data[index].ticks = newTicks;
+                state.data[index].status = action.payload.ticks?.currents_status || state.data[index].status;
+                state.data[index].current_tick = action.payload.ticks?.current_tick || state.data[index].current_tick;
+            }
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -193,5 +203,7 @@ const simulationProcessesSlice = createSlice({
             });
     },
 });
+
+export const { addTicks } = simulationProcessesSlice.actions;
 
 export default simulationProcessesSlice.reducer;

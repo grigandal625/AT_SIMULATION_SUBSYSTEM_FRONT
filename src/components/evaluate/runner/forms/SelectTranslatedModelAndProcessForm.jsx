@@ -7,7 +7,6 @@ import { loadModels } from "../../../../redux/stores/modelsStore";
 import { loadTranslatedModels } from "../../../../redux/stores/translatedModelsStore";
 import { loadSimulationProcesses } from "../../../../redux/stores/simulationProcessesStore";
 import { useNavigate, useParams } from "react-router-dom";
-import TinyFormItem from "../../../../utils/TinyFormItem";
 
 export default ({ form, ...props }) => {
     const [actualForm] = form ? [form] : Form.useForm();
@@ -33,8 +32,8 @@ export default ({ form, ...props }) => {
 
     useEffect(() => {
         if (params.selectedTranslatedModelId) {
-            actualForm.setFieldsValue({ translated_model_id: parseInt(params.selectedTranslatedModelId) });
-            const foundTranslatedModel = translatedModels.data.find(({ id }) => id === parseInt(params.selectedTranslatedModelId));
+            actualForm.setFieldsValue({ file_id: params.selectedTranslatedModelId });
+            const foundTranslatedModel = translatedModels.data.find(({ id }) => id === params.selectedTranslatedModelId);
             setSelectedTranslatedModel(foundTranslatedModel);
         }
     }, [params, models, translatedModels, simulationProcesses]);
@@ -66,7 +65,7 @@ export default ({ form, ...props }) => {
 
     const processesOptions = selectedTranslatedModel
         ? simulationProcesses.data
-              .filter((p) => p.translated_model_id === selectedTranslatedModel.id)
+              .filter((p) => p.file_id === selectedTranslatedModel.id)
               .map(({ id, name }) => ({
                   value: id,
                   label: name,

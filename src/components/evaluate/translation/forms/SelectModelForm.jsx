@@ -22,17 +22,17 @@ export default ({ form, ...props }) => {
         if (translatedModels.status !== LOAD_STATUSES.SUCCESS) {
             dispatch(loadTranslatedModels());
         }
-    });
 
-    if (params.selectedModelId) {
-        actualForm.setFieldValue("id", parseInt(params.selectedModelId));
-        const foundModel = models.data.find(({ id }) => id === parseInt(params.selectedModelId));
-        if (foundModel) {
-            actualForm.setFieldValue("name", foundModel.name + " " + new Date().toISOString());
+        if (params.selectedModelId) {
+            actualForm.setFieldValue("id", parseInt(params.selectedModelId));
+            const foundModel = models.data.find(({ id }) => id === parseInt(params.selectedModelId));
+            if (foundModel) {
+                actualForm.setFieldValue("name", foundModel.name + " " + new Date().toISOString());
+            }
+        } else {
+            actualForm.resetFields(["name"]);
         }
-    } else {
-        actualForm.resetFields(["name"]);
-    }
+    }, []);
 
     return (
         <Form form={actualForm} {...props}>

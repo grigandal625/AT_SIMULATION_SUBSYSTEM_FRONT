@@ -52,6 +52,7 @@ export default () => {
         try {
             setStage(1);
             const result = await dispatch(createTranslatedModel({ modelId: id, name })).unwrap();
+            debugger;
             setTranslatedModel(result);
             setStage(stepsItems.length - 1);
         } catch (e) {
