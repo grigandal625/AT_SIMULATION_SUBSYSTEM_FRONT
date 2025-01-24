@@ -21,7 +21,7 @@ export const ResourcesTables = ({ tick }) => {
     const getResourceParameters = (resource) =>
         Object.entries(resource)
             .filter(([parameter, _]) => parameter !== "resource_name")
-            .map(([parameter, value]) => ({ parameter, value }));
+            .map(([parameter, value], i) => ({ parameter, value, key: i.toString() }));
 
     const {
         token: { colorBgLayout, colorBgContainer },

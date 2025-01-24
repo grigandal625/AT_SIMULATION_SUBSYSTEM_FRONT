@@ -6,6 +6,8 @@ import { useParams } from "react-router-dom";
 import { WS_URL } from "../../../../GLOBAL";
 import { addTicks } from "../../../../redux/stores/simulationProcessesStore";
 import ResourcesState from "./ResourcesState";
+import ResourceJournal from "./ResourceJournal";
+import OperationsJournal from "./OperationsJournal";
 
 export default () => {
     const simulationProcesses = useSelector((state) => state.simulationProcesses);
@@ -22,6 +24,7 @@ export default () => {
     const connect = () => {
         setDisconnected(false);
         if (wsRef.current) {
+            wsRef.current.onclose = undefined;
             wsRef.current.close();
             wsRef.current = null;
         }
@@ -72,12 +75,12 @@ export default () => {
         {
             key: "paramsLog",
             label: "Журнал изменения параметров ресурсов",
-            children: <pre>{JSON.stringify(ticks, null, 4)}</pre>,
+            children: <ResourceJournal ticks={ticks} />,
         },
         {
             key: "log",
             label: "Журнал операций",
-            children: <pre>{JSON.stringify(ticks, null, 4)}</pre>,
+            children: <OperationsJournal ticks={ticks} />,
         },
     ];
 

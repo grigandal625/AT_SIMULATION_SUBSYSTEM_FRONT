@@ -12,7 +12,19 @@ export const PROCES_STATUSES = {
     PAUSED: "PAUSE",
     KILLED: "KILLED",
     ERROR: "ERROR",
-}
+};
+
+export const OPERATION_TYPES = {
+    IRREGULAR_EVENT: "IRREGULAR_EVENT",
+    OPERATION: "OPERATION",
+    RULE: "RULE",
+};
+
+export const OPERATION_TYPE_LABELS = Object.fromEntries([
+    [OPERATION_TYPES.IRREGULAR_EVENT, "Нерегулярное событие"],
+    [OPERATION_TYPES.OPERATION, "Операция"],
+    [OPERATION_TYPES.RULE, "Правило"],
+]);
 
 export const API_PROTOCOL = process.env.REACT_APP_API_PROTOCOL || "http";
 export const WS_PROTOCOL = process.env.REACT_APP_WS_PROTOCOL || "ws";

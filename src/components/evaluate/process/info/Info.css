@@ -1,0 +1,3 @@
+.even-tick {
+    background-color: var(--ant-table-fixed-header-sort-active-bg);
+}
