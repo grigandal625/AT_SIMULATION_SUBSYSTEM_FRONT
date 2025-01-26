@@ -28,7 +28,6 @@ export default ({ form, ...props }) => {
         if (params.selectedModelId) {
             actualForm.setFieldValue("id", parseInt(params.selectedModelId));
             const foundModel = models.data.find(({ id }) => id === parseInt(params.selectedModelId));
-            debugger;
             if (foundModel) {
                 actualForm.setFieldValue("name", foundModel.name + " " + new Date().toISOString());
             }

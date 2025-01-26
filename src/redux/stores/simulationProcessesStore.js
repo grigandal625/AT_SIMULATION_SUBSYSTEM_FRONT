@@ -168,9 +168,8 @@ const simulationProcessesSlice = createSlice({
                 state.data[index].ticks = ticks;
 
                 const havingTickIndex = ticks.findIndex((t) => t.current_tick === action.payload.tick.current_tick);
-
                 if (havingTickIndex >= 0) {
-                    state[index].ticks[havingTickIndex] = action.payload.tick;
+                    state.data[index].ticks[havingTickIndex] = action.payload.tick;
                 } else {
                     const newTicks = [action.payload.tick, ...ticks];
                     state.data[index].ticks = newTicks;
