@@ -22,17 +22,20 @@ export default ({ form, ...props }) => {
         if (translatedModels.status !== LOAD_STATUSES.SUCCESS) {
             dispatch(loadTranslatedModels());
         }
+    }, []);
 
+    useEffect(() => {
         if (params.selectedModelId) {
             actualForm.setFieldValue("id", parseInt(params.selectedModelId));
             const foundModel = models.data.find(({ id }) => id === parseInt(params.selectedModelId));
+            debugger;
             if (foundModel) {
                 actualForm.setFieldValue("name", foundModel.name + " " + new Date().toISOString());
             }
         } else {
             actualForm.resetFields(["name"]);
         }
-    }, []);
+    }, [params.selectedModelId, models.status]);
 
     return (
         <Form form={actualForm} {...props}>

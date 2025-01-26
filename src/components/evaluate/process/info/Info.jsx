@@ -4,7 +4,7 @@ import { useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { WS_URL } from "../../../../GLOBAL";
-import { addTicks } from "../../../../redux/stores/simulationProcessesStore";
+import { addTick } from "../../../../redux/stores/simulationProcessesStore";
 import ResourcesState from "./ResourcesState";
 import ResourceJournal from "./ResourceJournal";
 import OperationsJournal from "./OperationsJournal";
@@ -41,8 +41,8 @@ export default () => {
 
             ws.onmessage = (e) => {
                 if (currentProcess) {
-                    const ticks = JSON.parse(e.data);
-                    dispatch(addTicks({ ...currentProcess, ticks }));
+                    const tick = JSON.parse(e.data);
+                    dispatch(addTick({ ...currentProcess, tick }));
                 }
             };
 

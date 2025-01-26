@@ -159,15 +159,24 @@ const simulationProcessesSlice = createSlice({
         error: null,
     },
     reducers: {
-        addTicks: (state, action) => {
+        addTick: (state, action) => {
             const index = state.data.findIndex((process) => process.id === action.payload.id);
             if (index >= 0) {
                 const currentProcess = state.data[index];
-                const ticks = currentProcess?.ticks || [];
-                const newTicks = [action.payload.ticks, ...ticks];
-                state.data[index].ticks = newTicks;
-                state.data[index].status = action.payload.ticks?.currents_status || state.data[index].status;
-                state.data[index].current_tick = action.payload.ticks?.current_tick || state.data[index].current_tick;
+                const ticks = currentProcess.ticks || [];
+
+                state.data[index].ticks = ticks;
+
+                const havingTickIndex = ticks.findIndex((t) => t.current_tick === action.payload.tick.current_tick);
+
+                if (havingTickIndex >= 0) {
+                    state[index].ticks[havingTickIndex] = action.payload.tick;
+                } else {
+                    const newTicks = [action.payload.tick, ...ticks];
+                    state.data[index].ticks = newTicks;
+                }
+                state.data[index].status = action.payload.tick.currents_status || state.data[index].status;
+                state.data[index].current_tick = action.payload.tick.current_tick || state.data[index].current_tick;
             }
         },
     },
@@ -204,6 +213,6 @@ const simulationProcessesSlice = createSlice({
     },
 });
 
-export const { addTicks } = simulationProcessesSlice.actions;
+export const { addTick } = simulationProcessesSlice.actions;
 
 export default simulationProcessesSlice.reducer;

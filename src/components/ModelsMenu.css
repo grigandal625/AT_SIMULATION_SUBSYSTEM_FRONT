@@ -5,6 +5,13 @@
     margin-bottom: 10px;
 }
 
+.sider-empty {
+    height: calc(100vh - 262px);
+    min-width: 250px;
+    margin-bottom: 10px;
+    background-color: var(--ant-color-bg-container);
+}
+
 .sider-model-menu .ant-menu-title-content {
     width: 100%;
 }
