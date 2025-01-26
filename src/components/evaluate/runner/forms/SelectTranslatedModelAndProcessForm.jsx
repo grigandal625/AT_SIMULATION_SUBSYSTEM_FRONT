@@ -55,8 +55,6 @@ export default ({ form, ...props }) => {
             label: name,
         }));
 
-    console.log(smVariant);
-
     const newProcessNameItem = (
         <Form.Item name="process_name" label="Название прогона" rules={[{ required: true, message: "Укажите название прогона" }]}>
             <Input placeholder="Укажите название прогона" />

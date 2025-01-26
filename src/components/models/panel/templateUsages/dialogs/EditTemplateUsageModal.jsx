@@ -17,7 +17,6 @@ export default ({ open, ...modalProps }) => {
 
     const templateUsages = useSelector((store) => store.templateUsages);
     const templateUsage = templateUsages.data.find((templateUsage) => templateUsage.id.toString() === params.templateUsageId);
-    console.log(templateUsage);
     form.setFieldsValue(templateUsage);
 
     const templates = useSelector((store) => store.templates);
@@ -34,7 +33,6 @@ export default ({ open, ...modalProps }) => {
     const handleEdit = async () => {
         try {
             const data = await form.validateFields();
-            console.log(data);
             const action = await dispatch(updateTemplateUsage({ modelId: params.modelId, templateUsage: data }));
             const updatedTemplateUsage = action.payload;
             navigate(`/models/${params.modelId}/template-usages/${updatedTemplateUsage.id}`);

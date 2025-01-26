@@ -28,7 +28,7 @@ export default () => {
                 navigate(`/evaluate/runner/process/${newProcess.id}`);
             } catch (e) {
                 console.error(e);
-                message.error(e.error_message);
+                message.error(e.message || e.error_message);
             }
         }
     };

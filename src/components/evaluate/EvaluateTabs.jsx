@@ -19,7 +19,6 @@ export default () => {
     const matches = useMatches();
     const tabKey = matches.length >= 3 && matches[2].pathname.slice(-1) !== "/" ? matches[2].pathname.split("/").slice(-1)[0] : "translation";
 
-    console.log(matches);
     return (
         <div style={{ padding: 10, marginLeft: 10, background: "white" }}>
             <Tabs activeKey={tabKey} onChange={(key) => navigate(`/evaluate/${key}`)} items={tabItems} />
