@@ -8,7 +8,7 @@ export const lengthRequiredRule = {
 };
 
 export const lengthMinRequiredRule = (min) => ({
-    validator: (_, value) => (value && value.length >= min ? Promise.resolve() : Promise.reject(new Error(`Минимум ${min} элемента`))),
+    validator: (_, value) => (value && value.length >= min ? Promise.resolve() : Promise.reject(new Error(`Минимум ${min} элемент(а/ов)`))),
 });
 
 export const itemLengthRequiredRule = (form, name) => ({

@@ -4,7 +4,7 @@ import { API_URL, getHeaders, LOAD_STATUSES, MOCKING, PROCES_STATUSES } from "..
 import { rejector } from "../rejector";
 
 export const loadSimulationProcesses = createFrameActionAsyncThunk("simulationProcesses/load", async (_, { rejectWithValue }) => {
-    const url = `${API_URL}/api/editor/simulationProcesses/`;
+    const url = `${API_URL}/api/processor`;
     const headers = getHeaders();
 
     if (MOCKING) {
@@ -12,18 +12,18 @@ export const loadSimulationProcesses = createFrameActionAsyncThunk("simulationPr
             headers,
         });
         const json = {
-            simulation_processes: [
+            processes: [
                 {
-                    id: 1,
-                    name: "Experiment 1 (21.12.2021)",
-                    translated_model_id: 1,
-                    status: "paused",
-                    tact: 0,
+                    id: 0,
+                    process_name: "experiment 1",
+                    file_id: "1",
+                    status: "PAUSE",
+                    current_tick: 0,
                 },
             ],
             total: 0,
         };
-        return { items: json.simulation_processes };
+        return { items: json.processes };
     }
 
     const response = await fetch(url, {
@@ -36,20 +36,20 @@ export const loadSimulationProcesses = createFrameActionAsyncThunk("simulationPr
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return { items: json.data.simulation_processes };
+    return { items: json.data.processes };
 });
 
-export const createSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/create", async ({ translatedModelId, name }, { rejectWithValue }) => {
-    const url = `${API_URL}/api/editor/simulationProcesses/`;
+export const createSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/create", async (process, { rejectWithValue }) => {
+    const url = `${API_URL}/api/processor`;
     const headers = getHeaders();
 
     if (MOCKING) {
         console.log(url, {
             method: "POST",
             headers,
-            body: JSON.stringify({ name, translated_model_id: translatedModelId }),
+            body: JSON.stringify(process),
         });
-        const json = { name, translated_model_id: translatedModelId, status: PROCES_STATUSES.PAUSED, tact: 0 };
+        const json = { ...process, status: PROCES_STATUSES.PAUSED, current_tick: 0 };
 
         if (!json.id) {
             json.id = Math.floor(Math.random() * 10000) + 1;
@@ -59,7 +59,7 @@ export const createSimulationProcess = createFrameActionAsyncThunk("simulationPr
     const response = await fetch(url, {
         method: "POST",
         headers,
-        body: JSON.stringify({ name }),
+        body: JSON.stringify(process),
     });
     if (!response.ok) {
         return await rejector(response, rejectWithValue);
@@ -68,18 +68,18 @@ export const createSimulationProcess = createFrameActionAsyncThunk("simulationPr
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return {name, translated_model_id: translatedModelId, ...json.data};
+    return { ...process, ...json.data };
 });
 
-export const runSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/run", async ({ id, tacts, wait }, { rejectWithValue }) => {
-    const url = `${API_URL}/api/editor/simulationProcesses/${id}/run/`;
+export const runSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/run", async ({ id, ticks, delay }, { rejectWithValue }) => {
+    const url = `${API_URL}/api/processor/${id}/run/`;
     const headers = getHeaders();
 
     if (MOCKING) {
         console.log(url, {
             method: "POST",
             headers,
-            body: JSON.stringify({ tacts, wait }),
+            body: JSON.stringify({ ticks, delay }),
         });
         return { id, status: PROCES_STATUSES.RUNNING };
     }
@@ -87,7 +87,7 @@ export const runSimulationProcess = createFrameActionAsyncThunk("simulationProce
     const response = await fetch(url, {
         method: "POST",
         headers,
-        body: JSON.stringify({ tacts, wait }),
+        body: JSON.stringify({ ticks, delay }),
     });
     if (!response.ok) {
         return await rejector(response, rejectWithValue);
@@ -100,7 +100,7 @@ export const runSimulationProcess = createFrameActionAsyncThunk("simulationProce
 });
 
 export const pauseSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/pause", async (id, { rejectWithValue }) => {
-    const url = `${API_URL}/api/editor/simulationProcesses/${id}/pause/`;
+    const url = `${API_URL}/api/processor/${id}/pause/`;
     const headers = getHeaders();
 
     if (MOCKING) {
@@ -126,7 +126,7 @@ export const pauseSimulationProcess = createFrameActionAsyncThunk("simulationPro
 });
 
 export const killSimulationProcess = createFrameActionAsyncThunk("simulationProcesses/kill", async (id, { rejectWithValue }) => {
-    const url = `${API_URL}/api/editor/simulationProcesses/${id}/kill/`;
+    const url = `${API_URL}/api/processor/${id}/kill/`;
     const headers = getHeaders();
 
     if (MOCKING) {
@@ -159,7 +159,25 @@ const simulationProcessesSlice = createSlice({
         error: null,
     },
     reducers: {
-        // Define reducers here
+        addTick: (state, action) => {
+            const index = state.data.findIndex((process) => process.id === action.payload.id);
+            if (index >= 0) {
+                const currentProcess = state.data[index];
+                const ticks = currentProcess.ticks || [];
+
+                state.data[index].ticks = ticks;
+
+                const havingTickIndex = ticks.findIndex((t) => t.current_tick === action.payload.tick.current_tick);
+                if (havingTickIndex >= 0) {
+                    state.data[index].ticks[havingTickIndex] = action.payload.tick;
+                } else {
+                    const newTicks = [action.payload.tick, ...ticks];
+                    state.data[index].ticks = newTicks;
+                }
+                state.data[index].status = action.payload.tick.currents_status || state.data[index].status;
+                state.data[index].current_tick = action.payload.tick.current_tick || state.data[index].current_tick;
+            }
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -193,5 +211,7 @@ const simulationProcessesSlice = createSlice({
             });
     },
 });
+
+export const { addTick } = simulationProcessesSlice.actions;
 
 export default simulationProcessesSlice.reducer;

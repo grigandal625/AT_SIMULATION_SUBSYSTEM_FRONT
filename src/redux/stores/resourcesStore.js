@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { createFrameActionAsyncThunk } from "../frameActor";
 import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 import { rejector } from "../rejector";
+import { deleteResourceType } from "./resourceTypesStore";
 
 export const loadResources = createFrameActionAsyncThunk("resources/load", async (modelId, { rejectWithValue }) => {
     const url = `${API_URL}/api/editor/resources/`;
@@ -110,7 +111,7 @@ export const createResource = createFrameActionAsyncThunk("resources/create", as
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    return { ...resource, ...json.data };
 });
 
 export const updateResource = createFrameActionAsyncThunk("resources/update", async ({ modelId, resource }, { rejectWithValue }) => {
@@ -216,6 +217,9 @@ const resourcesSlice = createSlice({
                 if (index > -1) {
                     state.data.splice(index, 1);
                 }
+            })
+            .addCase(deleteResourceType.fulfilled, (state, action) => {
+                state.data = state.data.filter((item) => item.resource_type_id !== parseInt(action.payload));
             });
     },
 });

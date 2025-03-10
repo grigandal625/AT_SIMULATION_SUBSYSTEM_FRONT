@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Col, Dropdown, Menu, Row, Skeleton, Modal, Form, theme } from "antd";
+import { Button, Col, Dropdown, Menu, Row, Skeleton, Modal, Form, theme, Empty } from "antd";
 import { useParams, useNavigate, useMatches } from "react-router-dom";
 import { LOAD_STATUSES } from "../GLOBAL";
 import { useEffect } from "react";
@@ -132,7 +132,13 @@ export default () => {
     return models.status === LOAD_STATUSES.SUCCESS ? (
         <div className="sider-model-menu-wrapper">
             <div>
-                <Menu onSelect={({ key }) => navigate(`/models/${key}`)} className="sider-model-menu" selectedKeys={[currentModelId]} items={items} />
+                {items?.length ? (
+                    <Menu onSelect={({ key }) => navigate(`/models/${key}`)} className="sider-model-menu" selectedKeys={[currentModelId]} items={items} />
+                ) : (
+                    <div className="sider-empty">
+                        <Empty description="Файлов ИМ не создано" />
+                    </div>
+                )}
             </div>
             <div style={{ marginBottom: 10 }}>
                 <Button icon={<PlusOutlined />} onClick={confirmCreateModel} style={{ width: "100%" }}>

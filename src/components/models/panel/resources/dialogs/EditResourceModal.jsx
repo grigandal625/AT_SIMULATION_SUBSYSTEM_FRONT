@@ -32,7 +32,6 @@ export default ({ open, ...modalProps }) => {
     const handleEdit = async () => {
         try {
             const data = await form.validateFields();
-            console.log(data);
             const action = await dispatch(updateResource({ modelId: params.modelId, resource: data }));
             const updatedResource = action.payload;
             navigate(`/models/${params.modelId}/resources/${updatedResource.id}`);

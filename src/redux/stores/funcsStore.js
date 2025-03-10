@@ -73,7 +73,21 @@ export const createFunc = createFrameActionAsyncThunk("funcs/create", async ({ m
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return {...func, ...json.data};
+
+    const { id } = json.data;
+
+    const retrieveUrl = `${API_URL}/api/editor/functions/${id}`;
+    const retrieveResponse = await fetch(retrieveUrl, { headers });
+
+    if (!retrieveResponse.ok) {
+        return await rejector(retrieveResponse, rejectWithValue);
+    }
+    const retrieveJson = await retrieveResponse.json();
+    if (retrieveJson.is_error) {
+        return await rejector(retrieveResponse, rejectWithValue);
+    }
+
+    return { ...func, ...retrieveJson.data };
 });
 
 export const updateFunc = createFrameActionAsyncThunk("funcs/update", async ({ modelId, func }, { rejectWithValue }) => {
@@ -102,7 +116,20 @@ export const updateFunc = createFrameActionAsyncThunk("funcs/update", async ({ m
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return {...func, ...json.data};
+    const { id } = json.data;
+
+    const retrieveUrl = `${API_URL}/api/editor/functions/${id}`;
+    const retrieveResponse = await fetch(retrieveUrl, { headers });
+
+    if (!retrieveResponse.ok) {
+        return await rejector(retrieveResponse, rejectWithValue);
+    }
+    const retrieveJson = await retrieveResponse.json();
+    if (retrieveJson.is_error) {
+        return await rejector(retrieveResponse, rejectWithValue);
+    }
+
+    return { ...func, ...retrieveJson.data };
 });
 
 export const deleteFunc = createFrameActionAsyncThunk("funcs/delete", async ({ modelId, funcId }, { rejectWithValue }) => {

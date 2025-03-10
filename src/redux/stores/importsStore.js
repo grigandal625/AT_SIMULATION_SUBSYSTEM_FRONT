@@ -19,13 +19,13 @@ export const loadImports = createFrameActionAsyncThunk("imports/load", async (mo
                         model_id: 1,
                         name: "fmt",
                         version: "1.0.0",
-                        packages: [
+                        pkgs: [
                             {
                                 id: 1,
                                 name: "fmt",
                                 alias: "fmt", // not required
                             },
-                        ]
+                        ],
                     },
                 ],
                 total: 0,
@@ -47,7 +47,7 @@ export const loadImports = createFrameActionAsyncThunk("imports/load", async (mo
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return json.data;
+    return { items: json.data.imports, modelId };
 });
 
 export const createImport = createFrameActionAsyncThunk("imports/create", async ({ modelId, importData }, { rejectWithValue }) => {
@@ -188,6 +188,5 @@ const importsSlice = createSlice({
             });
     },
 });
-
 
 export default importsSlice.reducer;

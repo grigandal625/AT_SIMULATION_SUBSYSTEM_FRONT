@@ -4,7 +4,7 @@ import { API_URL, getHeaders, LOAD_STATUSES, MOCKING } from "../../GLOBAL";
 import { rejector } from "../rejector";
 
 export const loadTranslatedModels = createFrameActionAsyncThunk("translatedModels/load", async (_, { rejectWithValue }) => {
-    const url = `${API_URL}/api/editor/translatedModels/`;
+    const url = `${API_URL}/api/translator/files`;
     const headers = getHeaders();
 
     if (MOCKING) {
@@ -34,12 +34,14 @@ export const loadTranslatedModels = createFrameActionAsyncThunk("translatedModel
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return { items: json.data.translated_models };
+    return { items: json.data.files };
 });
 
 export const createTranslatedModel = createFrameActionAsyncThunk("translatedModels/create", async ({ modelId, name }, { rejectWithValue }) => {
-    const url = `${API_URL}/api/editor/translatedModels/`;
+    const url = `${API_URL}/api/translator/files/${modelId}`;
     const headers = getHeaders({ "model-id": modelId });
+
+    // return rejectWithValue(new ApiError("Translate error", 500, { error_message: "Translate error" }, "Test error"))
 
     if (MOCKING) {
         console.log(url, {
@@ -47,7 +49,7 @@ export const createTranslatedModel = createFrameActionAsyncThunk("translatedMode
             headers,
             body: JSON.stringify({ name }),
         });
-        const json = { name, model_id: modelId };
+        const json = { name, file_content: "GENERATED GO CODE", translate_logs: "> File ok." };
 
         if (!json.id) {
             json.id = Math.floor(Math.random() * 10000) + 1;
@@ -66,7 +68,7 @@ export const createTranslatedModel = createFrameActionAsyncThunk("translatedMode
     if (json.is_error) {
         return await rejector(response, rejectWithValue);
     }
-    return {name, ...json.data};
+    return { name, ...json.data };
 });
 
 const translatedModelsSlice = createSlice({

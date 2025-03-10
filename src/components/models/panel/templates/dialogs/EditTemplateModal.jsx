@@ -15,8 +15,6 @@ export default ({ open, ...modalProps }) => {
     const dispatch = useDispatch();
     const [form] = Form.useForm();
 
-    debugger;
-
     const templates = useSelector((store) => store.templates);
     const template = templates.data.find((template) => template.meta.id.toString() === params.templateId);
     form.setFieldsValue(template);

@@ -16,11 +16,11 @@ export const rejector = async (response, rejectWithValue) => {
     try {
         const json = await response.json();
         if (!json.error_message) {
-            return rejectWithValue(ApiError("Unknown error", response.status, json, text));
+            return rejectWithValue(new ApiError("Unknown error", response.status, json, text));
         }
 
-        return rejectWithValue(ApiError(json.error_message, response.status, json, text));
+        return rejectWithValue(new ApiError(json.error_message, response.status, json, text));
     } catch (error) {
-        return rejectWithValue(ApiError("Unknown error", response.status, error, text));
+        return rejectWithValue(new ApiError("Unknown error", response.status, error, text));
     }
 };

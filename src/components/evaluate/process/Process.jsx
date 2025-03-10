@@ -6,6 +6,7 @@ import { LOAD_STATUSES, PROCES_STATUSES } from "../../../GLOBAL";
 import { killSimulationProcess, loadSimulationProcesses, pauseSimulationProcess, runSimulationProcess } from "../../../redux/stores/simulationProcessesStore";
 import { BackwardOutlined, CloseCircleOutlined, PauseCircleOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import ModelParamsConfigForm from "./forms/ModelParamsConfigForm";
+import Info from "./info/Info";
 
 export default () => {
     const params = useParams();
@@ -19,30 +20,12 @@ export default () => {
         if (processes.status !== LOAD_STATUSES.SUCCESS) {
             dispatch(loadSimulationProcesses());
         }
-    });
+    }, []);
 
-    const tabItems = [
-        {
-            key: "params",
-            label: "Состояение параметров ресурсов",
-            children: <>Параметры ресурсов</>,
-        },
-        {
-            key: "log",
-            label: "Журнал операций",
-            children: <>Журнал операций</>,
-        },
-    ];
+    const currentProcess = processes.data.find((p) => p.id === params.processId);
 
-    const currentProcess = processes.data.find((p) => p.id === parseInt(params.processId));
-
-    const [tact, setTact] = useState(currentProcess?.tact || 0);
     const [startLoading, setStartLoading] = useState(false);
     const [pauseLoading, setPauseLoading] = useState(false);
-
-    useEffect(() => {
-        setTact(currentProcess?.tact || 0);
-    }, [currentProcess]);
 
     if (!currentProcess) {
         return <Skeleton active />;
@@ -50,7 +33,7 @@ export default () => {
 
     const statuses = {};
     statuses[PROCES_STATUSES.PAUSED] = "Приостановлен";
-    statuses[PROCES_STATUSES.RUNNING] = `Выполняется. Такт ${tact}`;
+    statuses[PROCES_STATUSES.RUNNING] = "Выполняется";
     statuses[PROCES_STATUSES.KILLED] = "Завершен";
     statuses[PROCES_STATUSES.ERROR] = "Ошибка";
 
@@ -67,19 +50,26 @@ export default () => {
             await form.validateFields();
         } catch (e) {
             console.error(e);
+            setStartLoading(false);
             return;
         }
 
         const data = form.getFieldsValue();
-        await dispatch(runSimulationProcess({ ...data, id: parseInt(params.processId) })).unwrap();
-        setStartLoading(false);
+        try {
+            await dispatch(runSimulationProcess({ ...data, id: params.processId })).unwrap();
+        } finally {
+            setStartLoading(false);
+        }
     };
 
     const onPauseClick = async (e) => {
         setPauseLoading(true);
         e.stopPropagation();
-        await dispatch(pauseSimulationProcess(currentProcess.id)).unwrap();
-        setPauseLoading(false);
+        try {
+            await dispatch(pauseSimulationProcess(currentProcess.id)).unwrap();
+        } finally {
+            setPauseLoading(false);
+        }
     };
 
     const onKillClick = (e) => {
@@ -89,7 +79,7 @@ export default () => {
             content: (
                 <div>
                     <Typography.Paragraph>
-                        Завершить прогон <b>{currentProcess.name}</b>?
+                        Завершить прогон <b>{currentProcess.process_name}</b>?
                     </Typography.Paragraph>
                     <Typography.Paragraph>Завершенный прогон невозможно будет продолжить</Typography.Paragraph>
                 </div>
@@ -118,7 +108,6 @@ export default () => {
                             type="primary"
                             icon={<PlayCircleOutlined />}
                             loading={startLoading}
-                            
                         >
                             Запустить/продолжить
                         </Button>
@@ -139,7 +128,7 @@ export default () => {
             </Row>
         ),
         key: "config",
-        children: <ModelParamsConfigForm initialValues={{ tacts: 10, wait: 200 }} form={form} />,
+        children: <ModelParamsConfigForm initialValues={{ ticks: 10, delay: 200 }} form={form} />,
     };
 
     return (
@@ -151,7 +140,7 @@ export default () => {
                     </Typography.Title>
                 </Col>
                 <Col>
-                    <Link to={`/evaluate/runner/${currentProcess.translated_model_id}`}>
+                    <Link to={`/evaluate/runner/${currentProcess.file_id}`}>
                         <Button type="link" icon={<BackwardOutlined />}>
                             Вернуться к выбору прогона
                         </Button>
@@ -161,7 +150,7 @@ export default () => {
             <div style={{ marginTop: 10 }}>
                 <Collapse defaultActiveKey="config" size="small" items={[controlItem]} />
             </div>
-            <Tabs items={tabItems} />
+            <Info />
             {contextHolder}
         </div>
     );

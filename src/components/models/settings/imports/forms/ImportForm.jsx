@@ -1,5 +1,5 @@
 import { Col, Empty, Form, Input, Row, Table, Typography, Button, InputNumber } from "antd";
-import { requiredRule } from "../../../../../utils/validators/general";
+import { itemLengthRequiredRule, requiredRule } from "../../../../../utils/validators/general";
 import TinyFormItem from "../../../../../utils/TinyFormItem";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 
@@ -75,19 +75,21 @@ export default ({ form, ...props }) => {
             <Form.Item hidden name="id">
                 <InputNumber />
             </Form.Item>
-            <Row gutter={10}>
+            <Row align="bottom" gutter={10}>
                 <Col flex="auto">
                     <Form.Item label="Название/URL" name="name" rules={[requiredRule]}>
                         <Input placeholder="Укажите название/URL" />
                     </Form.Item>
                 </Col>
                 <Col>
-                    <Form.Item style={{ marginTop: 1 }} label="Версия" name="version">
+                    <Form.Item label="Версия" name="version">
                         <Input placeholder="Укажите версию" />
                     </Form.Item>
                 </Col>
             </Row>
-            <Form.List name="packages">{(fields, { add, remove }) => <PackagesList fields={fields} add={add} remove={remove} />}</Form.List>
+            <Form.Item label="Релевантные ресурсы" name="_check" rules={[itemLengthRequiredRule(actualForm, ["pkgs"])]}>
+                <Form.List name="pkgs">{(fields, { add, remove }) => <PackagesList fields={fields} add={add} remove={remove} />}</Form.List>
+            </Form.Item>
         </Form>
     );
 };

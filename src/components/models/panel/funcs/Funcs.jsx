@@ -23,7 +23,7 @@ export default ({ closed }) => {
 
     useEffect(() => {
         dispatch(loadFuncs(params.modelId));
-    }, [params]);
+    }, [params.modelId]);
 
     const dropDownItems = (func) => [
         {

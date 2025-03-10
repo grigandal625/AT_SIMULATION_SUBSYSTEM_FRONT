@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useMatches, useNavigate, useParams } from "react-router-dom";
 import { deleteTemplate, loadTemplates } from "../../../../redux/stores/templatesStore";
 import { LOAD_STATUSES } from "../../../../GLOBAL";
-import { Button, Col, Dropdown, Empty, Menu, Modal, Row, Skeleton } from "antd";
+import { Button, Col, Dropdown, Empty, Menu, Modal, Row, Skeleton, Typography } from "antd";
 import { EditOutlined, PlusOutlined, CopyOutlined, DeleteOutlined, DashOutlined } from "@ant-design/icons";
 
 import "../PanelMenu.css";
@@ -22,8 +22,14 @@ export default ({ closed }) => {
     const editOpen = Boolean(matches.find((match) => /models\/\d+\/templates\/\d+\/edit/g.test(match.pathname)));
 
     useEffect(() => {
+        if (templates.status === LOAD_STATUSES.TO_REFRESH) {
+            dispatch(loadTemplates(params.modelId));
+        }
+    }, [templates.status]);
+
+    useEffect(() => {
         dispatch(loadTemplates(params.modelId));
-    }, [params]);
+    }, [params.modelId]);
 
     const dropDownItems = (template) => [
         {
@@ -62,7 +68,10 @@ export default ({ closed }) => {
             title: "Удаление образца операции",
             content: (
                 <>
-                    Вы уверены, что хотите удалить образец операции <b>{template.meta.name}?</b>
+                    <Typography.Paragraph>
+                        Вы уверены, что хотите удалить образец операции <b>{template.meta.name}?</b>
+                    </Typography.Paragraph>
+                    <Typography.Paragraph>При удалении образца операции удалятся все операции данного образца</Typography.Paragraph>
                 </>
             ),
             okText: "Удалить",
