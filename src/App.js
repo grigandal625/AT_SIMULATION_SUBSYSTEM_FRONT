@@ -84,8 +84,10 @@ export const router = createBrowserRouter(
                 </Route>
                 <Route path="runner" element={<Outlet />}>
                     <Route path="" element={<Runner />} />
-                    <Route path="process/:processId" element={<Process />} />
-                    <Route path=":selectedTranslatedModelId" element={<Runner />} />
+                    <Route path=":selectedTranslatedModelId" element={<Outlet />}>
+                        <Route path="" element={<Runner />} />
+                        <Route path="process/:processId" element={<Process />} />
+                    </Route>
                 </Route>
             </Route>
         </Route>
