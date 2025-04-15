@@ -30,27 +30,29 @@ export const ResourcesTables = ({ tick }) => {
     return (
         <>
             <Row style={{ background: colorBgLayout, paddingTop: 20, paddingBottom: 20 }} gutter={[20, 20]}>
-                {tick.resources.map((res) => {
-                    const dataSource = getResourceParameters(res);
-                    return (
-                        <Col span={6}>
-                            <div style={{ background: colorBgContainer, height: "100%" }}>
-                                <Table
-                                    scroll={dataSource.length > 4 ? { y: 170 } : undefined}
-                                    columns={columns}
-                                    dataSource={dataSource}
-                                    size="small"
-                                    pagination={false}
-                                    title={() => (
-                                        <Typography.Title level={5} style={{ marginTop: 5, marginBottom: 5 }}>
-                                            Ресурс {res.resource_name}
-                                        </Typography.Title>
-                                    )}
-                                />
-                            </div>
-                        </Col>
-                    );
-                })}
+                {tick.resources
+                    .filter((res) => res)
+                    .map((res) => {
+                        const dataSource = getResourceParameters(res);
+                        return (
+                            <Col span={6}>
+                                <div style={{ background: colorBgContainer, height: "100%" }}>
+                                    <Table
+                                        scroll={dataSource.length > 4 ? { y: 170 } : undefined}
+                                        columns={columns}
+                                        dataSource={dataSource}
+                                        size="small"
+                                        pagination={false}
+                                        title={() => (
+                                            <Typography.Title level={5} style={{ marginTop: 5, marginBottom: 5 }}>
+                                                Ресурс {res.resource_name}
+                                            </Typography.Title>
+                                        )}
+                                    />
+                                </div>
+                            </Col>
+                        );
+                    })}
             </Row>
         </>
     );
