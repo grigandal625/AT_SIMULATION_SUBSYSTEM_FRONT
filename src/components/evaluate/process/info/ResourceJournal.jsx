@@ -5,20 +5,22 @@ export default ({ ticks }) => {
     const parameters = (ticks || []).reduce(
         (tickAccumulator, tick) => [
             ...tickAccumulator,
-            ...tick.resources.reduce(
-                (resAccumulator, res) => [
-                    ...resAccumulator,
-                    ...Object.entries(res)
-                        .filter(([parameter, _]) => parameter !== "resource_name")
-                        .map(([parameter, value]) => ({
-                            parameter,
-                            value,
-                            tick: tick.current_tick,
-                            resource: res.resource_name,
-                        })),
-                ],
-                []
-            ),
+            ...tick.resources
+                .filter((res) => res)
+                .reduce(
+                    (resAccumulator, res) => [
+                        ...resAccumulator,
+                        ...Object.entries(res)
+                            .filter(([parameter, _]) => parameter !== "resource_name")
+                            .map(([parameter, value]) => ({
+                                parameter,
+                                value,
+                                tick: tick.current_tick,
+                                resource: res.resource_name,
+                            })),
+                    ],
+                    []
+                ),
         ],
         []
     );
